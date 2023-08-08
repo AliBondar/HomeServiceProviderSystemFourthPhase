@@ -17,6 +17,7 @@ public class OfferCommandToOfferConverter implements BaseConverter<OfferCommand,
         offer.setOfferedStartDate(offerCommand.getOfferedStartDate());
         offer.setOfferSignedDate(LocalDate.now());
         offer.setOfferedStartTime(Time.valueOf(offerCommand.getOfferedStartTime()));
+        offer.setWorkTimeType(offerCommand.getWorkTimeType());
         offer.setAccepted(false);
         offer.setExpertOfferedWorkDuration(offerCommand.getExpertOfferedWorkDuration());
         return offer;

@@ -17,7 +17,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Expert extends User {
 
-    byte[] imagedData;
+    byte[] imageData;
 
     int score;
 

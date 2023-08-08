@@ -24,7 +24,7 @@ public class ExpertSIgnUpCommandToExpertConverter implements BaseConverter<Exper
         expert.setUserStatus(expertSignUpCommand.getUserStatus());
         expert.setService(expertSignUpCommand.getService());
         try {
-            expert.setImagedData(FileUtils.readFileToByteArray(expertSignUpCommand.getImageData()));
+            expert.setImageData(FileUtils.readFileToByteArray(expertSignUpCommand.getImageData()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

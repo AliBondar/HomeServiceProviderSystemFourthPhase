@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.example.base.domain.BaseEntity;
+import org.example.entity.enums.WorkTimeType;
 import org.example.entity.users.Expert;
 
 
@@ -36,6 +37,8 @@ public class Offer extends BaseEntity<Long> {
     int expertOfferedWorkDuration;
 
     Time offeredStartTime;
+
+    WorkTimeType workTimeType;
 
     LocalDate offerSignedDate;
 

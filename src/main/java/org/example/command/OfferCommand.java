@@ -3,6 +3,7 @@ package org.example.command;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.entity.Order;
+import org.example.entity.enums.WorkTimeType;
 import org.example.entity.users.Expert;
 
 import java.time.LocalDate;
@@ -27,6 +28,8 @@ public class OfferCommand extends BaseCommand<Long> {
     int expertOfferedWorkDuration;
 
     LocalTime offeredStartTime;
+
+    WorkTimeType workTimeType;
 
     LocalDate offerSignedDate;
 
