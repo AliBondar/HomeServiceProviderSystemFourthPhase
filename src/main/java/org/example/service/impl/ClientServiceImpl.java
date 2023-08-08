@@ -3,11 +3,16 @@ package org.example.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.command.ClientSignUpCommand;
 import org.example.converter.ClientSignUpCommandToClientConverter;
+import org.example.entity.Offer;
+import org.example.entity.Order;
 import org.example.entity.Wallet;
+import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
 import org.example.repository.ClientRepository;
+import org.example.repository.OfferRepository;
+import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ClientService;
@@ -16,7 +21,9 @@ import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
@@ -25,6 +32,8 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final WalletRepository walletRepository;
+    private final OrderRepository orderRepository;
+    private final OfferRepository offerRepository;
 
     @Override
     public Optional<Client> findClientByEmail(String email) {
@@ -122,6 +131,33 @@ public class ClientServiceImpl implements ClientService {
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    @Override
+    public void acceptOffer(Offer offer) {
+        offer.setAccepted(true);
+        Order order = offer.getOrder();
+        order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_ARRIVES);
+        order.setExpert(offer.getExpert());
+        orderRepository.save(order);
+        offerRepository.save(offer);
+    }
+
+    @Override
+    public void changeOrderStatusToStarted(Long orderId) {
+        if (orderRepository.findById(orderId).isEmpty()) {
+            throw new NotFoundTheOrderException("Couldn't find the order.");
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
+            throw new NotFoundTheOfferException("Couldn't find the offer.");
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isBefore(LocalDate.now())) {
+            throw new InvalidDateException("Invalid date.");
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().before(Time.valueOf(LocalTime.now()))){
+            throw new InvalidTimeException("Invalid time.");
+        } else {
+            Order order = orderRepository.findById(orderId).get();
+            order.setOrderStatus(OrderStatus.STARTED);
+            orderRepository.save(order);
         }
     }
 }

@@ -13,8 +13,8 @@ import org.example.base.domain.BaseEntity;
 import org.example.entity.users.Expert;
 
 
+import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @NoArgsConstructor
@@ -35,7 +35,7 @@ public class Offer extends BaseEntity<Long> {
 
     int expertOfferedWorkDuration;
 
-    LocalTime offerSignedTime;
+    Time offeredStartTime;
 
     LocalDate offerSignedDate;
 
@@ -49,7 +49,7 @@ public class Offer extends BaseEntity<Long> {
                 ", offeredPrice=" + offeredPrice +
                 ", offeredStartDate=" + offeredStartDate +
                 ", expertOfferedWorkDuration=" + expertOfferedWorkDuration +
-                ", offerSignedTime=" + offerSignedTime +
+                ", offeredStartTime=" + offeredStartTime +
                 ", offerSignedDate=" + offerSignedDate +
                 ", isAccepted=" + isAccepted +
                 '}';

@@ -1,10 +1,7 @@
 package org.example.service.impl;
 
 import org.example.command.ClientSignUpCommand;
-import org.example.exception.DuplicatedEmailException;
-import org.example.exception.EmptyFieldException;
-import org.example.exception.InvalidEmailException;
-import org.example.exception.InvalidPasswordException;
+import org.example.exception.*;
 import org.example.security.PasswordHash;
 import org.example.service.ClientService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -33,11 +30,24 @@ class ClientServiceImplTest {
                 clientService.findClientByEmail("ali@gmail.com").get().getEmail());
     }
 
+    @Test
+    @Order(13)
+    void findClientByEmailWhenClientNotFound(){
+        assertEquals(Optional.empty(), clientService.findClientByEmail("bondar@gmail.com"));
+    }
+
     @Order(6)
     @Test
     void findClientByEmailAndPassword() {
         assertEquals("ali@gmail.com",
                 clientService.findClientByEmailAndPassword("ali@gmail.com", "@Ali1234").get().getEmail());
+    }
+
+    @Test
+    @Order(14)
+    void findClientByEmailAndPasswordWhenClientNotFound() {
+        assertEquals(Optional.empty(),
+                clientService.findClientByEmailAndPassword("bondar@gmail.com", "@Ali1234"));
     }
 
     @Order(7)
@@ -116,13 +126,13 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @Order(10)
+    @Order(12)
     void isClientEmailDuplicated() {
         assertEquals(true, clientService.isClientEmailDuplicated("ali@gmail.com"));
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     void editClientPassword() throws NoSuchAlgorithmException {
         PasswordHash passwordHash = new PasswordHash();
         String password = "#Ali1234";
@@ -132,5 +142,22 @@ class ClientServiceImplTest {
         );
         assertEquals(hashedPassword, clientService.findClientByEmail("ali@gmail.com").get().getPassword());
 
+    }
+
+    @Test
+    @Order(9)
+    void editClientPasswordWhenNotFoundUserExceptionThrown_thenAssertionSucceeds() {
+        assertThrows(NotFoundTheUserException.class, () -> {
+            clientService.editClientPassword(0L, "#Ali1234");
+        });
+    }
+
+    @Test
+    @Order(10)
+    void editClientPasswordWhenInvalidPasswordExceptionThrown_thenAssertionSucceeds() {
+        assertThrows(InvalidPasswordException.class, () -> {
+            clientService.editClientPassword(clientService.findClientByEmail("ali@gmail.com").get().getId(),
+                    "li1234");
+        });
     }
 }

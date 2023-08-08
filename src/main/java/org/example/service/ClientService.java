@@ -3,6 +3,7 @@ package org.example.service;
 
 
 import org.example.command.ClientSignUpCommand;
+import org.example.entity.Offer;
 import org.example.entity.users.Client;
 
 import java.util.Optional;
@@ -20,5 +21,7 @@ public interface ClientService {
 
     void editClientPassword(Long clientId, String password);
 
+    void acceptOffer(Offer offer);
 
+    void changeOrderStatusToStarted(Long orderId);
 }
