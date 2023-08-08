@@ -72,7 +72,7 @@ class ClientServiceImplTest {
 
     @Order(1)
     @Test
-    void ClientSignUpWhenEmptyFiledExceptionThrown_thenAssertionSucceeds() {
+    void clientSignUpWhenEmptyFiledExceptionThrown_thenAssertionSucceeds() {
         ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
         clientSignUpCommand.setFirstName("ali");
         clientSignUpCommand.setEmail("ali@gmail.com");
@@ -84,7 +84,7 @@ class ClientServiceImplTest {
 
     @Order(2)
     @Test
-    void ClientSignUpWhenInvalidEmailExceptionThrown_thenAssertionSucceeds() {
+    void clientSignUpWhenInvalidEmailExceptionThrown_thenAssertionSucceeds() {
         ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
         clientSignUpCommand.setFirstName("ali");
         clientSignUpCommand.setLastName("bon");
@@ -97,7 +97,7 @@ class ClientServiceImplTest {
 
     @Order(5)
     @Test
-    void ClientSignUpWhenDuplicatedEmailExceptionThrown_thenAssertionSucceeds() {
+    void clientSignUpWhenDuplicatedEmailExceptionThrown_thenAssertionSucceeds() {
         ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
         clientSignUpCommand.setFirstName("ali");
         clientSignUpCommand.setLastName("bon");
@@ -110,7 +110,7 @@ class ClientServiceImplTest {
 
     @Order(3)
     @Test
-    void ClientSignUpWhenInvalidPasswordExceptionThrown_thenAssertionSucceeds() {
+    void clientSignUpWhenInvalidPasswordExceptionThrown_thenAssertionSucceeds() {
         ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
         clientSignUpCommand.setFirstName("ali");
         clientSignUpCommand.setLastName("bon");

@@ -51,12 +51,13 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public void expertSignUp(ExpertSignUpCommand expertSignUpCommand) throws IOException {
         Validation validation = new Validation();
-        String [] path = expertSignUpCommand.getImageData().getPath().split("\\.");
         if (expertSignUpCommand.getFirstName() == null || expertSignUpCommand.getLastName() == null
                 || expertSignUpCommand.getEmail() == null || expertSignUpCommand.getPassword() == null
                 || expertSignUpCommand.getService() == null || expertSignUpCommand.getImageData() == null) {
             throw new EmptyFieldException("Field must be filled out.");
-        } else if (validation.emailPatternMatches(expertSignUpCommand.getEmail())) {
+        }
+        String [] path = expertSignUpCommand.getImageData().getPath().split("\\.");
+        if (validation.emailPatternMatches(expertSignUpCommand.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
         } else if (isExpertEmailDuplicated(expertSignUpCommand.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");

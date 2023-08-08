@@ -35,8 +35,6 @@ class OfferServiceImplTest {
 
     @Test
     void findAcceptedOfferByOrderId() {
-        System.out.println("++++++++++++" + offerService.findAcceptedOfferByOrderId(orderRepository.findById(10L).get().getId())
-                .get().getOfferedPrice());
         assertEquals(10000,
                 offerService.findAcceptedOfferByOrderId(orderRepository.findById(10L).get().getId())
                         .get().getOfferedPrice());
