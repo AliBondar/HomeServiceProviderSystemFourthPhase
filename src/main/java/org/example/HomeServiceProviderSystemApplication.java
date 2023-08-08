@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.view.MainMenu;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,6 +9,8 @@ public class HomeServiceProviderSystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HomeServiceProviderSystemApplication.class, args);
+//        MainMenu mainMenu = new MainMenu();
+//        mainMenu.showMenu();
     }
 
 }

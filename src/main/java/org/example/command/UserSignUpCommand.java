@@ -1,11 +1,12 @@
 package org.example.command;
 
 
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.entity.users.enums.UserStatus;
 
-import javax.validation.constraints.Email;
+
 import java.time.LocalDate;
 
 @Setter
