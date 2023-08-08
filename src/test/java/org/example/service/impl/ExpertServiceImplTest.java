@@ -2,7 +2,9 @@ package org.example.service.impl;
 
 import org.example.command.ExpertSignUpCommand;
 import org.example.command.ServiceCommand;
+import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
+import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,11 +29,18 @@ class ExpertServiceImplTest {
     private ServiceService serviceService;
 
     @Test
+    @Order(8)
     void findExpertByEmail() {
+        assertEquals("expert@gmail.com",
+                expertService.findExpertByEmail("expert@gmail.com").get().getEmail());
     }
 
     @Test
+    @Order(9)
     void findExpertByEmailAndPassword() {
+        assertEquals("expert@gmail.com",
+                expertService.findExpertByEmailAndPassword("expert@gmail.com", "@Expert1234")
+                        .get().getEmail());
     }
 
     @Test
@@ -101,7 +111,18 @@ class ExpertServiceImplTest {
     @Test
     @Order(7)
     void expertSignUpWhenDuplicatedEmailExceptionThrown_thenAssertionSucceeds() {
-
+        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        String imageAddress = "D:\\Pictures\\cat.jpg";
+        File file = new File(imageAddress);
+        expertSignUpCommand.setFirstName("expert");
+        expertSignUpCommand.setLastName("expertian");
+        expertSignUpCommand.setEmail("expert@gmail.com");
+        expertSignUpCommand.setPassword("@Expert1234");
+        expertSignUpCommand.setImageData(file);
+        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        assertThrows(DuplicatedEmailException.class, () -> {
+            expertService.expertSignUp(expertSignUpCommand);
+        });
     }
 
     @Test
@@ -139,14 +160,27 @@ class ExpertServiceImplTest {
     }
 
     @Test
+    @Order(10)
     void isExpertEmailDuplicated() {
+        assertEquals(true, expertService.isExpertEmailDuplicated("expert@gmail.com"));
     }
 
     @Test
+    @Order(11)
     void findExpertsByUserStatus() {
+        assertEquals("expert@gmail.com",
+                expertService.findExpertsByUserStatus(UserStatus.NEW).get(0).getEmail());
     }
 
     @Test
-    void editExpertPassword() {
+    @Order(12)
+    void editExpertPassword() throws NoSuchAlgorithmException {
+        PasswordHash passwordHash = new PasswordHash();
+        String password = "#Expert1234";
+        String hashedPassword = passwordHash.createHashedPassword(password);
+        expertService.editExpertPassword(
+                expertService.findExpertByEmail("expert@gmail.com").get().getId(), password
+        );
+        assertEquals(hashedPassword, expertService.findExpertByEmail("expert@gmail.com").get().getPassword());
     }
 }

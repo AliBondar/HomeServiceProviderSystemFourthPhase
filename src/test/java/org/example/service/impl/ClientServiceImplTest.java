@@ -141,7 +141,6 @@ class ClientServiceImplTest {
                 clientService.findClientByEmail("ali@gmail.com").get().getId(), password
         );
         assertEquals(hashedPassword, clientService.findClientByEmail("ali@gmail.com").get().getPassword());
-
     }
 
     @Test
