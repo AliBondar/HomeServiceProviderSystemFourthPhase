@@ -2,6 +2,7 @@ package org.example.service;
 
 
 import org.example.command.ExpertSignUpCommand;
+import org.example.command.OfferCommand;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 
@@ -22,4 +23,6 @@ public interface ExpertService{
     List<Expert> findExpertsByUserStatus(UserStatus userStatus);
 
     void editExpertPassword(Long expertId, String password);
+
+    void createOffer(OfferCommand offerCommand);
 }

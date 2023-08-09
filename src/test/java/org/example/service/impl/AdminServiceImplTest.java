@@ -12,6 +12,7 @@ import org.example.repository.ExpertRepository;
 import org.example.repository.SubServiceRepository;
 import org.example.security.PasswordHash;
 import org.example.service.AdminService;
+import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -42,6 +43,8 @@ class AdminServiceImplTest {
     private SubServiceRepository subServiceRepository;
     @Autowired
     private ExpertRepository expertRepository;
+    @Autowired
+    private ExpertService expertService;
 
     PasswordHash passwordHash = new PasswordHash();
 
@@ -71,16 +74,85 @@ class AdminServiceImplTest {
     }
 
     @Test
+    @Order(18)
     void addExpertToSubService() {
-
+        System.out.println(expertService.findExpertByEmail("expert@gmail.com").get().getId());
+        adminService.addExpertToSubService(
+                expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                subServiceService.findSubServiceByDescription("testSubService").get().getId()
+        );
+        assertTrue(expertService.findExpertByEmail("expert@gmail.com").get().getSubServiceList().
+                contains(subServiceService.findSubServiceByDescription("testSubService").get()));
     }
+
+    @Test
+    @Order(15)
+    void addExpertToSubServiceWhenNotFoundTheUserExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheUserException.class, () -> {
+            adminService.addExpertToSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId() + 1,
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId()
+            );
+        });
+    }
+
+    @Test
+    @Order(16)
+    void addExpertToSubServiceWhenNotFoundTheSubServiceExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheSubServiceException.class, () -> {
+            adminService.addExpertToSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId() + 1
+            );
+        });
+    }
+
+    @Test
+    @Order(17)
+    void addExpertToSubServiceWhenNotInServiceExceptionThrown_thenAssertionSucceed() {
+        adminService.addService(new ServiceCommand("secondTestService"));
+        Expert expert = new Expert();
+        expert.setService(serviceService.findServiceByName("secondTestService").get());
+        expert.setEmail("secondexpert@gmail.com");
+        expert.setUserStatus(UserStatus.CONFIRMED);
+        expertRepository.save(expert);
+        assertThrows(NotInServiceException.class, () -> {
+            adminService.addExpertToSubService(
+                    expertService.findExpertByEmail("secondexpert@gmail.com").get().getId(),
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId()
+            );
+        });
+    }
+
+    @Test
+    @Order(19)
+    void addExpertToSubServiceWhenDuplicatedSubServiceExceptionThrown_thenAssertionSucceed() {
+        assertThrows(DuplicatedSubServiceException.class, () -> {
+            adminService.addExpertToSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId()
+            );
+        });
+    }
+
+    @Test
+    @Order(13)
+    void addExpertToSubServiceWhenUserConfirmationExceptionThrown_thenAssertionSucceed() {
+        assertThrows(UserConfirmationException.class, () -> {
+            adminService.addExpertToSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId()
+            );
+        });
+    }
+
 
     @Test
     void removeExpertFromSubService() {
     }
 
     @Test
-    @Order(12)
+    @Order(14)
     void editExpertStatus() {
         adminService.editExpertStatus(
                 expertRepository.findExpertByEmail("expert@gmail.com").get().getId(),
@@ -90,7 +162,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     void editExpertStatusWhenNotFoundTheUserExceptionThrown_thenAssertionSucceed() {
         Expert expert = new Expert();
         expert.setFirstName("expert");
@@ -98,17 +170,18 @@ class AdminServiceImplTest {
         expert.setEmail("expert@gmail.com");
         expert.setPassword("@Expert1234");
         expert.setUserStatus(UserStatus.NEW);
+        expert.setService(serviceService.findServiceByName("testService").get());
         expertRepository.save(expert);
         assertThrows(NotFoundTheUserException.class, () -> {
-           adminService.editExpertStatus(
-                   expertRepository.findExpertByEmail("expert@gmail.com").get().getId() + 1,
-                   UserStatus.CONFIRMED
-           );
+            adminService.editExpertStatus(
+                    expertRepository.findExpertByEmail("expert@gmail.com").get().getId() + 1,
+                    UserStatus.CONFIRMED
+            );
         });
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     void editSubService() {
         long oldSubServiceId = subServiceService.findSubServiceByDescription("testSubService").get().getId();
         adminService.editSubService(subServiceService.findSubServiceByDescription("testSubService").get().getId(),
@@ -118,7 +191,7 @@ class AdminServiceImplTest {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     void editSubServiceWhenNotFoundSubServiceExceptionThrown_thenAssertionSucceeds() {
         assertThrows(NotFoundTheSubServiceException.class, () -> {
             adminService.editSubService(
@@ -184,7 +257,7 @@ class AdminServiceImplTest {
 
 
     @Test
-    @Order(8)
+    @Order(9)
     void isSubServiceDuplicated() {
         assertTrue(adminService.isSubServiceDuplicated("testSubService"
                 , serviceService.findServiceByName("testService").get()));

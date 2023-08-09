@@ -1,5 +1,6 @@
 package org.example.validation;
 
+import org.example.command.OfferCommand;
 import org.example.command.OrderCommand;
 import org.example.entity.SubService;
 
@@ -41,5 +42,9 @@ public class Validation {
 
     public boolean isOfferedPriceValid(OrderCommand orderCommand, SubService subService) {
         return orderCommand.getClientOfferedPrice() >= subService.getBasePrice();
+    }
+
+    public boolean isOfferedPriceValid(OfferCommand offerCommand, SubService subService) {
+        return offerCommand.getOfferedPrice() >= subService.getBasePrice();
     }
 }

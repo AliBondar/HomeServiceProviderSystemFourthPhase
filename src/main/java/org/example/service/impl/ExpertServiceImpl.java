@@ -2,12 +2,19 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.command.ExpertSignUpCommand;
+import org.example.command.OfferCommand;
 import org.example.converter.ExpertSIgnUpCommandToExpertConverter;
+import org.example.converter.OfferCommandToOfferConverter;
+import org.example.entity.Offer;
+import org.example.entity.Order;
 import org.example.entity.Wallet;
+import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
 import org.example.repository.ExpertRepository;
+import org.example.repository.OfferRepository;
+import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
@@ -28,6 +35,8 @@ public class ExpertServiceImpl implements ExpertService {
 
     private final ExpertRepository expertRepository;
     private final WalletRepository walletRepository;
+    private final OfferRepository offerRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public Optional<Expert> findExpertByEmail(String email) {
@@ -112,6 +121,34 @@ public class ExpertServiceImpl implements ExpertService {
                 Expert expert = expertRepository.findById(expertId).get();
                 expert.setPassword(passwordHash.createHashedPassword(password));
                 expertRepository.save(expert);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public void createOffer(OfferCommand offerCommand) {
+        Validation validation = new Validation();
+        OfferCommandToOfferConverter offerCommandToOfferConverter = new OfferCommandToOfferConverter();
+        if (offerCommand.getExpert() == null || offerCommand.getOfferedPrice() == 0
+                || offerCommand.getExpertOfferedWorkDuration() == 0 || offerCommand.getOrder() == null
+                || offerCommand.getOfferedStartTime() == null || offerCommand.getOfferedStartDate() == null
+                || offerCommand.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
+            throw new EmptyFieldException("Fields must filled out.");
+        } else if (!validation.isOfferedPriceValid(offerCommand, offerCommand.getOrder().getSubService())) {
+            throw new InvalidPriceException("Price is not valid.");
+        } else if (!validation.isTimeValid(offerCommand.getOfferedStartTime())) {
+            throw new InvalidTimeException("Time is invalid.");
+        } else if (!validation.isDateValid(offerCommand.getOfferedStartDate())) {
+            throw new InvalidDateException("Date is invalid.");
+        }else {
+            try {
+                Offer offer = offerCommandToOfferConverter.convert(offerCommand);
+                offerRepository.save(offer);
+                Order order = orderRepository.findById(offerCommand.getOrder().getId()).get();
+                order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
+                orderRepository.save(order);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }

@@ -27,7 +27,7 @@ public class SubService extends BaseEntity<Long> {
     @ManyToOne
     Service service;
 
-    @ManyToMany(mappedBy = "subServiceList")
+    @ManyToMany(mappedBy = "subServiceList", fetch = FetchType.EAGER)
     List<Expert> expertList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

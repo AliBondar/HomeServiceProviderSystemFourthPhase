@@ -35,7 +35,7 @@ public class AdminServiceImpl implements AdminService {
     private final ServiceRepository serviceRepository;
     private final ServiceService serviceService;
     private final SubServiceService subServiceService;
-
+    PasswordHash passwordHash = new PasswordHash();
 
     @Override
     public Optional<Admin> findAdminByEmail(String email) {
@@ -45,8 +45,6 @@ public class AdminServiceImpl implements AdminService {
             return Optional.empty();
         }
     }
-
-    PasswordHash passwordHash = new PasswordHash();
 
     @Override
     public Optional<Admin> findAdminByEmailAndPassword(String email, String password) {
