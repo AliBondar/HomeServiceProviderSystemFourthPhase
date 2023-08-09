@@ -18,16 +18,6 @@ public class SubServiceServiceImpl implements SubServiceService {
     private final SubServiceRepository subServiceRepository;
     private final ServiceService serviceService;
 
-
-    @Override
-    public List<SubService> findWithServiceId(Long id) {
-        try {
-            return subServiceRepository.findWithServiceId(id);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     @Override
     public Optional<SubService> findByDescriptionAndService(String description, org.example.entity.Service service) {
         try {

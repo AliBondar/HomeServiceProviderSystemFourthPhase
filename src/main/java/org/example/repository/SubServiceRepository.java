@@ -12,9 +12,6 @@ import java.util.Optional;
 @Repository
 public interface SubServiceRepository extends JpaRepository<SubService, Long> {
 
-    @Query("select s from SubService s where s.service.id = :id")
-    List<SubService> findWithServiceId(Long id);
-
     Optional<SubService> findByDescriptionAndService(String description, Service service);
 
     @Query("select s from SubService s join s.expertList e where e.id = :id")

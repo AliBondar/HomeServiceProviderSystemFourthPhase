@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SubServiceService {
-    List<SubService> findWithServiceId(Long id);
 
     Optional<SubService> findByDescriptionAndService(String description, Service service);
 
