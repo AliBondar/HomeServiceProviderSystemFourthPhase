@@ -3,7 +3,6 @@ package org.example.repository;
 
 import org.example.entity.Service;
 import org.example.entity.SubService;
-import org.example.entity.users.Expert;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,7 +21,9 @@ public interface SubServiceRepository extends JpaRepository<SubService, Long> {
     List<SubService> findByExpertId(Long id);
 
     @Query("select s from SubService s where s.service.id = :id")
-    List<SubService> findByServiceId(Long id);
+    List<SubService> findSubServicesByServiceId(Long id);
 
     List<SubService> findSubServicesByService(Service service);
+
+    Optional<SubService> findSubServiceByDescription(String description);
 }

@@ -6,10 +6,6 @@ import org.example.service.AdminService;
 import org.example.service.ExpertService;
 import org.example.service.OrderService;
 import org.example.service.SubServiceService;
-import org.example.service.impl.AdminServiceImpl;
-import org.example.service.impl.ExpertServiceImpl;
-import org.example.service.impl.OrderServiceImpl;
-import org.example.service.impl.SubServiceServiceImpl;
 
 
 import java.util.Scanner;
@@ -71,7 +67,7 @@ public class ExpertMenu {
             }
             case 2 -> {
                 System.out.println("Here are sub services in your service, Which one do you choose :");
-                subServiceService.findByServiceId(expert.getService().getId()).forEach(subService -> {
+                subServiceService.findSubServicesByServiceId(expert.getService().getId()).forEach(subService -> {
                     System.out.println(subService.getId() + ". " + subService.getDescription());
                 });
                 int subServiceId = scanner.nextInt();

@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import org.example.command.ServiceCommand;
 import org.example.entity.Service;
+import org.example.service.AdminService;
 import org.example.service.ServiceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ class ServiceServiceImplTest {
 
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private AdminService adminService;
 
 
     private ServiceCommand[] services = new ServiceCommand[10];
@@ -28,7 +31,7 @@ class ServiceServiceImplTest {
         ServiceCommand serviceCommand = new ServiceCommand();
         serviceCommand.setName("serviceName");
         services[0] = serviceCommand;
-        serviceService.addService(services[0]);
+        adminService.addService(services[0]);
         assertNotNull(services[0].getId());
     }
 

@@ -5,6 +5,7 @@ import org.example.command.ServiceCommand;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
 import org.example.security.PasswordHash;
+import org.example.service.AdminService;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.junit.jupiter.api.MethodOrderer;
@@ -27,6 +28,8 @@ class ExpertServiceImplTest {
     private ExpertService expertService;
     @Autowired
     private ServiceService serviceService;
+    @Autowired
+    private AdminService adminService;
 
     @Test
     @Order(8)
@@ -64,7 +67,7 @@ class ExpertServiceImplTest {
     @Order(1)
     void expertSignUpWhenEmptyFiledExceptionThrown_thenAssertionSucceeds() {
         ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
-        serviceService.addService(new ServiceCommand("testService"));
+        adminService.addService(new ServiceCommand("testService"));
         expertSignUpCommand.setFirstName("expert");
         expertSignUpCommand.setLastName("expertian");
         expertSignUpCommand.setEmail("expert@gmail.com");

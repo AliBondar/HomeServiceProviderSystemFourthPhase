@@ -44,9 +44,9 @@ class SubServiceServiceImplTest {
 
     @Test
     void findByServiceId() {
-        serviceService.addService(new ServiceCommand("installation"));
-subServiceService.addSubService(new SubServiceCommand(10, "electrics",
+        adminService.addService(new ServiceCommand("installation"));
+adminService.addSubService(new SubServiceCommand(10, "electrics",
         serviceService.findServiceByName("installation").get()));
-        assertEquals(1, subServiceService.findByServiceId(serviceService.findServiceByName("installation").get().getId()));
+        assertEquals(1, subServiceService.findSubServicesByServiceId(serviceService.findServiceByName("installation").get().getId()));
     }
 }

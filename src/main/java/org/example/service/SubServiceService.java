@@ -1,7 +1,6 @@
 package org.example.service;
 
 
-import org.example.command.SubServiceCommand;
 import org.example.entity.Service;
 import org.example.entity.SubService;
 
@@ -15,5 +14,8 @@ public interface SubServiceService {
 
     List<SubService> findByExpertId(Long id);
 
-    List<SubService> findByServiceId(Long id);
+    List<SubService> findSubServicesByServiceId(Long id);
+
+    Optional<SubService> findSubServiceByDescription(String description);
+
 }

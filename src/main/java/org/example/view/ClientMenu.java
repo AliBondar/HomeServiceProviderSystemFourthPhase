@@ -15,10 +15,6 @@ import org.example.service.ClientService;
 import org.example.service.OrderService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.example.service.impl.ClientServiceImpl;
-import org.example.service.impl.OrderServiceImpl;
-import org.example.service.impl.ServiceServiceImpl;
-import org.example.service.impl.SubServiceServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -77,7 +73,7 @@ public class ClientMenu {
                     });
                     int serviceId = scanner.nextInt();
                     System.out.println("All sub services for " + serviceRepository.findById((long) serviceId).get().getName() + " :");
-                    List<SubService> subServiceList = subServiceService.findByServiceId((long) serviceId);
+                    List<SubService> subServiceList = subServiceService.findSubServicesByServiceId((long) serviceId);
                     subServiceList.forEach(subService -> {
                         System.out.println(subService.getId() + ". " + subService.getDescription() + ", Base Price : " + subService.getBasePrice());
                     });
