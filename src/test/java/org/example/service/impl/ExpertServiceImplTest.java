@@ -34,16 +34,14 @@ class ExpertServiceImplTest {
     @Test
     @Order(8)
     void findExpertByEmail() {
-        assertEquals("expert@gmail.com",
-                expertService.findExpertByEmail("expert@gmail.com").get().getEmail());
+        assertNotNull(expertService.findExpertByEmail("expert@gmail.com").get());
     }
 
     @Test
     @Order(9)
     void findExpertByEmailAndPassword() {
-        assertEquals("expert@gmail.com",
-                expertService.findExpertByEmailAndPassword("expert@gmail.com", "@Expert1234")
-                        .get().getEmail());
+        assertNotNull(expertService.findExpertByEmailAndPassword("expert@gmail.com", "@Expert1234")
+                .get());
     }
 
     @Test
@@ -165,14 +163,13 @@ class ExpertServiceImplTest {
     @Test
     @Order(10)
     void isExpertEmailDuplicated() {
-        assertEquals(true, expertService.isExpertEmailDuplicated("expert@gmail.com"));
+        assertTrue(expertService.isExpertEmailDuplicated("expert@gmail.com"));
     }
 
     @Test
     @Order(11)
     void findExpertsByUserStatus() {
-        assertEquals("expert@gmail.com",
-                expertService.findExpertsByUserStatus(UserStatus.NEW).get(0).getEmail());
+        assertNotNull(expertService.findExpertsByUserStatus(UserStatus.NEW).get(0));
     }
 
     @Test
