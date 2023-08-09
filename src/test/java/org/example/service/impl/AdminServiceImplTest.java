@@ -8,6 +8,7 @@ import org.example.repository.SubServiceRepository;
 import org.example.security.PasswordHash;
 import org.example.service.AdminService;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,30 +27,35 @@ class AdminServiceImplTest {
 
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private AdminRepository adminRepository;
 
     PasswordHash passwordHash = new PasswordHash();
 
 
     @Test
-    void findAdminByEmail() {
+    @Order(1)
+    void findAdminByEmail() throws NoSuchAlgorithmException {
         Admin admin = new Admin();
-        admin.setFirstName("ali");
-        admin.setLastName("bondar");
-        admin.setEmail("ali@gmail.com");
-        admin.setPassword("#Ali1234");
+        admin.setFirstName("admin");
+        admin.setLastName("adminzade");
+        admin.setEmail("admin@gmail.com");
+        admin.setPassword(passwordHash.createHashedPassword("@Admin1234"));
         admin.setUserStatus(UserStatus.ADMIN);
-
+        admin.setSignUpDate(LocalDate.now());
+        admin.setUserStatus(UserStatus.ADMIN);
+        adminRepository.save(admin);
+        assertEquals("admin@gmail.com",
+                adminService.findAdminByEmail("admin@gmail.com").get().getEmail());
     }
 
 
-
     @Test
-    void findAdminByEmailAndPassword() {
-        try {
-            assertNotNull(adminService.findAdminByEmailAndPassword("ali@gmail.com", passwordHash.createHashedPassword("@Ali1234")));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    @Order(2)
+    void findAdminByEmailAndPassword() throws NoSuchAlgorithmException {
+        assertNotNull("admin@gmail.com",
+                adminService.findAdminByEmailAndPassword("admin@gmail.com",
+                        "@Admin1234").get().getEmail());
     }
 
     @Test

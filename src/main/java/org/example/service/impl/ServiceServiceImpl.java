@@ -25,19 +25,5 @@ public class ServiceServiceImpl implements ServiceService {
         }
     }
 
-    @Override
-    public void addService(ServiceCommand serviceCommand) {
-        if (isServiceDuplicated(serviceCommand.getName())) {
-            throw new DuplicatedServiceException("Service already exists !");
-        } else {
-            org.example.entity.Service service = new org.example.entity.Service();
-            service.setName(serviceCommand.getName());
-            serviceRepository.save(service);
-        }
-    }
 
-    @Override
-    public boolean isServiceDuplicated(String name) {
-        return this.findServiceByName(name).isPresent();
-    }
 }

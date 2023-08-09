@@ -7,9 +7,5 @@ import java.util.Optional;
 
 public interface ServiceService {
 
-    void addService(ServiceCommand serviceCommand);
-
-    boolean isServiceDuplicated(String name);
-
     Optional<Service> findServiceByName(String name);
 }

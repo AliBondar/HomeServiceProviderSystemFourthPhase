@@ -2,7 +2,9 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.command.ExpertSignUpCommand;
+import org.example.command.ServiceCommand;
 import org.example.command.SubServiceCommand;
+import org.example.converter.SubServiceCommandToSubServiceConverter;
 import org.example.entity.SubService;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
@@ -10,12 +12,16 @@ import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
 import org.example.repository.AdminRepository;
 import org.example.repository.ExpertRepository;
+import org.example.repository.ServiceRepository;
 import org.example.repository.SubServiceRepository;
 import org.example.security.PasswordHash;
 import org.example.service.AdminService;
+import org.example.service.ServiceService;
+import org.example.service.SubServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,6 +32,9 @@ public class AdminServiceImpl implements AdminService {
     private final AdminRepository adminRepository;
     private final ExpertRepository expertRepository;
     private final SubServiceRepository subServiceRepository;
+    private final ServiceRepository serviceRepository;
+    private final ServiceService serviceService;
+    private final SubServiceService subServiceService;
 
 
     @Override
@@ -115,4 +124,43 @@ public class AdminServiceImpl implements AdminService {
             subServiceRepository.save(subService);
         }
     }
+
+    @Override
+    public void addService(ServiceCommand serviceCommand) {
+        if (isServiceDuplicated(serviceCommand.getName())) {
+            throw new DuplicatedServiceException("Service already exists !");
+        } else {
+            org.example.entity.Service service = new org.example.entity.Service();
+            service.setName(serviceCommand.getName());
+            serviceRepository.save(service);
+        }
+    }
+
+    @Override
+    public boolean isServiceDuplicated(String name) {
+        return serviceService.findServiceByName(name).isPresent();
+    }
+
+    @Override
+    public void addSubService(SubServiceCommand subServiceCommand) {
+        if (isSubServiceDuplicated(subServiceCommand.getDescription(), subServiceCommand.getService())) {
+            throw new DuplicatedSubServiceException("Sub service already exists !");
+        } else if (serviceService.findServiceByName(subServiceCommand.getService().getName()).isEmpty()) {
+            throw new NotFoundTheServiceException("Couldn't find the service !");
+        } else {
+            SubServiceCommandToSubServiceConverter subServiceCommandToSubServiceConverter = new SubServiceCommandToSubServiceConverter();
+            try {
+                SubService subService = subServiceCommandToSubServiceConverter.convert(subServiceCommand);
+                subServiceRepository.save(subService);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public boolean isSubServiceDuplicated(String description, org.example.entity.Service service) {
+        return subServiceService.findByDescriptionAndService(description, service).isPresent();
+    }
+
 }

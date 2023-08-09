@@ -81,7 +81,7 @@ public class AdminMenu {
                 ServiceCommand serviceCommand = new ServiceCommand();
                 serviceCommand.setName(serviceName);
                 try {
-                    serviceService.addService(serviceCommand);
+                    adminService.addService(serviceCommand);
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                 }
@@ -101,7 +101,7 @@ public class AdminMenu {
                 subServiceCommand.setDescription(subServiceDescription);
                 subServiceCommand.setBasePrice(subServiceBasePrice);
                 try {
-                    subServiceService.addSubService(subServiceCommand);
+                    adminService.addSubService(subServiceCommand);
                 } catch (RuntimeException e) {
                     e.printStackTrace();
                 }

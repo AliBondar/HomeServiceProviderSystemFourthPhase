@@ -35,28 +35,6 @@ public class SubServiceServiceImpl implements SubServiceService {
     }
 
     @Override
-    public void addSubService(SubServiceCommand subServiceCommand) {
-        if (isSubServiceDuplicated(subServiceCommand.getDescription(), subServiceCommand.getService())) {
-            throw new DuplicatedSubServiceException("Sub service already exists !");
-        } else if (serviceService.findServiceByName(subServiceCommand.getService().getName()).isEmpty()) {
-            throw new NotFoundTheServiceException("Couldn't find the service !");
-        } else {
-            SubServiceCommandToSubServiceConverter subServiceCommandToSubServiceConverter = new SubServiceCommandToSubServiceConverter();
-            try {
-                SubService subService = subServiceCommandToSubServiceConverter.convert(subServiceCommand);
-               subServiceRepository.save(subService);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
-    public boolean isSubServiceDuplicated(String description, org.example.entity.Service service) {
-        return findByDescriptionAndService(description, service).isPresent();
-    }
-
-    @Override
     public Optional<SubService> findByDescriptionAndService(String description, org.example.entity.Service service) {
         try {
             return subServiceRepository.findByDescriptionAndService(description, service);
