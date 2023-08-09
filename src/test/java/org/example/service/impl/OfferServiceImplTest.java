@@ -31,6 +31,8 @@ class OfferServiceImplTest {
     @Autowired
     private ExpertService expertService;
 
+
+
     @Test
     @org.junit.jupiter.api.Order(1)
     void findOffersByOrder() {
@@ -39,30 +41,50 @@ class OfferServiceImplTest {
         order.setLocalDate(LocalDate.now());
         order.setClientOfferedPrice(10000);
         orderRepository.save(order);
-        System.out.println(order.getId());
         Offer offer = new Offer();
         offer.setOfferedPrice(12000);
         offer.setOrder(order);
         offer.setAccepted(false);
         offerRepository.save(offer);
         assertEquals(12000,
-                offerService.findOffersByOrder(orderRepository.findById(100L).get())
-                        .get(0).getOfferedPrice());
+                offerService.findOffersByOrder(orderRepository.findById(order.getId()).get())
+                        .get(0).getOfferedPrice()
+        );
     }
 
     @Test
     @org.junit.jupiter.api.Order(2)
     void findOffersByOrderId() {
-        assertEquals(12000,
-                offerService.findOffersByOrderId(orderRepository.findById(100L).get().getId())
-                        .get(0).getOfferedPrice());
+        Order order = new Order();
+        order.setTime(Time.valueOf(LocalTime.now()));
+        order.setLocalDate(LocalDate.now());
+        order.setClientOfferedPrice(15000);
+        orderRepository.save(order);
+        Offer offer = new Offer();
+        offer.setOfferedPrice(13000);
+        offer.setOrder(order);
+        offer.setAccepted(false);
+        offerRepository.save(offer);
+        assertEquals(13000,
+                offerService.findOffersByOrderId(order.getId()).get(0).getOfferedPrice()
+        );
     }
 
     @Test
     @org.junit.jupiter.api.Order(3)
     void findAcceptedOfferByOrderId() {
-        assertEquals(10000,
-                offerService.findAcceptedOfferByOrderId(orderRepository.findById(100L).get().getId())
-                        .get().getOfferedPrice());
+        Order order = new Order();
+        order.setTime(Time.valueOf(LocalTime.now()));
+        order.setLocalDate(LocalDate.now());
+        order.setClientOfferedPrice(20000);
+        orderRepository.save(order);
+        Offer offer = new Offer();
+        offer.setOfferedPrice(14000);
+        offer.setOrder(order);
+        offer.setAccepted(true);
+        offerRepository.save(offer);
+        assertEquals(14000,
+                offerService.findAcceptedOfferByOrderId(order.getId()).get().getOfferedPrice()
+        );
     }
 }
