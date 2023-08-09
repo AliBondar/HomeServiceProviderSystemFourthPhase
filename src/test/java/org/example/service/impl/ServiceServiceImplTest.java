@@ -18,24 +18,10 @@ class ServiceServiceImplTest {
     @Autowired
     private AdminService adminService;
 
-
-    private ServiceCommand[] services = new ServiceCommand[10];
-
     @Test
     void findServiceByName() {
-
+        adminService.addService(new ServiceCommand("testServiceForService"));
+        assertNotNull(serviceService.findServiceByName("testServiceForService"));
     }
 
-    @Test
-    void addService() {
-        ServiceCommand serviceCommand = new ServiceCommand();
-        serviceCommand.setName("serviceName");
-        services[0] = serviceCommand;
-        adminService.addService(services[0]);
-        assertNotNull(services[0].getId());
-    }
-
-    @Test
-    void isServiceDuplicated() {
-    }
 }
