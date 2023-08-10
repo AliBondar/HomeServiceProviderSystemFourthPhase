@@ -9,8 +9,7 @@ public class HomeServiceProviderSystemApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(HomeServiceProviderSystemApplication.class, args);
-//        MainMenu mainMenu = new MainMenu();
-//        mainMenu.showMenu();
+
     }
 
 }

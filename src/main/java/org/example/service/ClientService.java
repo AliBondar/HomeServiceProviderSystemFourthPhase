@@ -3,6 +3,7 @@ package org.example.service;
 
 
 import org.example.command.ClientSignUpCommand;
+import org.example.command.OrderCommand;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
 
@@ -20,6 +21,8 @@ public interface ClientService {
     boolean isClientEmailDuplicated(String emailAddress);
 
     void editClientPassword(Long clientId, String password);
+
+    void createOrder(OrderCommand orderCommand);
 
     void acceptOffer(Offer offer);
 

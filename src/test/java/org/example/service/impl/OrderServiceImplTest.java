@@ -73,10 +73,6 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void createOrder() {
-    }
-
-    @Test
     void findOrdersByOrderStatus() {
     }
 }

@@ -1,9 +1,12 @@
 package org.example.service.impl;
 
 import org.example.command.ClientSignUpCommand;
+import org.example.command.OrderCommand;
+import org.example.command.ServiceCommand;
+import org.example.command.SubServiceCommand;
 import org.example.exception.*;
 import org.example.security.PasswordHash;
-import org.example.service.ClientService;
+import org.example.service.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,26 +27,30 @@ class ClientServiceImplTest {
 
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private ServiceService serviceService;
+    @Autowired
+    private SubServiceService subServiceService;
+    @Autowired
+    private OrderService orderService;
 
     @Test
     @Order(8)
     void findClientByEmail() {
-//        assertEquals("ali@gmail.com",
-//                clientService.findClientByEmail("ali@gmail.com").get().getEmail());
         assertNotNull(clientService.findClientByEmail("ali@gmail.com").get());
     }
 
     @Test
     @Order(13)
-    void findClientByEmailWhenClientNotFound(){
+    void findClientByEmailWhenClientNotFound() {
         assertEquals(Optional.empty(), clientService.findClientByEmail("bondar@gmail.com"));
     }
 
     @Order(6)
     @Test
     void findClientByEmailAndPassword() {
-//        assertEquals("ali@gmail.com",
-//                clientService.findClientByEmailAndPassword("ali@gmail.com", "@Ali1234").get().getEmail());
         assertNotNull(clientService.findClientByEmailAndPassword("ali@gmail.com", "@Ali1234").get());
     }
 
@@ -159,6 +168,84 @@ class ClientServiceImplTest {
         assertThrows(InvalidPasswordException.class, () -> {
             clientService.editClientPassword(clientService.findClientByEmail("ali@gmail.com").get().getId(),
                     "li1234");
+        });
+    }
+
+    @Test
+    @Order(19)
+    void createOrder() {
+        OrderCommand orderCommand = new OrderCommand();
+        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderCommand.setLocalTime(LocalTime.of(20, 30));
+        orderCommand.setClientOfferedPrice(25000);
+        orderCommand.setClientOfferedWorkDuration(2);
+        orderCommand.setDescription("nice");
+        clientService.createOrder(orderCommand);
+        assertNotNull(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0));
+    }
+
+    @Test
+    @Order(15)
+    void createOrderWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
+        OrderCommand orderCommand = new OrderCommand();
+        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderCommand.setLocalTime(LocalTime.now());
+        assertThrows(EmptyFieldException.class, () -> {
+            clientService.createOrder(orderCommand);
+        });
+    }
+
+    @Test
+    @Order(16)
+    void createOrderWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
+        adminService.addService(new ServiceCommand("testServiceForClient"));
+        adminService.addSubService(new SubServiceCommand(
+                15000, "testSubServiceForClient", serviceService.findServiceByName("testServiceForClient").get()
+        ));
+        OrderCommand orderCommand = new OrderCommand();
+        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderCommand.setLocalDate(LocalDate.of(2022, 4, 6));
+        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderCommand.setLocalTime(LocalTime.of(20, 30));
+        orderCommand.setClientOfferedPrice(25000);
+        orderCommand.setClientOfferedWorkDuration(2);
+        orderCommand.setDescription("nice");
+        assertThrows(InvalidDateException.class, () -> {
+            clientService.createOrder(orderCommand);
+        });
+    }
+
+    @Test
+    @Order(17)
+    void createOrderWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
+        OrderCommand orderCommand = new OrderCommand();
+        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderCommand.setLocalTime(LocalTime.of(23, 30));
+        orderCommand.setClientOfferedPrice(25000);
+        orderCommand.setClientOfferedWorkDuration(2);
+        orderCommand.setDescription("nice");
+        assertThrows(InvalidTimeException.class, () -> {
+            clientService.createOrder(orderCommand);
+        });
+    }
+
+    @Test
+    @Order(18)
+    void createOrderWhenInvalidPriceExceptionThrown_thenAssertionSucceed() {
+        OrderCommand orderCommand = new OrderCommand();
+        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderCommand.setLocalTime(LocalTime.of(20, 30));
+        orderCommand.setClientOfferedPrice(1000);
+        orderCommand.setClientOfferedWorkDuration(2);
+        orderCommand.setDescription("nice");
+        assertThrows(InvalidPriceException.class, () -> {
+            clientService.createOrder(orderCommand);
         });
     }
 

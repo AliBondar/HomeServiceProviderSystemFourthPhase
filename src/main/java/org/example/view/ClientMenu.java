@@ -106,7 +106,7 @@ public class ClientMenu {
                     orderCommand.setClientOfferedPrice(offeredPrice);
                     orderCommand.setClientOfferedWorkDuration(offeredWordDuration);
                     try {
-                        orderService.createOrder(orderCommand);
+                        clientService.createOrder(orderCommand);
                     }catch (RuntimeException e) {
                         e.printStackTrace();
                     }

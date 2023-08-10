@@ -16,7 +16,5 @@ public interface OrderService {
 
     List<Order> findNewOrdersBySubServiceId(Long id);
 
-    void createOrder(OrderCommand orderCommand);
-
     List<Order> findOrdersByOrderStatus(OrderStatus orderStatus);
 }

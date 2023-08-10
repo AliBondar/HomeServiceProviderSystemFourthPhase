@@ -2,7 +2,9 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.command.ClientSignUpCommand;
+import org.example.command.OrderCommand;
 import org.example.converter.ClientSignUpCommandToClientConverter;
+import org.example.converter.OrderCommandToOrderConverter;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -128,6 +130,30 @@ public class ClientServiceImpl implements ClientService {
                 Client client = clientRepository.findById(clientId).get();
                 client.setPassword(passwordHash.createHashedPassword(password));
                 clientRepository.save(client);
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    public void createOrder(OrderCommand orderCommand) {
+        Validation validation = new Validation();
+        OrderCommandToOrderConverter orderCommandToOrderConverter = new OrderCommandToOrderConverter();
+        if (orderCommand.getClientOfferedPrice() == 0 || orderCommand.getDescription() == null
+                || orderCommand.getLocalTime() == null || orderCommand.getLocalDate() == null
+                || orderCommand.getSubService() == null || orderCommand.getClientOfferedWorkDuration() == 0) {
+            throw new EmptyFieldException("Fields must filled out.");
+        } else if (!validation.isDateValid(orderCommand.getLocalDate())) {
+            throw new InvalidDateException("Invalid date.");
+        } else if (!validation.isTimeValid(orderCommand.getLocalTime())) {
+            throw new InvalidTimeException("Invalid Time.");
+        } else if (!validation.isOfferedPriceValid(orderCommand, orderCommand.getSubService())) {
+            throw new InvalidPriceException("Invalid price.");
+        } else {
+            try {
+                Order order = orderCommandToOrderConverter.convert(orderCommand);
+                orderRepository.save(order);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }

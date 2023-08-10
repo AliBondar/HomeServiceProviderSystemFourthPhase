@@ -50,30 +50,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrder(OrderCommand orderCommand) {
-        Validation validation = new Validation();
-        OrderCommandToOrderConverter orderCommandToOrderConverter = new OrderCommandToOrderConverter();
-        if (orderCommand.getClientOfferedPrice() == 0 || orderCommand.getDescription() == null
-                || orderCommand.getLocalTime() == null || orderCommand.getLocalDate() == null
-                || orderCommand.getSubService() == null || orderCommand.getClientOfferedWorkDuration() == 0) {
-            throw new EmptyFieldException("Fields must filled out.");
-        } else if (!validation.isDateValid(orderCommand.getLocalDate())) {
-            throw new InvalidDateException("Invalid date.");
-        } else if (!validation.isTimeValid(orderCommand.getLocalTime())) {
-            throw new InvalidTimeException("Invalid Time.");
-        } else if (!validation.isOfferedPriceValid(orderCommand, orderCommand.getSubService())) {
-            throw new InvalidPriceException("Invalid price.");
-        } else {
-            try {
-                Order order = orderCommandToOrderConverter.convert(orderCommand);
-                orderRepository.save(order);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
     public List<Order> findOrdersByOrderStatus(OrderStatus orderStatus) {
         return orderRepository.findOrdersByOrderStatus(orderStatus);
     }
