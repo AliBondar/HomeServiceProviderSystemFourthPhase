@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -148,7 +149,43 @@ class AdminServiceImplTest {
 
 
     @Test
+    @Order(22)
     void removeExpertFromSubService() {
+        adminService.removeExpertFromSubService(
+                expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                subServiceService.findSubServiceByDescription("testSubService").get().getId()
+                );
+        assertEquals(0, expertService.findExpertByEmail("expert@gmail.com").get().getSubServiceList().size());
+    }
+
+    @Test
+    @Order(20)
+    void removeExpertFromSubServiceWhenUserNotFoundExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheUserException.class, () -> {
+            adminService.removeExpertFromSubService(0L, 0L);
+        });
+    }
+
+    @Test
+    @Order(21)
+    void removeExpertFromSubServiceWhenSubServiceNotFoundExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheSubServiceException.class, () -> {
+            adminService.removeExpertFromSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                    0L
+            );
+        });
+    }
+
+    @Test
+    @Order(23)
+    void removeExpertFromNotInSubServiceNotFoundExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotInSubServiceException.class, () -> {
+            adminService.removeExpertFromSubService(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(),
+                    subServiceService.findSubServiceByDescription("testSubService").get().getId()
+            );
+        });
     }
 
     @Test

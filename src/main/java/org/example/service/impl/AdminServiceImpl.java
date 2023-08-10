@@ -56,11 +56,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void addExpertToSubService(ExpertSignUpCommand expertSignUpCommand, SubServiceCommand subServiceCommand) {
-
-    }
-
-    @Override
     public void addExpertToSubService(Long expertId, Long subServiceId) {
         if (expertRepository.findById(expertId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");

@@ -16,8 +16,6 @@ public interface AdminService {
 
     Optional<Admin> findAdminByEmailAndPassword(String email, String password);
 
-    void addExpertToSubService(ExpertSignUpCommand expertSignUpCommand, SubServiceCommand subServiceCommand);
-
     void addExpertToSubService(Long expertId, Long subServiceId);
 
     void removeExpertFromSubService(Long expertId, Long subServiceId);
