@@ -7,6 +7,8 @@ import org.example.repository.OfferRepository;
 import org.example.service.OfferService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +20,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<Offer> findOffersByOrder(Order order) {
-        return offerRepository.findOffersByOrder(order);
+        List<Offer> offers = offerRepository.findOffersByOrder(order);
+        offers.sort(Comparator.comparingDouble(Offer::getOfferedPrice).thenComparingInt(o -> o.getExpert().getScore()));
+        return offers;
     }
 
     @Override
