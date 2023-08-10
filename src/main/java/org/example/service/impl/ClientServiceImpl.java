@@ -176,9 +176,9 @@ public class ClientServiceImpl implements ClientService {
             throw new NotFoundTheOrderException("Couldn't find the order.");
         } else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
             throw new NotFoundTheOfferException("Couldn't find the offer.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isBefore(LocalDate.now())) {
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
             throw new InvalidDateException("Invalid date.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().before(Time.valueOf(LocalTime.now()))){
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))){
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();

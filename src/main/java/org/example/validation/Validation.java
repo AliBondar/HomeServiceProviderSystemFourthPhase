@@ -37,7 +37,7 @@ public class Validation {
     }
 
     public boolean isTimeValid(LocalTime localTime) {
-        return localTime.isAfter(LocalTime.of(9,0)) && localTime.isBefore(LocalTime.of(21,0));
+        return localTime.isAfter(LocalTime.of(8,0)) && localTime.isBefore(LocalTime.of(21,0));
     }
 
     public boolean isOfferedPriceValid(OrderCommand orderCommand, SubService subService) {

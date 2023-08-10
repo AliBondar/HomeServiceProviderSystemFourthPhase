@@ -6,8 +6,11 @@ import org.example.command.ServiceCommand;
 import org.example.command.SubServiceCommand;
 import org.example.entity.Offer;
 import org.example.entity.enums.OrderStatus;
+import org.example.entity.users.Client;
 import org.example.exception.*;
+import org.example.repository.ClientRepository;
 import org.example.repository.OfferRepository;
+import org.example.repository.OrderRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
 import org.junit.jupiter.api.MethodOrderer;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -42,6 +46,10 @@ class ClientServiceImplTest {
     private OfferRepository offerRepository;
     @Autowired
     private OfferService offerService;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Test
     @Order(8)
@@ -257,12 +265,13 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @Order(20)
+    @Order(22)
     void acceptOffer() {
         Offer offer = new Offer();
         offer.setAccepted(false);
         offer.setOrder(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0));
         offer.setOfferedPrice(20000);
+        offer.setOfferedStartDate(LocalDate.of(2023, 12, 6));
         offerRepository.save(offer);
         clientService.acceptOffer(offer);
         assertEquals(OrderStatus.WAITING_FOR_EXPERT_ARRIVES, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
@@ -271,7 +280,52 @@ class ClientServiceImplTest {
     }
 
     @Test
+    @Order(25)
     void changeOrderStatusToStarted() {
-
+        clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
+        assertEquals(OrderStatus.STARTED, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
     }
+
+    @Test
+    @Order(20)
+    void changeOrderStatusToStartedWhenNotFoundTheOrderExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheOrderException.class, () -> {
+            clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId() + 1);
+        });
+    }
+
+    @Test
+    @Order(21)
+    void changeOrderStatusToStartedWhenNotFoundTheOfferExceptionThrown_thenAssertionSucceed() {
+        assertThrows(NotFoundTheOfferException.class, () -> {
+            clientService.changeOrderStatusToStarted(
+                    orderService.findOrdersByClientId(
+                            clientService.findClientByEmail("ali@gmail.com").get().getId()
+                    ).get(0).getId()
+            );
+        });
+    }
+
+    @Test
+    @Order(23)
+    void changeOrderStatusToStartedWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
+        assertThrows(InvalidDateException.class, () -> {
+            clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
+        });
+    }
+
+    @Test
+    @Order(24)
+    void changeOrderStatusToStartedWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
+        Offer offer = offerService.findAcceptedOfferByOrderId(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId()).get();
+        offer.setOfferedStartDate(LocalDate.of(2023, 2, 2));
+        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(23,59)));
+        offerRepository.save(offer);
+        assertThrows(InvalidTimeException.class, () -> {
+            clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
+        });
+        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(8,0)));
+        offerRepository.save(offer);
+    }
+
 }
