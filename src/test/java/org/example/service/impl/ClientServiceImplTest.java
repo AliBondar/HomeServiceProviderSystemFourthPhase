@@ -4,7 +4,10 @@ import org.example.command.ClientSignUpCommand;
 import org.example.command.OrderCommand;
 import org.example.command.ServiceCommand;
 import org.example.command.SubServiceCommand;
+import org.example.entity.Offer;
+import org.example.entity.enums.OrderStatus;
 import org.example.exception.*;
+import org.example.repository.OfferRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
 import org.junit.jupiter.api.MethodOrderer;
@@ -35,6 +38,10 @@ class ClientServiceImplTest {
     private SubServiceService subServiceService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OfferRepository offerRepository;
+    @Autowired
+    private OfferService offerService;
 
     @Test
     @Order(8)
@@ -176,7 +183,7 @@ class ClientServiceImplTest {
     void createOrder() {
         OrderCommand orderCommand = new OrderCommand();
         orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
         orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderCommand.setLocalTime(LocalTime.of(20, 30));
         orderCommand.setClientOfferedPrice(25000);
@@ -222,7 +229,7 @@ class ClientServiceImplTest {
     void createOrderWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
         OrderCommand orderCommand = new OrderCommand();
         orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
         orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderCommand.setLocalTime(LocalTime.of(23, 30));
         orderCommand.setClientOfferedPrice(25000);
@@ -238,7 +245,7 @@ class ClientServiceImplTest {
     void createOrderWhenInvalidPriceExceptionThrown_thenAssertionSucceed() {
         OrderCommand orderCommand = new OrderCommand();
         orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12,5));
+        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
         orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderCommand.setLocalTime(LocalTime.of(20, 30));
         orderCommand.setClientOfferedPrice(1000);
@@ -250,7 +257,16 @@ class ClientServiceImplTest {
     }
 
     @Test
+    @Order(20)
     void acceptOffer() {
+        Offer offer = new Offer();
+        offer.setAccepted(false);
+        offer.setOrder(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0));
+        offer.setOfferedPrice(20000);
+        offerRepository.save(offer);
+        clientService.acceptOffer(offer);
+        assertEquals(OrderStatus.WAITING_FOR_EXPERT_ARRIVES, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
+        assertTrue(offerService.findAcceptedOfferByOrderId(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId()).get().isAccepted());
 
     }
 
