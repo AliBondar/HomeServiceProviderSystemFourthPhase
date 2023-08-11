@@ -133,9 +133,10 @@ public class ExpertServiceImpl implements ExpertService {
         OfferCommandToOfferConverter offerCommandToOfferConverter = new OfferCommandToOfferConverter();
         if (offerCommand.getExpert() == null || offerCommand.getOfferedPrice() == 0
                 || offerCommand.getExpertOfferedWorkDuration() == 0 || offerCommand.getOrder() == null
-                || offerCommand.getOfferedStartTime() == null || offerCommand.getOfferedStartDate() == null
-                || offerCommand.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
+                || offerCommand.getOfferedStartTime() == null || offerCommand.getOfferedStartDate() == null) {
             throw new EmptyFieldException("Fields must filled out.");
+        } else if (offerCommand.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
+            throw new UserConfirmationException("User is not confirmed yet.");
         } else if (!validation.isOfferedPriceValid(offerCommand, offerCommand.getOrder().getSubService())) {
             throw new InvalidPriceException("Price is not valid.");
         } else if (!validation.isTimeValid(offerCommand.getOfferedStartTime())) {

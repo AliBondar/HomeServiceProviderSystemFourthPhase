@@ -1,13 +1,19 @@
 package org.example.service.impl;
 
 import org.example.command.ExpertSignUpCommand;
+import org.example.command.OfferCommand;
 import org.example.command.ServiceCommand;
+import org.example.entity.SubService;
+import org.example.entity.enums.OrderStatus;
+import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
+import org.example.repository.ExpertRepository;
+import org.example.repository.OfferRepository;
+import org.example.repository.OrderRepository;
+import org.example.repository.SubServiceRepository;
 import org.example.security.PasswordHash;
-import org.example.service.AdminService;
-import org.example.service.ExpertService;
-import org.example.service.ServiceService;
+import org.example.service.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,6 +24,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +38,18 @@ class ExpertServiceImplTest {
     private ServiceService serviceService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private OfferRepository offerRepository;
+    @Autowired
+    private OfferService offerService;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private SubServiceRepository subServiceRepository;
+    @Autowired
+    private ExpertRepository expertRepository;
+    @Autowired
+    private OrderService orderService;
 
     @Test
     @Order(8)
@@ -183,4 +203,103 @@ class ExpertServiceImplTest {
         );
         assertEquals(hashedPassword, expertService.findExpertByEmail("expert@gmail.com").get().getPassword());
     }
+
+    @Test
+    @Order(16)
+    void createOffer() {
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerCommand.setOfferedPrice(12000);
+        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
+        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerCommand.setExpertOfferedWorkDuration(2);
+        expertService.createOffer(offerCommand);
+        assertNotNull(expertService.findExpertByEmail("expert@gmail.com").get().getOfferList().get(0));
+    }
+
+    @Test
+    @Order(13)
+    void createOfferWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(null);
+        assertThrows(EmptyFieldException.class, () -> {
+            expertService.createOffer(offerCommand);
+        });
+    }
+
+    @Test
+    @Order(14)
+    void createOfferWhenUserConfirmationExceptionThrown_thenAssertionSucceed() {
+        SubService subService = new SubService();
+        subService.setBasePrice(10000);
+        subService.setDescription("testSubService");
+        subServiceRepository.save(subService);
+        org.example.entity.Order order = new org.example.entity.Order();
+        order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
+        order.setDescription("good");
+        order.setClientOfferedPrice(10000);
+        order.setSubService(subService);
+        orderRepository.save(order);
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerCommand.setOrder(order);
+        offerCommand.setOfferedPrice(8000);
+        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
+        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerCommand.setExpertOfferedWorkDuration(2);
+        assertThrows(UserConfirmationException.class, () -> {
+            expertService.createOffer(offerCommand);
+        });
+    }
+
+
+    @Test
+    @Order(15)
+    void createOfferWhenInvalidPriceExceptionThrown_thenAssertionSucceed() {
+        Expert expert = expertService.findExpertByEmail("expert@gmail.com").get();
+        expert.setUserStatus(UserStatus.CONFIRMED);
+        expertRepository.save(expert);
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerCommand.setOfferedPrice(8000);
+        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
+        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerCommand.setExpertOfferedWorkDuration(2);
+        assertThrows(InvalidPriceException.class, () -> {
+            expertService.createOffer(offerCommand);
+        });
+    }
+
+    @Test
+    @Order(16)
+    void createOfferWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerCommand.setOfferedPrice(12000);
+        offerCommand.setOfferedStartTime(LocalTime.of(23,10));
+        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerCommand.setExpertOfferedWorkDuration(2);
+        assertThrows(InvalidTimeException.class, () -> {
+            expertService.createOffer(offerCommand);
+        });
+    }
+
+    @Test
+    @Order(17)
+    void createOfferWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
+        OfferCommand offerCommand = new OfferCommand();
+        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerCommand.setOfferedPrice(12000);
+        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
+        offerCommand.setOfferedStartDate(LocalDate.of(2020, 9,5));
+        offerCommand.setExpertOfferedWorkDuration(2);
+        assertThrows(InvalidDateException.class, () -> {
+            expertService.createOffer(offerCommand);
+        });
+    }
+
 }
