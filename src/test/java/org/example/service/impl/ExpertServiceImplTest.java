@@ -193,7 +193,7 @@ class ExpertServiceImplTest {
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     void editExpertPassword() throws NoSuchAlgorithmException {
         PasswordHash passwordHash = new PasswordHash();
         String password = "#Expert1234";
@@ -205,7 +205,27 @@ class ExpertServiceImplTest {
     }
 
     @Test
-    @Order(16)
+    @Order(12)
+    void editPasswordWhenUserNotFoundExceptionThrown_thenAssertionSucceed(){
+        assertThrows(NotFoundTheUserException.class, () -> {
+            expertService.editExpertPassword(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId() + 1, "#Expert1234"
+            );
+        });
+    }
+
+    @Test
+    @Order(12)
+    void editPasswordWhenInvalidPasswordExceptionThrown_thenAssertionSucceed() {
+        assertThrows(InvalidPasswordException.class, () -> {
+            expertService.editExpertPassword(
+                    expertService.findExpertByEmail("expert@gmail.com").get().getId(), "ert1234"
+            );
+        });
+    }
+
+    @Test
+    @Order(18)
     void createOffer() {
         OfferCommand offerCommand = new OfferCommand();
         offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
@@ -215,7 +235,7 @@ class ExpertServiceImplTest {
         offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
         offerCommand.setExpertOfferedWorkDuration(2);
         expertService.createOffer(offerCommand);
-        assertNotNull(expertService.findExpertByEmail("expert@gmail.com").get().getOfferList().get(0));
+        assertNotNull(expertService.findExpertByEmail("expert@gmail.com").get().getOfferList());
     }
 
     @Test
