@@ -46,7 +46,7 @@ class OfferServiceImplTest {
         offer.setOrder(order);
         offer.setAccepted(false);
         offerRepository.save(offer);
-        assertNotNull(offerService.findOffersByOrder(orderRepository.findById(1L).get())
+        assertNotNull(offerService.findOffersByOrder(order)
                 .get(0));
     }
 
