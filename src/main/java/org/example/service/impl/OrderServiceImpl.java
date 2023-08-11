@@ -1,21 +1,12 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.OrderCommand;
-import org.example.converter.OrderCommandToOrderConverter;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
-import org.example.exception.EmptyFieldException;
-import org.example.exception.InvalidDateException;
-import org.example.exception.InvalidPriceException;
-import org.example.exception.InvalidTimeException;
-import org.example.repository.OfferRepository;
 import org.example.repository.OrderRepository;
 import org.example.service.OrderService;
-import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -29,11 +20,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrdersByClientId(Long id) {
         return orderRepository.findOrdersByClientId(id);
-    }
-
-    @Override
-    public List<Order> findOrdersByExpertId(Long id) {
-        return orderRepository.findOrdersByExpertId(id);
     }
 
     @Override

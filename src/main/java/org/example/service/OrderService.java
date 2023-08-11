@@ -10,8 +10,6 @@ import java.util.List;
 public interface OrderService {
     List<Order> findOrdersByClientId(Long id);
 
-    List<Order> findOrdersByExpertId(Long id);
-
     List<Order> findOrdersBySubServiceId(Long id);
 
     List<Order> findNewOrdersBySubServiceId(Long id);

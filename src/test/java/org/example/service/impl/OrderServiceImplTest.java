@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import net.bytebuddy.asm.Advice;
 import org.example.entity.Order;
+import org.example.entity.SubService;
 import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 import org.example.repository.ClientRepository;
@@ -10,6 +11,7 @@ import org.example.repository.OrderRepository;
 import org.example.repository.SubServiceRepository;
 import org.example.service.ClientService;
 import org.example.service.OrderService;
+import org.example.service.SubServiceService;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -38,9 +40,15 @@ class OrderServiceImplTest {
     private SubServiceRepository subServiceRepository;
     @Autowired
     private ExpertRepository expertRepository;
+    @Autowired
+    private SubServiceService subServiceService;
 
     @Test
     void findOrdersByClientId() {
+        SubService subService = new SubService();
+        subService.setDescription("testSubService");
+        subService.setBasePrice(8000);
+        subServiceRepository.save(subService);
         Client client = new Client();
         client.setFirstName("testClientFName");
         client.setLastName("testClientLName");
@@ -53,6 +61,7 @@ class OrderServiceImplTest {
         order.setClientOfferedPrice(10000);
         order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
         order.setClient(client);
+        order.setSubService(subService);
         orderRepository.save(order);
         assertEquals(
                 10000,
@@ -61,18 +70,17 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void findOrdersByExpertId() {
-    }
-
-    @Test
     void findOrdersBySubServiceId() {
+        assertNotNull(orderService.findOrdersBySubServiceId(subServiceService.findSubServiceByDescription("testSubService").get().getId()));
     }
 
     @Test
     void findNewOrdersBySubServiceId() {
+        assertNotNull(orderService.findOrdersBySubServiceId(subServiceService.findSubServiceByDescription("testSubService").get().getId()));
     }
 
     @Test
     void findOrdersByOrderStatus() {
+        assertNotNull(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER));
     }
 }
