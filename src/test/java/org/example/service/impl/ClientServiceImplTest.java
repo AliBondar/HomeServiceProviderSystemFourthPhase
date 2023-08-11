@@ -280,7 +280,7 @@ class ClientServiceImplTest {
     }
 
     @Test
-    @Order(25)
+    @Order(26)
     void changeOrderStatusToStarted() {
         clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
         assertEquals(OrderStatus.STARTED, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
@@ -319,13 +319,27 @@ class ClientServiceImplTest {
     void changeOrderStatusToStartedWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
         Offer offer = offerService.findAcceptedOfferByOrderId(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId()).get();
         offer.setOfferedStartDate(LocalDate.of(2023, 2, 2));
-        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(23,59)));
+        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(23, 59)));
         offerRepository.save(offer);
         assertThrows(InvalidTimeException.class, () -> {
             clientService.changeOrderStatusToStarted(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
         });
-        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(8,0)));
+        offer.setOfferedStartTime(Time.valueOf(LocalTime.of(8, 0)));
         offerRepository.save(offer);
     }
 
+    @Test
+    @Order(25)
+    void changeOrderStatusToDoneWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
+        assertThrows(InvalidTimeException.class, () -> {
+            clientService.changeOrderStatusToDone(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
+        });
+    }
+
+    @Test
+    @Order(27)
+    void changeOrderStatusToDone() {
+        clientService.changeOrderStatusToDone(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
+        assertEquals(OrderStatus.DONE, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
+    }
 }

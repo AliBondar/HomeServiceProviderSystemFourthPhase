@@ -186,4 +186,15 @@ public class ClientServiceImpl implements ClientService {
             orderRepository.save(order);
         }
     }
+
+    @Override
+    public void changeOrderStatusToDone(Long orderId) {
+        if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED){
+            throw new InvalidTimeException("Invalid time.");
+        } else {
+            Order order = orderRepository.findById(orderId).get();
+            order.setOrderStatus(OrderStatus.DONE);
+            orderRepository.save(order);
+        }
+    }
 }
