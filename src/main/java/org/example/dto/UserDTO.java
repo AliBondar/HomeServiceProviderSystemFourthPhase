@@ -1,4 +1,4 @@
-package org.example.command;
+package org.example.dto;
 
 
 import jakarta.validation.constraints.Email;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserSignUpCommand extends BaseCommand<Long> {
+public class UserDTO extends BaseDTO<Long> {
 
     String firstName;
 

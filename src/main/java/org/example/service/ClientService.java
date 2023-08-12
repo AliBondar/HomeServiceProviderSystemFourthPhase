@@ -2,8 +2,8 @@ package org.example.service;
 
 
 
-import org.example.command.ClientSignUpCommand;
-import org.example.command.OrderCommand;
+import org.example.dto.ClientDTO;
+import org.example.dto.OrderDTO;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
 
@@ -14,15 +14,15 @@ public interface ClientService {
 
     Optional<Client> findClientByEmailAndPassword(String email, String password);
 
-    void clientSignUp(ClientSignUpCommand clientSignUpCommand);
+    void clientSignUp(ClientDTO clientDTO);
 
-    void clientLogin(ClientSignUpCommand clientSignUpCommand);
+    void clientLogin(ClientDTO clientDTO);
 
     boolean isClientEmailDuplicated(String emailAddress);
 
     void editClientPassword(Long clientId, String password);
 
-    void createOrder(OrderCommand orderCommand);
+    void createOrder(OrderDTO orderDTO);
 
     void acceptOffer(Offer offer);
 

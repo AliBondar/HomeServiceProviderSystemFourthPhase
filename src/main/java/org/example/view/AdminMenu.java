@@ -1,8 +1,8 @@
 package org.example.view;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
 import org.example.entity.SubService;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
@@ -15,10 +15,6 @@ import org.example.service.AdminService;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.example.service.impl.AdminServiceImpl;
-import org.example.service.impl.ExpertServiceImpl;
-import org.example.service.impl.ServiceServiceImpl;
-import org.example.service.impl.SubServiceServiceImpl;
 
 
 import java.util.Scanner;
@@ -78,7 +74,7 @@ public class AdminMenu {
             if (option == 1) {
                 System.out.println("Enter the name of the service :");
                 String serviceName = scanner.next();
-                ServiceCommand serviceCommand = new ServiceCommand();
+                ServiceDTO serviceCommand = new ServiceDTO();
                 serviceCommand.setName(serviceName);
                 try {
                     adminService.addService(serviceCommand);
@@ -96,7 +92,7 @@ public class AdminMenu {
                 String subServiceDescription = scanner.next();
                 System.out.println("Enter base price :");
                 double subServiceBasePrice = scanner.nextDouble();
-                SubServiceCommand subServiceCommand = new SubServiceCommand();
+                SubServiceDTO subServiceCommand = new SubServiceDTO();
                 subServiceCommand.setService(serviceRepository.findById((long) serviceId).get());
                 subServiceCommand.setDescription(subServiceDescription);
                 subServiceCommand.setBasePrice(subServiceBasePrice);

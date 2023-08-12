@@ -1,9 +1,7 @@
-package org.example.command;
+package org.example.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.io.Serializable;
 
 @Setter
 @Getter
@@ -11,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BaseCommand<ID extends Serializable> implements Serializable {
+public class ServiceDTO extends BaseDTO<Long> {
 
-    ID id;
+    String name;
 }

@@ -1,10 +1,11 @@
 package org.example.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.command.ClientSignUpCommand;
-import org.example.command.OrderCommand;
-import org.example.converter.ClientSignUpCommandToClientConverter;
-import org.example.converter.OrderCommandToOrderConverter;
+import org.example.dto.ClientDTO;
+import org.example.dto.OrderDTO;
+import org.example.mapper.ClientMapper;
+import org.example.mapper.OrderMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -18,7 +19,6 @@ import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ClientService;
-import org.example.service.WalletService;
 import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
@@ -58,24 +59,24 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public void clientSignUp(ClientSignUpCommand clientSignUpCommand) {
+    public void clientSignUp(ClientDTO clientDTO) {
         Validation validation = new Validation();
-        if (clientSignUpCommand.getFirstName() == null || clientSignUpCommand.getLastName() == null
-                || clientSignUpCommand.getEmail() == null || clientSignUpCommand.getPassword() == null) {
+        if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
+                || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must be filled out.");
-        } else if (validation.emailPatternMatches(clientSignUpCommand.getEmail())) {
+        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isClientEmailDuplicated(clientSignUpCommand.getEmail())) {
+        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(clientSignUpCommand.getPassword())) {
+        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
         } else {
-            clientSignUpCommand.setSignUpDate(LocalDate.now());
-            clientSignUpCommand.setUserStatus(UserStatus.CLIENT);
-            ClientSignUpCommandToClientConverter clientSignUpCommandToClientConverter = new ClientSignUpCommandToClientConverter();
+            clientDTO.setSignUpDate(LocalDate.now());
+            clientDTO.setUserStatus(UserStatus.CLIENT);
+            ClientMapper clientmapper = new ClientMapper();
             Client client = null;
             try {
-                client = clientSignUpCommandToClientConverter.convert(clientSignUpCommand);
+                client = clientmapper.convert(clientDTO);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
@@ -88,23 +89,23 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void clientLogin(ClientSignUpCommand clientSignUpCommand) {
+    public void clientLogin(ClientDTO clientDTO) {
         Validation validation = new Validation();
         PasswordHash passwordHash = new PasswordHash();
-        ClientSignUpCommandToClientConverter clientSignUpCommandToClientConverter = new ClientSignUpCommandToClientConverter();
-        if (clientSignUpCommand.getEmail() == null || clientSignUpCommand.getPassword() == null) {
+        ClientMapper clientmapper = new ClientMapper();
+        if (clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must filled out !");
-        } else if (validation.emailPatternMatches(clientSignUpCommand.getEmail())) {
+        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isClientEmailDuplicated(clientSignUpCommand.getEmail())) {
+        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(clientSignUpCommand.getPassword())) {
+        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        } else if (findClientByEmailAndPassword(clientSignUpCommand.getEmail(), clientSignUpCommand.getPassword()).isEmpty()) {
+        } else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
         } else {
             try {
-                Client client = clientSignUpCommandToClientConverter.convert(clientSignUpCommand);
+                Client client = clientmapper.convert(clientDTO);
                 System.out.println("Welcome " + client.getFirstName() + " " + client.getLastName());
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
@@ -137,22 +138,22 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createOrder(OrderCommand orderCommand) {
+    public void createOrder(OrderDTO orderDTO) {
         Validation validation = new Validation();
-        OrderCommandToOrderConverter orderCommandToOrderConverter = new OrderCommandToOrderConverter();
-        if (orderCommand.getClientOfferedPrice() == 0 || orderCommand.getDescription() == null
-                || orderCommand.getLocalTime() == null || orderCommand.getLocalDate() == null
-                || orderCommand.getSubService() == null || orderCommand.getClientOfferedWorkDuration() == 0) {
+        OrderMapper orderMapper = new OrderMapper();
+        if (orderDTO.getClientOfferedPrice() == 0 || orderDTO.getDescription() == null
+                || orderDTO.getLocalTime() == null || orderDTO.getLocalDate() == null
+                || orderDTO.getSubService() == null || orderDTO.getClientOfferedWorkDuration() == 0) {
             throw new EmptyFieldException("Fields must filled out.");
-        } else if (!validation.isDateValid(orderCommand.getLocalDate())) {
+        } else if (!validation.isDateValid(orderDTO.getLocalDate())) {
             throw new InvalidDateException("Invalid date.");
-        } else if (!validation.isTimeValid(orderCommand.getLocalTime())) {
+        } else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
             throw new InvalidTimeException("Invalid Time.");
-        } else if (!validation.isOfferedPriceValid(orderCommand, orderCommand.getSubService())) {
+        } else if (!validation.isOfferedPriceValid(orderDTO, orderDTO.getSubService())) {
             throw new InvalidPriceException("Invalid price.");
         } else {
             try {
-                Order order = orderCommandToOrderConverter.convert(orderCommand);
+                Order order = orderMapper.convert(orderDTO);
                 orderRepository.save(order);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);

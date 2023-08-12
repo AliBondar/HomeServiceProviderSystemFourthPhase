@@ -1,11 +1,8 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.ServiceCommand;
-import org.example.exception.DuplicatedServiceException;
 import org.example.repository.ServiceRepository;
 import org.example.service.ServiceService;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

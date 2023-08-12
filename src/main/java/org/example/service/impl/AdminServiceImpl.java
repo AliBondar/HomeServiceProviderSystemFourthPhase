@@ -1,10 +1,9 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.ExpertSignUpCommand;
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
-import org.example.converter.SubServiceCommandToSubServiceConverter;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
+import org.example.mapper.SubServiceMapper;
 import org.example.entity.SubService;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
@@ -18,7 +17,6 @@ import org.example.security.PasswordHash;
 import org.example.service.AdminService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -119,12 +117,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void addService(ServiceCommand serviceCommand) {
-        if (isServiceDuplicated(serviceCommand.getName())) {
+    public void addService(ServiceDTO serviceDTO) {
+        if (isServiceDuplicated(serviceDTO.getName())) {
             throw new DuplicatedServiceException("Service already exists !");
         } else {
             org.example.entity.Service service = new org.example.entity.Service();
-            service.setName(serviceCommand.getName());
+            service.setName(serviceDTO.getName());
             serviceRepository.save(service);
         }
     }
@@ -135,15 +133,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void addSubService(SubServiceCommand subServiceCommand) {
-        if (isSubServiceDuplicated(subServiceCommand.getDescription(), subServiceCommand.getService())) {
+    public void addSubService(SubServiceDTO subServiceDTO) {
+        if (isSubServiceDuplicated(subServiceDTO.getDescription(), subServiceDTO.getService())) {
             throw new DuplicatedSubServiceException("Sub service already exists !");
-        } else if (serviceService.findServiceByName(subServiceCommand.getService().getName()).isEmpty()) {
+        } else if (serviceService.findServiceByName(subServiceDTO.getService().getName()).isEmpty()) {
             throw new NotFoundTheServiceException("Couldn't find the service !");
         } else {
-            SubServiceCommandToSubServiceConverter subServiceCommandToSubServiceConverter = new SubServiceCommandToSubServiceConverter();
+            SubServiceMapper subServiceMapper = new SubServiceMapper();
             try {
-                SubService subService = subServiceCommandToSubServiceConverter.convert(subServiceCommand);
+                SubService subService = subServiceMapper.convert(subServiceDTO);
                 subServiceRepository.save(subService);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);

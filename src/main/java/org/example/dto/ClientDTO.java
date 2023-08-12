@@ -1,4 +1,4 @@
-package org.example.command;
+package org.example.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ClientSignUpCommand extends UserSignUpCommand {
+public class ClientDTO extends UserDTO {
 
 }

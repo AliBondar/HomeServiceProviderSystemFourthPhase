@@ -1,4 +1,4 @@
-package org.example.command;
+package org.example.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +12,7 @@ import java.io.File;
 @NoArgsConstructor
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ExpertSignUpCommand extends UserSignUpCommand{
+public class ExpertDTO extends UserDTO {
 
 
     File imageData;

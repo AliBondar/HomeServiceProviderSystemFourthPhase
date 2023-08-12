@@ -1,9 +1,8 @@
 package org.example.view;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
-import org.example.command.ClientSignUpCommand;
-import org.example.command.ExpertSignUpCommand;
+import org.example.dto.ClientDTO;
+import org.example.dto.ExpertDTO;
 import org.example.entity.Service;
 
 import org.example.repository.ClientRepository;
@@ -13,12 +12,7 @@ import org.example.service.ClientService;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.example.service.impl.ClientServiceImpl;
-import org.example.service.impl.ExpertServiceImpl;
-import org.example.service.impl.ServiceServiceImpl;
-import org.hibernate.sql.ast.tree.expression.SelfRenderingExpression;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -75,7 +69,7 @@ public class SignUpMenu {
                     String email = scanner.next();
                     System.out.println("Enter password :");
                     String password = scanner.next();
-                    ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
+                    ClientDTO clientSignUpCommand = new ClientDTO();
                     clientSignUpCommand.setFirstName(firstName);
                     clientSignUpCommand.setLastName(lastName);
                     clientSignUpCommand.setEmail(email);
@@ -107,7 +101,7 @@ public class SignUpMenu {
                     System.out.println("Insert image :");
                     String imageAddress = scanner.next();
                     Service service = serviceRepository.findById((long) serviceId).get();
-                    ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+                    ExpertDTO expertSignUpCommand = new ExpertDTO();
                     expertSignUpCommand.setFirstName(firstName);
                     expertSignUpCommand.setLastName(lastName);
                     expertSignUpCommand.setEmail(email);

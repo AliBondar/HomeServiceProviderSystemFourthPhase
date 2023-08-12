@@ -1,8 +1,8 @@
 package org.example.service;
 
 
-import org.example.command.ExpertSignUpCommand;
-import org.example.command.OfferCommand;
+import org.example.dto.ExpertDTO;
+import org.example.dto.OfferDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 
@@ -16,7 +16,7 @@ public interface ExpertService{
 
     Optional<Expert> findExpertByEmailAndPassword(String email, String password);
 
-    void expertSignUp(ExpertSignUpCommand expertSignUpCommand) throws IOException;
+    void expertSignUp(ExpertDTO expertDTO) throws IOException;
 
     boolean isExpertEmailDuplicated(String email);
 
@@ -24,5 +24,5 @@ public interface ExpertService{
 
     void editExpertPassword(Long expertId, String password);
 
-    void createOffer(OfferCommand offerCommand);
+    void createOffer(OfferDTO offerDTO);
 }

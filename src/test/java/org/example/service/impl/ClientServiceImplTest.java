@@ -1,12 +1,11 @@
 package org.example.service.impl;
 
-import org.example.command.ClientSignUpCommand;
-import org.example.command.OrderCommand;
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
+import org.example.dto.ClientDTO;
+import org.example.dto.OrderDTO;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
 import org.example.entity.Offer;
 import org.example.entity.enums.OrderStatus;
-import org.example.entity.users.Client;
 import org.example.exception.*;
 import org.example.repository.ClientRepository;
 import org.example.repository.OfferRepository;
@@ -86,32 +85,32 @@ class ClientServiceImplTest {
     @Order(4)
     @Test
     void clientSignUp() {
-        ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
-        clientSignUpCommand.setFirstName("ali");
-        clientSignUpCommand.setLastName("bon");
-        clientSignUpCommand.setEmail("ali@gmail.com");
-        clientSignUpCommand.setPassword("@Ali1234");
-        clientService.clientSignUp(clientSignUpCommand);
-        assertEquals(clientService.findClientByEmail(clientSignUpCommand.getEmail()).get().getEmail(),
-                clientSignUpCommand.getEmail());
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setFirstName("ali");
+        clientDTO.setLastName("bon");
+        clientDTO.setEmail("ali@gmail.com");
+        clientDTO.setPassword("@Ali1234");
+        clientService.clientSignUp(clientDTO);
+        assertEquals(clientService.findClientByEmail(clientDTO.getEmail()).get().getEmail(),
+                clientDTO.getEmail());
     }
 
     @Order(1)
     @Test
     void clientSignUpWhenEmptyFiledExceptionThrown_thenAssertionSucceeds() {
-        ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
-        clientSignUpCommand.setFirstName("ali");
-        clientSignUpCommand.setEmail("ali@gmail.com");
-        clientSignUpCommand.setPassword("@Ali1234");
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setFirstName("ali");
+        clientDTO.setEmail("ali@gmail.com");
+        clientDTO.setPassword("@Ali1234");
         assertThrows(EmptyFieldException.class, () -> {
-            clientService.clientSignUp(clientSignUpCommand);
+            clientService.clientSignUp(clientDTO);
         });
     }
 
     @Order(2)
     @Test
     void clientSignUpWhenInvalidEmailExceptionThrown_thenAssertionSucceeds() {
-        ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
+        ClientDTO clientSignUpCommand = new ClientDTO();
         clientSignUpCommand.setFirstName("ali");
         clientSignUpCommand.setLastName("bon");
         clientSignUpCommand.setEmail("alicom");
@@ -124,26 +123,26 @@ class ClientServiceImplTest {
     @Order(5)
     @Test
     void clientSignUpWhenDuplicatedEmailExceptionThrown_thenAssertionSucceeds() {
-        ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
-        clientSignUpCommand.setFirstName("ali");
-        clientSignUpCommand.setLastName("bon");
-        clientSignUpCommand.setEmail("ali@gmail.com");
-        clientSignUpCommand.setPassword("@Ali1234");
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setFirstName("ali");
+        clientDTO.setLastName("bon");
+        clientDTO.setEmail("ali@gmail.com");
+        clientDTO.setPassword("@Ali1234");
         assertThrows(DuplicatedEmailException.class, () -> {
-            clientService.clientSignUp(clientSignUpCommand);
+            clientService.clientSignUp(clientDTO);
         });
     }
 
     @Order(3)
     @Test
     void clientSignUpWhenInvalidPasswordExceptionThrown_thenAssertionSucceeds() {
-        ClientSignUpCommand clientSignUpCommand = new ClientSignUpCommand();
-        clientSignUpCommand.setFirstName("ali");
-        clientSignUpCommand.setLastName("bon");
-        clientSignUpCommand.setEmail("ali@gmail.com");
-        clientSignUpCommand.setPassword("li");
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setFirstName("ali");
+        clientDTO.setLastName("bon");
+        clientDTO.setEmail("ali@gmail.com");
+        clientDTO.setPassword("li");
         assertThrows(InvalidPasswordException.class, () -> {
-            clientService.clientSignUp(clientSignUpCommand);
+            clientService.clientSignUp(clientDTO);
         });
     }
 
@@ -189,78 +188,78 @@ class ClientServiceImplTest {
     @Test
     @Order(19)
     void createOrder() {
-        OrderCommand orderCommand = new OrderCommand();
-        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
-        orderCommand.setLocalTime(LocalTime.of(20, 30));
-        orderCommand.setClientOfferedPrice(25000);
-        orderCommand.setClientOfferedWorkDuration(2);
-        orderCommand.setDescription("nice");
-        clientService.createOrder(orderCommand);
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
+        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderDTO.setLocalTime(LocalTime.of(20, 30));
+        orderDTO.setClientOfferedPrice(25000);
+        orderDTO.setClientOfferedWorkDuration(2);
+        orderDTO.setDescription("nice");
+        clientService.createOrder(orderDTO);
         assertNotNull(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0));
     }
 
     @Test
     @Order(15)
     void createOrderWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
-        OrderCommand orderCommand = new OrderCommand();
-        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalTime(LocalTime.now());
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderDTO.setLocalTime(LocalTime.now());
         assertThrows(EmptyFieldException.class, () -> {
-            clientService.createOrder(orderCommand);
+            clientService.createOrder(orderDTO);
         });
     }
 
     @Test
     @Order(16)
     void createOrderWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
-        adminService.addService(new ServiceCommand("testServiceForClient"));
-        adminService.addSubService(new SubServiceCommand(
+        adminService.addService(new ServiceDTO("testServiceForClient"));
+        adminService.addSubService(new SubServiceDTO(
                 15000, "testSubServiceForClient", serviceService.findServiceByName("testServiceForClient").get()
         ));
-        OrderCommand orderCommand = new OrderCommand();
-        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2022, 4, 6));
-        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
-        orderCommand.setLocalTime(LocalTime.of(20, 30));
-        orderCommand.setClientOfferedPrice(25000);
-        orderCommand.setClientOfferedWorkDuration(2);
-        orderCommand.setDescription("nice");
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderDTO.setLocalDate(LocalDate.of(2022, 4, 6));
+        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderDTO.setLocalTime(LocalTime.of(20, 30));
+        orderDTO.setClientOfferedPrice(25000);
+        orderDTO.setClientOfferedWorkDuration(2);
+        orderDTO.setDescription("nice");
         assertThrows(InvalidDateException.class, () -> {
-            clientService.createOrder(orderCommand);
+            clientService.createOrder(orderDTO);
         });
     }
 
     @Test
     @Order(17)
     void createOrderWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
-        OrderCommand orderCommand = new OrderCommand();
-        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
-        orderCommand.setLocalTime(LocalTime.of(23, 30));
-        orderCommand.setClientOfferedPrice(25000);
-        orderCommand.setClientOfferedWorkDuration(2);
-        orderCommand.setDescription("nice");
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
+        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderDTO.setLocalTime(LocalTime.of(23, 30));
+        orderDTO.setClientOfferedPrice(25000);
+        orderDTO.setClientOfferedWorkDuration(2);
+        orderDTO.setDescription("nice");
         assertThrows(InvalidTimeException.class, () -> {
-            clientService.createOrder(orderCommand);
+            clientService.createOrder(orderDTO);
         });
     }
 
     @Test
     @Order(18)
     void createOrderWhenInvalidPriceExceptionThrown_thenAssertionSucceed() {
-        OrderCommand orderCommand = new OrderCommand();
-        orderCommand.setClient(clientService.findClientByEmail("ali@gmail.com").get());
-        orderCommand.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderCommand.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
-        orderCommand.setLocalTime(LocalTime.of(20, 30));
-        orderCommand.setClientOfferedPrice(1000);
-        orderCommand.setClientOfferedWorkDuration(2);
-        orderCommand.setDescription("nice");
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+        orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
+        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+        orderDTO.setLocalTime(LocalTime.of(20, 30));
+        orderDTO.setClientOfferedPrice(1000);
+        orderDTO.setClientOfferedWorkDuration(2);
+        orderDTO.setDescription("nice");
         assertThrows(InvalidPriceException.class, () -> {
-            clientService.createOrder(orderCommand);
+            clientService.createOrder(orderDTO);
         });
     }
 

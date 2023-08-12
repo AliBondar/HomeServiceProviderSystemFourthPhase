@@ -1,11 +1,11 @@
-package org.example.converter;
+package org.example.mapper;
 
 import org.example.base.domain.BaseEntity;
-import org.example.command.BaseCommand;
+import org.example.dto.BaseDTO;
 
 import java.security.NoSuchAlgorithmException;
 
-public interface BaseConverter<C extends BaseCommand<Long>, T extends BaseEntity<Long>> {
+public interface BaseConverter<C extends BaseDTO<Long>, T extends BaseEntity<Long>> {
 
     T convert (C c) throws NoSuchAlgorithmException;
 

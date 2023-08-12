@@ -1,7 +1,7 @@
 package org.example.view;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.OrderCommand;
+import org.example.dto.OrderDTO;
 import org.example.entity.Order;
 import org.example.entity.Service;
 import org.example.entity.SubService;
@@ -97,7 +97,7 @@ public class ClientMenu {
                     double offeredPrice = scanner.nextDouble();
                     System.out.println("Enter your offered work duration :");
                     int offeredWordDuration = scanner.nextInt();
-                    OrderCommand orderCommand = new OrderCommand();
+                    OrderDTO orderCommand = new OrderDTO();
                     orderCommand.setClient(client);
                     orderCommand.setDescription(description);
                     orderCommand.setLocalDate(LocalDate.of(2023, 11, 2));

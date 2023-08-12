@@ -1,7 +1,7 @@
 package org.example.validation;
 
-import org.example.command.OfferCommand;
-import org.example.command.OrderCommand;
+import org.example.dto.OfferDTO;
+import org.example.dto.OrderDTO;
 import org.example.entity.SubService;
 
 import java.time.LocalDate;
@@ -40,11 +40,11 @@ public class Validation {
         return localTime.isAfter(LocalTime.of(8,0)) && localTime.isBefore(LocalTime.of(21,0));
     }
 
-    public boolean isOfferedPriceValid(OrderCommand orderCommand, SubService subService) {
+    public boolean isOfferedPriceValid(OrderDTO orderCommand, SubService subService) {
         return orderCommand.getClientOfferedPrice() >= subService.getBasePrice();
     }
 
-    public boolean isOfferedPriceValid(OfferCommand offerCommand, SubService subService) {
+    public boolean isOfferedPriceValid(OfferDTO offerCommand, SubService subService) {
         return offerCommand.getOfferedPrice() >= subService.getBasePrice();
     }
 }

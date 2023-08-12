@@ -1,7 +1,6 @@
 package org.example.service.impl;
 
-import org.example.command.ServiceCommand;
-import org.example.entity.Service;
+import org.example.dto.ServiceDTO;
 import org.example.service.AdminService;
 import org.example.service.ServiceService;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,7 @@ class ServiceServiceImplTest {
 
     @Test
     void findServiceByName() {
-        adminService.addService(new ServiceCommand("testServiceForService"));
+        adminService.addService(new ServiceDTO("testServiceForService"));
         assertNotNull(serviceService.findServiceByName("testServiceForService"));
     }
 

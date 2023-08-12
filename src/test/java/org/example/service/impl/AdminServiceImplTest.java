@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
 import org.example.entity.Service;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -111,7 +110,7 @@ class AdminServiceImplTest {
     @Test
     @Order(17)
     void addExpertToSubServiceWhenNotInServiceExceptionThrown_thenAssertionSucceed() {
-        adminService.addService(new ServiceCommand("secondTestService"));
+        adminService.addService(new ServiceDTO("secondTestService"));
         Expert expert = new Expert();
         expert.setService(serviceService.findServiceByName("secondTestService").get());
         expert.setEmail("secondexpert@gmail.com");
@@ -241,7 +240,7 @@ class AdminServiceImplTest {
     @Test
     @Order(3)
     void addService() {
-        adminService.addService(new ServiceCommand("testService"));
+        adminService.addService(new ServiceDTO("testService"));
         assertEquals("testService", serviceService.findServiceByName("testService").get().getName());
     }
 
@@ -249,7 +248,7 @@ class AdminServiceImplTest {
     @Order(4)
     void addServiceWhenDuplicatedServiceExceptionThrown_thenAssertionSucceeds() {
         assertThrows(DuplicatedServiceException.class, () -> {
-            adminService.addService(new ServiceCommand("testService"));
+            adminService.addService(new ServiceDTO("testService"));
         });
     }
 
@@ -262,7 +261,7 @@ class AdminServiceImplTest {
     @Test
     @Order(7)
     void addSubService() {
-        adminService.addSubService(new SubServiceCommand(
+        adminService.addSubService(new SubServiceDTO(
                 10000, "testSubService", serviceService.findServiceByName("testService").get())
         );
         assertEquals("testSubService",
@@ -276,7 +275,7 @@ class AdminServiceImplTest {
         Service service = new Service();
         service.setName("notFountService");
         assertThrows(NotFoundTheServiceException.class, () -> {
-            adminService.addSubService(new SubServiceCommand(
+            adminService.addSubService(new SubServiceDTO(
                     10000, "testSubService", service
             ));
         });
@@ -286,7 +285,7 @@ class AdminServiceImplTest {
     @Order(8)
     void addSubServiceWhenDuplicatedSubServiceExceptionThrown_thenAssertionSucceeds() {
         assertThrows(DuplicatedSubServiceException.class, () -> {
-            adminService.addSubService(new SubServiceCommand(
+            adminService.addSubService(new SubServiceDTO(
                     10000, "testSubService", serviceService.findServiceByName("testService").get()
             ));
         });

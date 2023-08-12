@@ -1,4 +1,4 @@
-package org.example.command;
+package org.example.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,7 +10,7 @@ import org.example.entity.Service;
 @NoArgsConstructor
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SubServiceCommand extends BaseCommand<Long>{
+public class SubServiceDTO extends BaseDTO<Long> {
 
     double basePrice;
 

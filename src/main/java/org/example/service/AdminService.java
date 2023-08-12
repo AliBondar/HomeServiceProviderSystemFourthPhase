@@ -1,9 +1,8 @@
 package org.example.service;
 
 
-import org.example.command.ExpertSignUpCommand;
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
 import org.example.entity.Service;
 import org.example.entity.users.Admin;
 import org.example.entity.users.enums.UserStatus;
@@ -24,12 +23,12 @@ public interface AdminService {
 
     void editSubService(Long id, double newBasePrice, String newDescription);
 
-    void addService(ServiceCommand serviceCommand);
+    void addService(ServiceDTO serviceDTO);
 
     boolean isServiceDuplicated(String name);
 
 
-    void addSubService(SubServiceCommand subServiceCommand);
+    void addSubService(SubServiceDTO subServiceDTO);
 
     boolean isSubServiceDuplicated(String description, Service service);
 }

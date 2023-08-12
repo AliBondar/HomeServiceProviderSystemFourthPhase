@@ -1,4 +1,4 @@
-package org.example.command;
+package org.example.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +15,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @ToString()
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OfferCommand extends BaseCommand<Long> {
+public class OfferDTO extends BaseDTO<Long> {
 
     Expert expert;
 

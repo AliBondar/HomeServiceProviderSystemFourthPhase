@@ -1,10 +1,10 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.command.ExpertSignUpCommand;
-import org.example.command.OfferCommand;
-import org.example.converter.ExpertSIgnUpCommandToExpertConverter;
-import org.example.converter.OfferCommandToOfferConverter;
+import org.example.dto.ExpertDTO;
+import org.example.dto.OfferDTO;
+import org.example.mapper.ExpertMapper;
+import org.example.mapper.OfferMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -58,32 +58,32 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
-    public void expertSignUp(ExpertSignUpCommand expertSignUpCommand) throws IOException {
+    public void expertSignUp(ExpertDTO expertDTO) throws IOException {
         Validation validation = new Validation();
-        if (expertSignUpCommand.getFirstName() == null || expertSignUpCommand.getLastName() == null
-                || expertSignUpCommand.getEmail() == null || expertSignUpCommand.getPassword() == null
-                || expertSignUpCommand.getService() == null || expertSignUpCommand.getImageData() == null) {
+        if (expertDTO.getFirstName() == null || expertDTO.getLastName() == null
+                || expertDTO.getEmail() == null || expertDTO.getPassword() == null
+                || expertDTO.getService() == null || expertDTO.getImageData() == null) {
             throw new EmptyFieldException("Field must be filled out.");
         }
-        String [] path = expertSignUpCommand.getImageData().getPath().split("\\.");
-        if (validation.emailPatternMatches(expertSignUpCommand.getEmail())) {
+        String [] path = expertDTO.getImageData().getPath().split("\\.");
+        if (validation.emailPatternMatches(expertDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isExpertEmailDuplicated(expertSignUpCommand.getEmail())) {
+        } else if (isExpertEmailDuplicated(expertDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(expertSignUpCommand.getPassword())) {
+        } else if (validation.passwordPatternMatches(expertDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
         } else if (!path[path.length - 1].equalsIgnoreCase("JPG")) {
             throw new ImageFormatException("Image format must be jpg");
-        } else if (Files.size(Paths.get(expertSignUpCommand.getImageData().getPath())) > 300000) {
+        } else if (Files.size(Paths.get(expertDTO.getImageData().getPath())) > 300000) {
             throw new ImageSizeException("Image size must be less than 300kb");
         } else {
-            expertSignUpCommand.setSignUpDate(LocalDate.now());
-            expertSignUpCommand.setUserStatus(UserStatus.NEW);
-            expertSignUpCommand.setScore(0);
-            ExpertSIgnUpCommandToExpertConverter expertSIgnUpCommandToExpertConverter = new ExpertSIgnUpCommandToExpertConverter();
+            expertDTO.setSignUpDate(LocalDate.now());
+            expertDTO.setUserStatus(UserStatus.NEW);
+            expertDTO.setScore(0);
+            ExpertMapper expertMapper = new ExpertMapper();
             Expert expert = null;
             try {
-                expert = expertSIgnUpCommandToExpertConverter.convert(expertSignUpCommand);
+                expert = expertMapper.convert(expertDTO);
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
@@ -128,26 +128,26 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
-    public void createOffer(OfferCommand offerCommand) {
+    public void createOffer(OfferDTO offerDTO) {
         Validation validation = new Validation();
-        OfferCommandToOfferConverter offerCommandToOfferConverter = new OfferCommandToOfferConverter();
-        if (offerCommand.getExpert() == null || offerCommand.getOfferedPrice() == 0
-                || offerCommand.getExpertOfferedWorkDuration() == 0 || offerCommand.getOrder() == null
-                || offerCommand.getOfferedStartTime() == null || offerCommand.getOfferedStartDate() == null) {
+        OfferMapper offerMapper = new OfferMapper();
+        if (offerDTO.getExpert() == null || offerDTO.getOfferedPrice() == 0
+                || offerDTO.getExpertOfferedWorkDuration() == 0 || offerDTO.getOrder() == null
+                || offerDTO.getOfferedStartTime() == null || offerDTO.getOfferedStartDate() == null) {
             throw new EmptyFieldException("Fields must filled out.");
-        } else if (offerCommand.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
+        } else if (offerDTO.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
             throw new UserConfirmationException("User is not confirmed yet.");
-        } else if (!validation.isOfferedPriceValid(offerCommand, offerCommand.getOrder().getSubService())) {
+        } else if (!validation.isOfferedPriceValid(offerDTO, offerDTO.getOrder().getSubService())) {
             throw new InvalidPriceException("Price is not valid.");
-        } else if (!validation.isTimeValid(offerCommand.getOfferedStartTime())) {
+        } else if (!validation.isTimeValid(offerDTO.getOfferedStartTime())) {
             throw new InvalidTimeException("Time is invalid.");
-        } else if (!validation.isDateValid(offerCommand.getOfferedStartDate())) {
+        } else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
             throw new InvalidDateException("Date is invalid.");
         }else {
             try {
-                Offer offer = offerCommandToOfferConverter.convert(offerCommand);
+                Offer offer = offerMapper.convert(offerDTO);
                 offerRepository.save(offer);
-                Order order = orderRepository.findById(offerCommand.getOrder().getId()).get();
+                Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
                 order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
                 orderRepository.save(order);
             } catch (NoSuchAlgorithmException e) {

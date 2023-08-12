@@ -1,8 +1,7 @@
 package org.example.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.example.command.ServiceCommand;
-import org.example.command.SubServiceCommand;
+import org.example.dto.ServiceDTO;
+import org.example.dto.SubServiceDTO;
 import org.example.entity.SubService;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
@@ -70,9 +69,9 @@ class SubServiceServiceImplTest {
     @Test
     @Order(1)
     void findSubServicesByServiceId() {
-        adminService.addService(new ServiceCommand("serviceForSubServiceTest"));
+        adminService.addService(new ServiceDTO("serviceForSubServiceTest"));
         adminService.addSubService(
-                new SubServiceCommand(27000, "subServiceForSubServiceTest",
+                new SubServiceDTO(27000, "subServiceForSubServiceTest",
                         serviceService.findServiceByName("serviceForSubServiceTest").get())
         );
         assertNotNull(subServiceService.findSubServicesByServiceId(

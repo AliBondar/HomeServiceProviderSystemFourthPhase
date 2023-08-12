@@ -1,8 +1,8 @@
 package org.example.service.impl;
 
-import org.example.command.ExpertSignUpCommand;
-import org.example.command.OfferCommand;
-import org.example.command.ServiceCommand;
+import org.example.dto.ExpertDTO;
+import org.example.dto.OfferDTO;
+import org.example.dto.ServiceDTO;
 import org.example.entity.SubService;
 import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Expert;
@@ -67,116 +67,116 @@ class ExpertServiceImplTest {
     @Test
     @Order(6)
     void expertSignUp() throws IOException {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\cat.jpg";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("@Expert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
-        expertService.expertSignUp(expertSignUpCommand);
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("@Expert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
+        expertService.expertSignUp(expertDTO);
         assertEquals(expertService.findExpertByEmail("expert@gmail.com").get().getEmail(),
-                expertSignUpCommand.getEmail());
+                expertDTO.getEmail());
     }
 
     @Test
     @Order(1)
     void expertSignUpWhenEmptyFiledExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
-        adminService.addService(new ServiceCommand("testService"));
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("@Expert1234");
+        ExpertDTO expertDTO = new ExpertDTO();
+        adminService.addService(new ServiceDTO("testService"));
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("@Expert1234");
         assertThrows(EmptyFieldException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
     @Test
     @Order(2)
     void expertSignUpWhenInvalidEmailExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\cat.jpg";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expertcom");
-        expertSignUpCommand.setPassword("@Expert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expertcom");
+        expertDTO.setPassword("@Expert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(InvalidEmailException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
     @Test
     @Order(3)
     void expertSignUpWhenInvalidPasswordExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\cat.jpg";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("ert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("ert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(InvalidPasswordException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
     @Test
     @Order(7)
     void expertSignUpWhenDuplicatedEmailExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\cat.jpg";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("@Expert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("@Expert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(DuplicatedEmailException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
     @Test
     @Order(5)
     void expertSignUpWhenImageFormatExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\1995669.png";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("@Expert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("@Expert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(ImageFormatException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
     @Test
     @Order(4)
     void expertSignUpWhenImageSizeExceptionThrown_thenAssertionSucceeds() {
-        ExpertSignUpCommand expertSignUpCommand = new ExpertSignUpCommand();
+        ExpertDTO expertDTO = new ExpertDTO();
         String imageAddress = "D:\\Pictures\\Sky2.jpg";
         File file = new File(imageAddress);
-        expertSignUpCommand.setFirstName("expert");
-        expertSignUpCommand.setLastName("expertian");
-        expertSignUpCommand.setEmail("expert@gmail.com");
-        expertSignUpCommand.setPassword("@Expert1234");
-        expertSignUpCommand.setImageData(file);
-        expertSignUpCommand.setService(serviceService.findServiceByName("testService").get());
+        expertDTO.setFirstName("expert");
+        expertDTO.setLastName("expertian");
+        expertDTO.setEmail("expert@gmail.com");
+        expertDTO.setPassword("@Expert1234");
+        expertDTO.setImageData(file);
+        expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(ImageSizeException.class, () -> {
-            expertService.expertSignUp(expertSignUpCommand);
+            expertService.expertSignUp(expertDTO);
         });
     }
 
@@ -227,21 +227,21 @@ class ExpertServiceImplTest {
     @Test
     @Order(18)
     void createOffer() {
-        OfferCommand offerCommand = new OfferCommand();
-        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
-        offerCommand.setOfferedPrice(12000);
-        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
-        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
-        offerCommand.setExpertOfferedWorkDuration(2);
-        expertService.createOffer(offerCommand);
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerDTO.setOfferedPrice(12000);
+        offerDTO.setOfferedStartTime(LocalTime.of(20,10));
+        offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerDTO.setExpertOfferedWorkDuration(2);
+        expertService.createOffer(offerDTO);
         assertNotNull(expertService.findExpertByEmail("expert@gmail.com").get().getOfferList());
     }
 
     @Test
     @Order(13)
     void createOfferWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
-        OfferCommand offerCommand = new OfferCommand();
+        OfferDTO offerCommand = new OfferDTO();
         offerCommand.setExpert(null);
         assertThrows(EmptyFieldException.class, () -> {
             expertService.createOffer(offerCommand);
@@ -261,15 +261,15 @@ class ExpertServiceImplTest {
         order.setClientOfferedPrice(10000);
         order.setSubService(subService);
         orderRepository.save(order);
-        OfferCommand offerCommand = new OfferCommand();
-        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerCommand.setOrder(order);
-        offerCommand.setOfferedPrice(8000);
-        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
-        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
-        offerCommand.setExpertOfferedWorkDuration(2);
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerDTO.setOrder(order);
+        offerDTO.setOfferedPrice(8000);
+        offerDTO.setOfferedStartTime(LocalTime.of(20,10));
+        offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerDTO.setExpertOfferedWorkDuration(2);
         assertThrows(UserConfirmationException.class, () -> {
-            expertService.createOffer(offerCommand);
+            expertService.createOffer(offerDTO);
         });
     }
 
@@ -280,45 +280,45 @@ class ExpertServiceImplTest {
         Expert expert = expertService.findExpertByEmail("expert@gmail.com").get();
         expert.setUserStatus(UserStatus.CONFIRMED);
         expertRepository.save(expert);
-        OfferCommand offerCommand = new OfferCommand();
-        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
-        offerCommand.setOfferedPrice(8000);
-        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
-        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
-        offerCommand.setExpertOfferedWorkDuration(2);
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerDTO.setOfferedPrice(8000);
+        offerDTO.setOfferedStartTime(LocalTime.of(20,10));
+        offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerDTO.setExpertOfferedWorkDuration(2);
         assertThrows(InvalidPriceException.class, () -> {
-            expertService.createOffer(offerCommand);
+            expertService.createOffer(offerDTO);
         });
     }
 
     @Test
     @Order(16)
     void createOfferWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
-        OfferCommand offerCommand = new OfferCommand();
-        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
-        offerCommand.setOfferedPrice(12000);
-        offerCommand.setOfferedStartTime(LocalTime.of(23,10));
-        offerCommand.setOfferedStartDate(LocalDate.of(2023, 9,5));
-        offerCommand.setExpertOfferedWorkDuration(2);
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerDTO.setOfferedPrice(12000);
+        offerDTO.setOfferedStartTime(LocalTime.of(23,10));
+        offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
+        offerDTO.setExpertOfferedWorkDuration(2);
         assertThrows(InvalidTimeException.class, () -> {
-            expertService.createOffer(offerCommand);
+            expertService.createOffer(offerDTO);
         });
     }
 
     @Test
     @Order(17)
     void createOfferWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
-        OfferCommand offerCommand = new OfferCommand();
-        offerCommand.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerCommand.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
-        offerCommand.setOfferedPrice(12000);
-        offerCommand.setOfferedStartTime(LocalTime.of(20,10));
-        offerCommand.setOfferedStartDate(LocalDate.of(2020, 9,5));
-        offerCommand.setExpertOfferedWorkDuration(2);
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+        offerDTO.setOfferedPrice(12000);
+        offerDTO.setOfferedStartTime(LocalTime.of(20,10));
+        offerDTO.setOfferedStartDate(LocalDate.of(2020, 9,5));
+        offerDTO.setExpertOfferedWorkDuration(2);
         assertThrows(InvalidDateException.class, () -> {
-            expertService.createOffer(offerCommand);
+            expertService.createOffer(offerDTO);
         });
     }
 
