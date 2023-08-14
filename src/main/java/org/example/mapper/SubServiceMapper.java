@@ -5,7 +5,7 @@ import org.example.entity.SubService;
 
 import java.security.NoSuchAlgorithmException;
 
-public class SubServiceMapper implements BaseConverter<SubServiceDTO, SubService> {
+public class SubServiceMapper implements BaseMapper<SubServiceDTO, SubService> {
 
     @Override
     public SubService convert(SubServiceDTO subServiceDTO) throws NoSuchAlgorithmException {
@@ -18,6 +18,10 @@ public class SubServiceMapper implements BaseConverter<SubServiceDTO, SubService
 
     @Override
     public SubServiceDTO convert(SubService subService) throws NoSuchAlgorithmException {
-        return null;
+        SubServiceDTO subServiceDTO = new SubServiceDTO();
+        subServiceDTO.setBasePrice(subService.getBasePrice());
+        subServiceDTO.setDescription(subService.getDescription());
+        subServiceDTO.setService(subServiceDTO.getService());
+        return subServiceDTO;
     }
 }

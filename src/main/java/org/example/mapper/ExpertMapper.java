@@ -9,7 +9,7 @@ import org.example.security.PasswordHash;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-public class ExpertMapper implements BaseConverter<ExpertDTO, Expert> {
+public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
 
     @Override
     public Expert convert(ExpertDTO expertDTO) throws NoSuchAlgorithmException {

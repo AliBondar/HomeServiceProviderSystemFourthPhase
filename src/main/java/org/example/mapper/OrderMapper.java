@@ -7,7 +7,7 @@ import org.example.entity.enums.OrderStatus;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 
-public class OrderMapper implements BaseConverter<OrderDTO, Order> {
+public class OrderMapper implements BaseMapper<OrderDTO, Order> {
 
 
     @Override
@@ -27,6 +27,16 @@ public class OrderMapper implements BaseConverter<OrderDTO, Order> {
 
     @Override
     public OrderDTO convert(Order order) throws NoSuchAlgorithmException {
-        return null;
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setDescription(order.getDescription());
+        orderDTO.setLocalDate(order.getLocalDate());
+        orderDTO.setLocalTime(order.getTime().toLocalTime());
+        orderDTO.setOrderStatus(order.getOrderStatus());
+        orderDTO.setPaid(order.getPaid());
+        orderDTO.setClient(order.getClient());
+        orderDTO.setSubService(order.getSubService());
+        orderDTO.setClientOfferedPrice(order.getClientOfferedPrice());
+        orderDTO.setClientOfferedWorkDuration(order.getClientOfferedWorkDuration());
+        return orderDTO;
     }
 }

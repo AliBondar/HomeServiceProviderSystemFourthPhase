@@ -6,7 +6,7 @@ import org.example.security.PasswordHash;
 
 import java.security.NoSuchAlgorithmException;
 
-public class AdminMapper implements BaseConverter<AdminDTO, Admin> {
+public class AdminMapper implements BaseMapper<AdminDTO, Admin> {
 
     PasswordHash passwordHash = new PasswordHash();
 

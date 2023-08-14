@@ -5,7 +5,7 @@ import org.example.dto.BaseDTO;
 
 import java.security.NoSuchAlgorithmException;
 
-public interface BaseConverter<C extends BaseDTO<Long>, T extends BaseEntity<Long>> {
+public interface BaseMapper<C extends BaseDTO<Long>, T extends BaseEntity<Long>> {
 
     T convert (C c) throws NoSuchAlgorithmException;
 

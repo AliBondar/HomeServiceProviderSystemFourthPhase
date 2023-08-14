@@ -6,7 +6,7 @@ import org.example.security.PasswordHash;
 
 import java.security.NoSuchAlgorithmException;
 
-public class ClientMapper implements BaseConverter<ClientDTO, Client> {
+public class ClientMapper implements BaseMapper<ClientDTO, Client> {
 
     PasswordHash passwordHash = new PasswordHash();
 

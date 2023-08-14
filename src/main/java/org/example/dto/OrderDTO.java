@@ -3,6 +3,7 @@ package org.example.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.entity.SubService;
+import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 
 import java.time.LocalDate;
@@ -21,6 +22,10 @@ public class OrderDTO extends BaseDTO<Long> {
     LocalDate localDate;
 
     LocalTime localTime;
+
+    OrderStatus orderStatus;
+
+    double paid;
 
     double clientOfferedPrice;
 

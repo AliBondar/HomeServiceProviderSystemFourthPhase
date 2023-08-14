@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.time.LocalDate;
 
-public class OfferMapper implements BaseConverter<OfferDTO, Offer> {
+public class OfferMapper implements BaseMapper<OfferDTO, Offer> {
     @Override
     public Offer convert(OfferDTO offerDTO) throws NoSuchAlgorithmException {
         Offer offer = new Offer();
@@ -25,6 +25,16 @@ public class OfferMapper implements BaseConverter<OfferDTO, Offer> {
 
     @Override
     public OfferDTO convert(Offer offer) throws NoSuchAlgorithmException {
-        return null;
+        OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setExpert(offer.getExpert());
+        offerDTO.setOrder(offer.getOrder());
+        offerDTO.setOfferedPrice(offer.getOfferedPrice());
+        offerDTO.setOfferedStartDate(offer.getOfferedStartDate());
+        offerDTO.setOfferSignedDate(offer.getOfferSignedDate());
+        offerDTO.setOfferedStartTime(offer.getOfferedStartTime().toLocalTime());
+        offerDTO.setWorkTimeType(offer.getWorkTimeType());
+        offerDTO.setAccepted(offer.isAccepted());
+        offerDTO.setExpertOfferedWorkDuration(offer.getExpertOfferedWorkDuration());
+        return offerDTO;
     }
 }
