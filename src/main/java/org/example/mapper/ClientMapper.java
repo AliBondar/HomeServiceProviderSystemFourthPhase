@@ -11,24 +11,32 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
     PasswordHash passwordHash = new PasswordHash();
 
     @Override
-    public Client convert(ClientDTO clientDTO) throws NoSuchAlgorithmException {
+    public Client convert(ClientDTO clientDTO) {
         Client client = new Client();
         client.setFirstName(clientDTO.getFirstName());
         client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());
-        client.setPassword(passwordHash.createHashedPassword(clientDTO.getPassword()));
+        try {
+            client.setPassword(passwordHash.createHashedPassword(clientDTO.getPassword()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         client.setSignUpDate(clientDTO.getSignUpDate());
         client.setUserStatus(clientDTO.getUserStatus());
         return client;
     }
 
     @Override
-    public ClientDTO convert(Client client) throws NoSuchAlgorithmException {
+    public ClientDTO convert(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setFirstName(client.getFirstName());
         clientDTO.setLastName(client.getLastName());
         clientDTO.setEmail(client.getEmail());
-        clientDTO.setPassword(passwordHash.createHashedPassword(client.getPassword()));
+        try {
+            clientDTO.setPassword(passwordHash.createHashedPassword(client.getPassword()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         clientDTO.setSignUpDate(client.getSignUpDate());
         clientDTO.setUserStatus(client.getUserStatus());
         return clientDTO;

@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 public class SubServiceMapper implements BaseMapper<SubServiceDTO, SubService> {
 
     @Override
-    public SubService convert(SubServiceDTO subServiceDTO) throws NoSuchAlgorithmException {
+    public SubService convert(SubServiceDTO subServiceDTO) {
         SubService subService = new SubService();
         subService.setBasePrice(subServiceDTO.getBasePrice());
         subService.setDescription(subServiceDTO.getDescription());
@@ -17,7 +17,7 @@ public class SubServiceMapper implements BaseMapper<SubServiceDTO, SubService> {
     }
 
     @Override
-    public SubServiceDTO convert(SubService subService) throws NoSuchAlgorithmException {
+    public SubServiceDTO convert(SubService subService) {
         SubServiceDTO subServiceDTO = new SubServiceDTO();
         subServiceDTO.setBasePrice(subService.getBasePrice());
         subServiceDTO.setDescription(subService.getDescription());

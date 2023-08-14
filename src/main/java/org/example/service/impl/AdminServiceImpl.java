@@ -140,12 +140,8 @@ public class AdminServiceImpl implements AdminService {
             throw new NotFoundTheServiceException("Couldn't find the service !");
         } else {
             SubServiceMapper subServiceMapper = new SubServiceMapper();
-            try {
-                SubService subService = subServiceMapper.convert(subServiceDTO);
-                subServiceRepository.save(subService);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            SubService subService = subServiceMapper.convert(subServiceDTO);
+            subServiceRepository.save(subService);
         }
     }
 

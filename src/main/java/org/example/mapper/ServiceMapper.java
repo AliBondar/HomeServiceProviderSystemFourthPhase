@@ -8,14 +8,14 @@ import java.security.NoSuchAlgorithmException;
 public class ServiceMapper implements BaseMapper<ServiceDTO, Service> {
 
     @Override
-    public Service convert(ServiceDTO serviceDTO) throws NoSuchAlgorithmException {
+    public Service convert(ServiceDTO serviceDTO) {
         Service service = new Service();
         service.setName(serviceDTO.getName());
         return service;
     }
 
     @Override
-    public ServiceDTO convert(Service service) throws NoSuchAlgorithmException {
+    public ServiceDTO convert(Service service) {
         ServiceDTO serviceDTO = new ServiceDTO();
         serviceDTO.setName(service.getName());
         return serviceDTO;

@@ -11,7 +11,7 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
 
 
     @Override
-    public Order convert(OrderDTO orderDTO) throws NoSuchAlgorithmException {
+    public Order convert(OrderDTO orderDTO) {
         Order order = new Order();
         order.setDescription(orderDTO.getDescription());
         order.setLocalDate(orderDTO.getLocalDate());
@@ -26,7 +26,7 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
     }
 
     @Override
-    public OrderDTO convert(Order order) throws NoSuchAlgorithmException {
+    public OrderDTO convert(Order order) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setDescription(order.getDescription());
         orderDTO.setLocalDate(order.getLocalDate());

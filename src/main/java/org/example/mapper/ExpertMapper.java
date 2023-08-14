@@ -12,13 +12,17 @@ import java.security.NoSuchAlgorithmException;
 public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
 
     @Override
-    public Expert convert(ExpertDTO expertDTO) throws NoSuchAlgorithmException {
+    public Expert convert(ExpertDTO expertDTO)  {
         Expert expert = new Expert();
         PasswordHash passwordHash = new PasswordHash();
         expert.setFirstName(expertDTO.getFirstName());
         expert.setLastName(expertDTO.getLastName());
         expert.setEmail(expertDTO.getEmail());
-        expert.setPassword(passwordHash.createHashedPassword(expertDTO.getPassword()));
+        try {
+            expert.setPassword(passwordHash.createHashedPassword(expertDTO.getPassword()));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         expert.setSignUpDate(expertDTO.getSignUpDate());
         expert.setScore(expertDTO.getScore());
         expert.setUserStatus(expertDTO.getUserStatus());
@@ -32,7 +36,7 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
     }
 
     @Override
-    public ExpertDTO convert(Expert expert) throws NoSuchAlgorithmException {
+    public ExpertDTO convert(Expert expert) {
         return null;
     }
 }

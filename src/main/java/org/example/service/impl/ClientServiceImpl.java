@@ -21,11 +21,14 @@ import org.example.security.PasswordHash;
 import org.example.service.ClientService;
 import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +40,39 @@ public class ClientServiceImpl implements ClientService {
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final OfferRepository offerRepository;
+    private final ClientMapper clientMapper;
+
+
+    @Override
+    public void save(ClientDTO clientDTO) {
+        Client client = clientMapper.convert(clientDTO);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public void delete(ClientDTO clientDTO) {
+        Client client = clientMapper.convert(clientDTO);
+        clientRepository.delete(client);
+    }
+
+    @Override
+    public ClientDTO findById(Long id) {
+        Optional<Client> client = clientRepository.findById(id);
+        return client.map(clientMapper::convert).orElse(null);
+    }
+
+    @Override
+    public List<ClientDTO> findAll() {
+        List<Client> clients = clientRepository.findAll();
+        List<ClientDTO> clientDTOList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(clients)) return null;
+        else {
+            for (Client client : clients) {
+                clientDTOList.add(clientMapper.convert(client));
+            }
+            return clientDTOList;
+        }
+    }
 
     @Override
     public Optional<Client> findClientByEmail(String email) {
@@ -75,11 +111,7 @@ public class ClientServiceImpl implements ClientService {
             clientDTO.setUserStatus(UserStatus.CLIENT);
             ClientMapper clientmapper = new ClientMapper();
             Client client = null;
-            try {
-                client = clientmapper.convert(clientDTO);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            client = clientmapper.convert(clientDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
@@ -104,12 +136,8 @@ public class ClientServiceImpl implements ClientService {
         } else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
         } else {
-            try {
-                Client client = clientmapper.convert(clientDTO);
-                System.out.println("Welcome " + client.getFirstName() + " " + client.getLastName());
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            Client client = clientmapper.convert(clientDTO);
+            System.out.println("Welcome " + client.getFirstName() + " " + client.getLastName());
         }
     }
 
@@ -179,7 +207,7 @@ public class ClientServiceImpl implements ClientService {
             throw new NotFoundTheOfferException("Couldn't find the offer.");
         } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
             throw new InvalidDateException("Invalid date.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))){
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))) {
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();
@@ -190,7 +218,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void changeOrderStatusToDone(Long orderId) {
-        if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED){
+        if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();

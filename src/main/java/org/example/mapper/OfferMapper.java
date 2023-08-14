@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 public class OfferMapper implements BaseMapper<OfferDTO, Offer> {
     @Override
-    public Offer convert(OfferDTO offerDTO) throws NoSuchAlgorithmException {
+    public Offer convert(OfferDTO offerDTO) {
         Offer offer = new Offer();
         offer.setExpert(offerDTO.getExpert());
         offer.setOrder(offerDTO.getOrder());
@@ -24,7 +24,7 @@ public class OfferMapper implements BaseMapper<OfferDTO, Offer> {
     }
 
     @Override
-    public OfferDTO convert(Offer offer) throws NoSuchAlgorithmException {
+    public OfferDTO convert(Offer offer) {
         OfferDTO offerDTO = new OfferDTO();
         offerDTO.setExpert(offer.getExpert());
         offerDTO.setOrder(offer.getOrder());

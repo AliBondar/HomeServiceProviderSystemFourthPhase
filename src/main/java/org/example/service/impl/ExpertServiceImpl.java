@@ -1,6 +1,7 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
 import org.example.mapper.ExpertMapper;
@@ -19,13 +20,16 @@ import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
 import org.example.validation.Validation;
+import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,38 @@ public class ExpertServiceImpl implements ExpertService {
     private final WalletRepository walletRepository;
     private final OfferRepository offerRepository;
     private final OrderRepository orderRepository;
+    private final ExpertMapper expertMapper;
+
+    @Override
+    public void save(ExpertDTO expertDTO) {
+        Expert expert = expertMapper.convert(expertDTO);
+        expertRepository.save(expert);
+    }
+
+    @Override
+    public void delete(ExpertDTO expertDTO) {
+        Expert expert = expertMapper.convert(expertDTO);
+        expertRepository.delete(expert);
+    }
+
+    @Override
+    public ExpertDTO findById(Long id) {
+        Optional<Expert> expert = expertRepository.findById(id);
+        return expert.map(expertMapper::convert).orElse(null);
+    }
+
+    @Override
+    public List<ExpertDTO> findAll() {
+        List<Expert> experts = expertRepository.findAll();
+        List<ExpertDTO> expertDTOList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(experts)) return null;
+        else {
+            for (Expert expert : experts){
+                expertDTOList.add(expertMapper.convert(expert));
+            }
+            return expertDTOList;
+        }
+    }
 
     @Override
     public Optional<Expert> findExpertByEmail(String email) {
@@ -65,7 +101,7 @@ public class ExpertServiceImpl implements ExpertService {
                 || expertDTO.getService() == null || expertDTO.getImageData() == null) {
             throw new EmptyFieldException("Field must be filled out.");
         }
-        String [] path = expertDTO.getImageData().getPath().split("\\.");
+        String[] path = expertDTO.getImageData().getPath().split("\\.");
         if (validation.emailPatternMatches(expertDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
         } else if (isExpertEmailDuplicated(expertDTO.getEmail())) {
@@ -82,11 +118,7 @@ public class ExpertServiceImpl implements ExpertService {
             expertDTO.setScore(0);
             ExpertMapper expertMapper = new ExpertMapper();
             Expert expert = null;
-            try {
-                expert = expertMapper.convert(expertDTO);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            expert = expertMapper.convert(expertDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
@@ -143,7 +175,7 @@ public class ExpertServiceImpl implements ExpertService {
             throw new InvalidTimeException("Time is invalid.");
         } else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
             throw new InvalidDateException("Date is invalid.");
-        }else {
+        } else {
             try {
                 Offer offer = offerMapper.convert(offerDTO);
                 offerRepository.save(offer);
