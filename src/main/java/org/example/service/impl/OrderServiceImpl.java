@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderMapper orderMapper;
+    private final OrderMapper orderMapper = new OrderMapper();
 
     @Override
     public void save(OrderDTO orderDTO) {

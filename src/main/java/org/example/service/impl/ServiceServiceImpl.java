@@ -19,7 +19,7 @@ import java.util.Optional;
 public class ServiceServiceImpl implements ServiceService {
 
     private final ServiceRepository serviceRepository;
-    private final ServiceMapper serviceMapper;
+    private final ServiceMapper serviceMapper = new ServiceMapper();
 
     @Override
     public void save(ServiceDTO serviceDTO) {

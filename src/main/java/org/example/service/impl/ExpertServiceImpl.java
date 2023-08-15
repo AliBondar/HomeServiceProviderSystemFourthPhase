@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
@@ -19,6 +20,8 @@ import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
+import org.example.service.OfferService;
+import org.example.service.OrderService;
 import org.example.validation.Validation;
 import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.stereotype.Service;
@@ -35,13 +38,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ExpertServiceImpl implements ExpertService {
 
     private final ExpertRepository expertRepository;
     private final WalletRepository walletRepository;
     private final OfferRepository offerRepository;
     private final OrderRepository orderRepository;
-    private final ExpertMapper expertMapper;
+    private final OfferService offerService;
+    private final ExpertMapper expertMapper = new ExpertMapper();
 
     @Override
     public void save(ExpertDTO expertDTO) {
@@ -117,13 +122,14 @@ public class ExpertServiceImpl implements ExpertService {
             expertDTO.setUserStatus(UserStatus.NEW);
             expertDTO.setScore(0);
             ExpertMapper expertMapper = new ExpertMapper();
-            Expert expert = null;
-            expert = expertMapper.convert(expertDTO);
+//            Expert expert = null;
+//            expert = expertMapper.convert(expertDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
-            expert.setWallet(wallet);
-            expertRepository.save(expert);
+            expertDTO.setWallet(wallet);
+//            expertRepository.save(expert);
+            this.save(expertDTO);
         }
     }
 
@@ -176,15 +182,12 @@ public class ExpertServiceImpl implements ExpertService {
         } else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
             throw new InvalidDateException("Date is invalid.");
         } else {
-            try {
-                Offer offer = offerMapper.convert(offerDTO);
-                offerRepository.save(offer);
-                Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
-                order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
-                orderRepository.save(order);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+//            Offer offer = offerMapper.convert(offerDTO);
+//            offerRepository.save(offer);
+            offerService.save(offerDTO);
+            Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
+            order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
+            orderRepository.save(order);
         }
     }
 }

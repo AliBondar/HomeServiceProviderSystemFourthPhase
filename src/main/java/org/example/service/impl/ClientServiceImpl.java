@@ -19,6 +19,7 @@ import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ClientService;
+import org.example.service.OrderService;
 import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +41,8 @@ public class ClientServiceImpl implements ClientService {
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final OfferRepository offerRepository;
-    private final ClientMapper clientMapper;
+    private final OrderService orderService;
+    private final ClientMapper clientMapper = new ClientMapper();
 
 
     @Override
@@ -109,14 +111,15 @@ public class ClientServiceImpl implements ClientService {
         } else {
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
-            ClientMapper clientmapper = new ClientMapper();
-            Client client = null;
-            client = clientmapper.convert(clientDTO);
+//            Client client = null;
+//            client = clientmapper.convert(clientDTO);
+//            this.save(clientDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
-            client.setWallet(wallet);
-            clientRepository.save(client);
+            clientDTO.setWallet(wallet);
+            this.save(clientDTO);
+//            clientRepository.save(client);
         }
     }
 
@@ -180,12 +183,9 @@ public class ClientServiceImpl implements ClientService {
         } else if (!validation.isOfferedPriceValid(orderDTO, orderDTO.getSubService())) {
             throw new InvalidPriceException("Invalid price.");
         } else {
-            try {
-                Order order = orderMapper.convert(orderDTO);
-                orderRepository.save(order);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+            orderService.save(orderDTO);
+//            Order order = orderMapper.convert(orderDTO);
+//            orderRepository.save(order);
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.*;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
-    private final OfferMapper offerMapper;
+    private final OfferMapper offerMapper = new OfferMapper();
 
     @Override
     public void save(OfferDTO offerDTO) {

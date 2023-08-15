@@ -8,6 +8,7 @@ import org.example.mapper.SubServiceMapper;
 import org.example.repository.SubServiceRepository;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,7 +23,7 @@ public class SubServiceServiceImpl implements SubServiceService {
 
     private final SubServiceRepository subServiceRepository;
     private final ServiceService serviceService;
-    private final SubServiceMapper subServiceMapper;
+    private final  SubServiceMapper subServiceMapper = new SubServiceMapper();
 
     @Override
     public void save(SubServiceDTO subServiceDTO) {
