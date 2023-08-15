@@ -111,15 +111,11 @@ public class ClientServiceImpl implements ClientService {
         } else {
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
-//            Client client = null;
-//            client = clientmapper.convert(clientDTO);
-//            this.save(clientDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
             this.save(clientDTO);
-//            clientRepository.save(client);
         }
     }
 
@@ -184,8 +180,6 @@ public class ClientServiceImpl implements ClientService {
             throw new InvalidPriceException("Invalid price.");
         } else {
             orderService.save(orderDTO);
-//            Order order = orderMapper.convert(orderDTO);
-//            orderRepository.save(order);
         }
     }
 

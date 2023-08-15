@@ -121,9 +121,7 @@ public class AdminServiceImpl implements AdminService {
         if (isServiceDuplicated(serviceDTO.getName())) {
             throw new DuplicatedServiceException("Service already exists !");
         } else {
-            org.example.entity.Service service = new org.example.entity.Service();
-            service.setName(serviceDTO.getName());
-            serviceRepository.save(service);
+            serviceService.save(serviceDTO);
         }
     }
 
@@ -139,9 +137,7 @@ public class AdminServiceImpl implements AdminService {
         } else if (serviceService.findServiceByName(subServiceDTO.getService().getName()).isEmpty()) {
             throw new NotFoundTheServiceException("Couldn't find the service !");
         } else {
-            SubServiceMapper subServiceMapper = new SubServiceMapper();
-            SubService subService = subServiceMapper.convert(subServiceDTO);
-            subServiceRepository.save(subService);
+            subServiceService.save(subServiceDTO);
         }
     }
 

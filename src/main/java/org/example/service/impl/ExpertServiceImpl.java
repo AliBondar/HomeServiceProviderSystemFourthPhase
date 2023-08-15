@@ -43,7 +43,6 @@ public class ExpertServiceImpl implements ExpertService {
 
     private final ExpertRepository expertRepository;
     private final WalletRepository walletRepository;
-    private final OfferRepository offerRepository;
     private final OrderRepository orderRepository;
     private final OfferService offerService;
     private final ExpertMapper expertMapper = new ExpertMapper();
@@ -121,14 +120,10 @@ public class ExpertServiceImpl implements ExpertService {
             expertDTO.setSignUpDate(LocalDate.now());
             expertDTO.setUserStatus(UserStatus.NEW);
             expertDTO.setScore(0);
-            ExpertMapper expertMapper = new ExpertMapper();
-//            Expert expert = null;
-//            expert = expertMapper.convert(expertDTO);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
             expertDTO.setWallet(wallet);
-//            expertRepository.save(expert);
             this.save(expertDTO);
         }
     }
@@ -182,8 +177,6 @@ public class ExpertServiceImpl implements ExpertService {
         } else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
             throw new InvalidDateException("Date is invalid.");
         } else {
-//            Offer offer = offerMapper.convert(offerDTO);
-//            offerRepository.save(offer);
             offerService.save(offerDTO);
             Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
             order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
