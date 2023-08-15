@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.mapper.ClientMapper;
-import org.example.mapper.OrderMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -122,7 +121,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void clientLogin(ClientDTO clientDTO) {
         Validation validation = new Validation();
-        PasswordHash passwordHash = new PasswordHash();
         ClientMapper clientmapper = new ClientMapper();
         if (clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must filled out !");
@@ -167,7 +165,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void createOrder(OrderDTO orderDTO) {
         Validation validation = new Validation();
-        OrderMapper orderMapper = new OrderMapper();
         if (orderDTO.getClientOfferedPrice() == 0 || orderDTO.getDescription() == null
                 || orderDTO.getLocalTime() == null || orderDTO.getLocalDate() == null
                 || orderDTO.getSubService() == null || orderDTO.getClientOfferedWorkDuration() == 0) {

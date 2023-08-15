@@ -2,12 +2,9 @@ package org.example.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
 import org.example.mapper.ExpertMapper;
-import org.example.mapper.OfferMapper;
-import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
 import org.example.entity.enums.OrderStatus;
@@ -15,15 +12,12 @@ import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
 import org.example.repository.ExpertRepository;
-import org.example.repository.OfferRepository;
 import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
 import org.example.service.OfferService;
-import org.example.service.OrderService;
 import org.example.validation.Validation;
-import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -163,7 +157,6 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public void createOffer(OfferDTO offerDTO) {
         Validation validation = new Validation();
-        OfferMapper offerMapper = new OfferMapper();
         if (offerDTO.getExpert() == null || offerDTO.getOfferedPrice() == 0
                 || offerDTO.getExpertOfferedWorkDuration() == 0 || offerDTO.getOrder() == null
                 || offerDTO.getOfferedStartTime() == null || offerDTO.getOfferedStartDate() == null) {

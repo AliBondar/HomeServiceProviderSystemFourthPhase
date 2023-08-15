@@ -2,8 +2,6 @@ package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ServiceDTO;
-import org.example.mapper.OfferMapper;
-import org.example.mapper.OrderMapper;
 import org.example.mapper.ServiceMapper;
 import org.example.repository.ServiceRepository;
 import org.example.service.ServiceService;

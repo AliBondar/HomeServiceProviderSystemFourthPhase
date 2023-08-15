@@ -1,14 +1,11 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
 import org.example.entity.SubService;
 import org.example.mapper.SubServiceMapper;
 import org.example.repository.SubServiceRepository;
-import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -22,7 +19,6 @@ import java.util.Optional;
 public class SubServiceServiceImpl implements SubServiceService {
 
     private final SubServiceRepository subServiceRepository;
-    private final ServiceService serviceService;
     private final  SubServiceMapper subServiceMapper = new SubServiceMapper();
 
     @Override
