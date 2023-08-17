@@ -23,6 +23,7 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
         }
         client.setSignUpDate(clientDTO.getSignUpDate());
         client.setUserStatus(clientDTO.getUserStatus());
+        client.setWallet(clientDTO.getWallet());
         return client;
     }
 
@@ -39,6 +40,7 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
         }
         clientDTO.setSignUpDate(client.getSignUpDate());
         clientDTO.setUserStatus(client.getUserStatus());
+        clientDTO.setWallet(client.getWallet());
         return clientDTO;
     }
 }

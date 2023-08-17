@@ -209,7 +209,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void changeOrderStatusToDone(Long orderId) {
-        if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
+        if (orderRepository.findById(orderId).isEmpty()){
+            throw new NotFoundTheOrderException("not found the order.");
+        } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();

@@ -27,6 +27,7 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
         expert.setScore(expertDTO.getScore());
         expert.setUserStatus(expertDTO.getUserStatus());
         expert.setService(expertDTO.getService());
+        expert.setWallet(expertDTO.getWallet());
         try {
             expert.setImageData(FileUtils.readFileToByteArray(expertDTO.getImageData()));
         } catch (IOException e) {

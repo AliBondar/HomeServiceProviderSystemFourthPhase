@@ -19,6 +19,7 @@ public class AdminMapper implements BaseMapper<AdminDTO, Admin> {
         admin.setPassword(passwordHash.createHashedPassword(adminDTO.getPassword()));
         admin.setSignUpDate(adminDTO.getSignUpDate());
         admin.setUserStatus(adminDTO.getUserStatus());
+        admin.setWallet(adminDTO.getWallet());
         return admin;
     }
 
