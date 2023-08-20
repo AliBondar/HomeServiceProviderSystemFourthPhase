@@ -64,5 +64,8 @@ public class ExpertController {
         return offerService.findAcceptedOffersByExpertId(id);
     }
 
-
+    @GetMapping("/show-expert-score")
+    public int showExpertScore(Long id){
+        return expertService.findById(id).getScore();
+    }
 }

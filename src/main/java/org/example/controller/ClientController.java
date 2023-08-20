@@ -2,10 +2,7 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.*;
-import org.example.entity.Offer;
-import org.example.entity.Order;
-import org.example.entity.Service;
-import org.example.entity.SubService;
+import org.example.entity.*;
 import org.example.entity.users.Client;
 import org.example.repository.ClientRepository;
 import org.example.service.*;
@@ -86,4 +83,6 @@ public class ClientController {
     public WalletDTO findClientWalletByEmailAndPassword(String email, String password){
         return walletService.findClientWalletByEmailAndPassword(email, password).get();
     }
+
+
 }
