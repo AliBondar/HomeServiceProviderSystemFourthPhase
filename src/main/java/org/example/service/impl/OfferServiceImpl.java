@@ -75,6 +75,11 @@ public class OfferServiceImpl implements OfferService {
         }
     }
 
+    @Override
+    public List<Offer> findAcceptedOffersByExpertId(Long id) {
+        return offerRepository.findAcceptedOffersByExpertId(id);
+    }
+
     //TODO
     @Override
     public List<OfferDTO> findNewOffersByOrderId(Long id) {

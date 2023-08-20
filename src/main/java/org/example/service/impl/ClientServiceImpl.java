@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
+import org.example.entity.users.Expert;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
@@ -12,13 +13,9 @@ import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
-import org.example.repository.ClientRepository;
-import org.example.repository.OfferRepository;
-import org.example.repository.OrderRepository;
-import org.example.repository.WalletRepository;
+import org.example.repository.*;
 import org.example.security.PasswordHash;
-import org.example.service.ClientService;
-import org.example.service.OrderService;
+import org.example.service.*;
 import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -40,8 +37,12 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
-    private final OfferRepository offerRepository;
     private final OrderService orderService;
+    private final OfferRepository offerRepository;
+    private final OfferService offerService;
+    private final ExpertService expertService;
+    private final ExpertRepository expertRepository;
+    private final AdminService adminService;
     private final ClientMapper clientMapper = new ClientMapper();
 
 
@@ -210,15 +211,20 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void changeOrderStatusToDone(Long orderId) {
-        if (orderRepository.findById(orderId).isEmpty()){
+        if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("not found the order.");
         } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();
             Offer acceptedOffer = offerRepository.findAcceptedOfferByOrderId(orderId).get();
-            if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()){
-                //TODO
+            Expert expert = acceptedOffer.getExpert();
+            if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()) {
+                expert.setScore(acceptedOffer.getExpert().getScore() - acceptedOffer.getExpertOfferedWorkDuration());
+                if (expert.getScore() < 0){
+                    adminService.editExpertStatus(expert.getId(), UserStatus.DISABLED);
+                }
+                expertRepository.save(expert);
             }
             order.setOrderStatus(OrderStatus.DONE);
             orderRepository.save(order);

@@ -19,12 +19,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
 
-    private ClientService clientService;
-    private  OrderService orderService;
-    private OfferService offerService;
-    private ServiceService serviceService;
-    private SubServiceService subServiceService;
-    private WalletService walletService;
+    private final ClientService clientService;
+    private  final OrderService orderService;
+    private final OfferService offerService;
+    private final ServiceService serviceService;
+    private final SubServiceService subServiceService;
+    private final WalletService walletService;
 
     @PostMapping("/client-signup")
     @ResponseBody

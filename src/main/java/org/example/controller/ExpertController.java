@@ -4,8 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
 import org.example.dto.OrderDTO;
+import org.example.entity.Offer;
+import org.example.entity.Order;
+import org.example.entity.SubService;
 import org.example.service.ExpertService;
+import org.example.service.OfferService;
 import org.example.service.OrderService;
+import org.example.service.SubServiceService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -19,6 +24,8 @@ public class ExpertController {
 
     private final ExpertService expertService;
     private final OrderService orderService;
+    private final SubServiceService subServiceService;
+    private final OfferService offerService;
 
     @PostMapping("/expert-signup")
     @ResponseBody
@@ -32,7 +39,7 @@ public class ExpertController {
 
     @PostMapping("/edit-expert-password")
     @ResponseBody
-    public void editExpertPassword(@RequestBody Long expertId,@RequestBody String password) {
+    public void editExpertPassword(@RequestBody Long expertId, @RequestBody String password) {
         expertService.editExpertPassword(expertId, password);
     }
 
@@ -43,9 +50,19 @@ public class ExpertController {
     }
 
     @GetMapping("/show-new-orders")
-    public List<OrderDTO> findNewOrdersBySubServiceId(Long id){
-        List<OrderDTO> orderDTOList = new ArrayList<>();
-        orderService.findNewOrdersBySubServiceId(id);
-        return orderDTOList;
+    public List<Order> findNewOrdersBySubServiceId(Long id) {
+        return orderService.findNewOrdersBySubServiceId(id);
     }
+
+    @GetMapping("/show-sub-services-by-expert")
+    public List<SubService> findSubServicesByExpertId(Long id) {
+        return subServiceService.findByExpertId(id);
+    }
+
+    @GetMapping("/show-accepted-offers-by-expert")
+    public List<Offer> findAcceptedOffersByExpertId(Long id){
+        return offerService.findAcceptedOffersByExpertId(id);
+    }
+
+
 }

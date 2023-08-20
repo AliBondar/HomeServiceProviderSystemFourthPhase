@@ -20,4 +20,7 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
 
     @Query("select o from Offer o where o.order.id = :id and o.isAccepted = true")
     Optional<Offer> findAcceptedOfferByOrderId(Long id);
+
+    @Query("select o from Offer o where o.expert.id = :id and o.isAccepted = true")
+    List<Offer> findAcceptedOffersByExpertId(Long id);
 }

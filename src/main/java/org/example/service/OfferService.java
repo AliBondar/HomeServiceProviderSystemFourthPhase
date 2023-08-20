@@ -25,5 +25,7 @@ public interface OfferService {
 
     Optional<Offer> findAcceptedOfferByOrderId(Long id);
 
+    List<Offer> findAcceptedOffersByExpertId(Long id);
+
     List<OfferDTO> findNewOffersByOrderId(Long id);
 }
