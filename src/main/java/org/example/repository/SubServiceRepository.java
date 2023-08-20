@@ -23,4 +23,6 @@ public interface SubServiceRepository extends JpaRepository<SubService, Long> {
     List<SubService> findSubServicesByService(Service service);
 
     Optional<SubService> findSubServiceByDescription(String description);
+
+    List<SubService> findSubServicesByServiceName(String name);
 }

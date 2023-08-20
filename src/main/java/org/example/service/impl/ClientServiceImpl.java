@@ -25,6 +25,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -215,8 +216,18 @@ public class ClientServiceImpl implements ClientService {
             throw new InvalidTimeException("Invalid time.");
         } else {
             Order order = orderRepository.findById(orderId).get();
+            Offer acceptedOffer = offerRepository.findAcceptedOfferByOrderId(orderId).get();
+            if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()){
+                //TODO
+            }
             order.setOrderStatus(OrderStatus.DONE);
             orderRepository.save(order);
         }
+    }
+
+    @Override
+    public int calculateDuration(LocalTime localTime) {
+        Duration duration = Duration.between(localTime, LocalTime.now());
+        return (int) duration.toHours();
     }
 }

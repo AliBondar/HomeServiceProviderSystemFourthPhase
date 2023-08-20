@@ -341,4 +341,9 @@ class ClientServiceImplTest {
         clientService.changeOrderStatusToDone(orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getId());
         assertEquals(OrderStatus.DONE, orderService.findOrdersByClientId(clientService.findClientByEmail("ali@gmail.com").get().getId()).get(0).getOrderStatus());
     }
+
+    @Test
+    void calculateHour(){
+        System.out.println(clientService.calculateDuration(LocalTime.of(17, 30)));
+    }
 }

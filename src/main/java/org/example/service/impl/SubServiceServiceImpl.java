@@ -80,4 +80,8 @@ public class SubServiceServiceImpl implements SubServiceService {
         }
     }
 
+    @Override
+    public List<SubService> findSubServicesByServiceName(String name) {
+        return subServiceRepository.findSubServicesByServiceName(name);
+    }
 }

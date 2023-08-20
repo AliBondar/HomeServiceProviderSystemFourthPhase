@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.OfferDTO;
 import org.example.entity.Offer;
 import org.example.entity.Order;
+import org.example.entity.enums.OrderStatus;
 import org.example.mapper.OfferMapper;
 import org.example.repository.OfferRepository;
 import org.example.service.OfferService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +61,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public List<Offer> findOffersByOrderId(Long id) {
-        return offerRepository.findOffersByOrderId(id);
+        List<Offer> offers = offerRepository.findOffersByOrderId(id);
+        offers.sort(Comparator.comparingDouble(Offer::getOfferedPrice).thenComparingInt(o -> o.getExpert().getScore()));
+        return offers;
     }
 
     @Override
@@ -69,5 +73,12 @@ public class OfferServiceImpl implements OfferService {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    //TODO
+    @Override
+    public List<OfferDTO> findNewOffersByOrderId(Long id) {
+        Predicate<OfferDTO> newOffer = offerDTO -> offerDTO.getOrder().getOrderStatus() == OrderStatus.WAITING_FOR_EXPERT_OFFER;
+        return null;
     }
 }

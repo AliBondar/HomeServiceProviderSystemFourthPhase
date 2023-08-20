@@ -17,7 +17,7 @@ import java.util.Optional;
 public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
-    private final WalletMapper walletMapper;
+    private final WalletMapper walletMapper = new WalletMapper();
 
     @Override
     public Optional<WalletDTO> findAdminWalletByEmailAndPassword(String email, String password) {

@@ -1,7 +1,6 @@
 package org.example.service;
 
 
-import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;

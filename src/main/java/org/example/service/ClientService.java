@@ -7,6 +7,7 @@ import org.example.dto.OrderDTO;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,5 +40,7 @@ public interface ClientService {
     void changeOrderStatusToStarted(Long orderId);
 
     void changeOrderStatusToDone(Long orderId);
+
+    int calculateDuration(LocalTime localTime);
 
 }

@@ -1,20 +1,30 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.ClientDTO;
-import org.example.dto.OrderDTO;
+import org.example.dto.*;
 import org.example.entity.Offer;
+import org.example.entity.Order;
+import org.example.entity.Service;
+import org.example.entity.SubService;
 import org.example.entity.users.Client;
 import org.example.repository.ClientRepository;
-import org.example.service.ClientService;
+import org.example.service.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
 public class ClientController {
 
-    private final ClientService clientService;
+    private ClientService clientService;
+    private  OrderService orderService;
+    private OfferService offerService;
+    private ServiceService serviceService;
+    private SubServiceService subServiceService;
+    private WalletService walletService;
 
     @PostMapping("/client-signup")
     @ResponseBody
@@ -24,31 +34,56 @@ public class ClientController {
 
     @PostMapping("/edit-client-password")
     @ResponseBody
-    public void editClientPassword(Long clientId, String newPassword){
+    public void editClientPassword(Long clientId, String newPassword) {
         clientService.editClientPassword(clientId, newPassword);
     }
 
     @PostMapping("/create-order")
     @ResponseBody
-    public void createOrder(@RequestBody OrderDTO orderDTO){
+    public void createOrder(@RequestBody OrderDTO orderDTO) {
         clientService.createOrder(orderDTO);
     }
 
     @PostMapping("/accept-offer")
     @ResponseBody
-    public void acceptOffer(Offer offer){
+    public void acceptOffer(Offer offer) {
         clientService.acceptOffer(offer);
     }
 
     @PostMapping("/change-order-status-to-STARTED")
     @ResponseBody
-    public void changeOrderStatusToStarted(Long orderId){
+    public void changeOrderStatusToStarted(Long orderId) {
         clientService.changeOrderStatusToStarted(orderId);
     }
 
     @PostMapping("/change-order-status-to-DONE")
     @ResponseBody
-    public void changeOrderStatusToDone(Long orderId){
+    public void changeOrderStatusToDone(Long orderId) {
         clientService.changeOrderStatusToDone(orderId);
+    }
+
+    @GetMapping("/show-orders-history")
+    public List<Order> findOrdersByClientId(Long id) {
+        return orderService.findOrdersByClientId(id);
+    }
+
+    @GetMapping("/show-offers-by-order")
+    public List<Offer> findOffersByOrderId(Long id) {
+        return offerService.findOffersByOrderId(id);
+    }
+
+    @GetMapping("/show-all-services")
+    public List<ServiceDTO> findAllServices(){
+        return serviceService.findAll();
+    }
+
+    @GetMapping("/show-all-sub-services")
+    public List<SubService> findSubServicesByServiceName(String name){
+        return subServiceService.findSubServicesByServiceName(name);
+    }
+
+    @GetMapping("/show-client-wallet")
+    public WalletDTO findClientWalletByEmailAndPassword(String email, String password){
+        return walletService.findClientWalletByEmailAndPassword(email, password).get();
     }
 }

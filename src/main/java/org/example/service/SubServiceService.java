@@ -27,4 +27,6 @@ public interface SubServiceService {
 
     Optional<SubService> findSubServiceByDescription(String description);
 
+    List<SubService> findSubServicesByServiceName(String name);
+
 }
