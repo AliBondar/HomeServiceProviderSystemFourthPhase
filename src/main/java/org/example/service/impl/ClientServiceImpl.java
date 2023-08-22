@@ -1,5 +1,11 @@
 package org.example.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
@@ -43,6 +49,8 @@ public class ClientServiceImpl implements ClientService {
     private final ExpertService expertService;
     private final ExpertRepository expertRepository;
     private final AdminService adminService;
+    @PersistenceContext
+    private EntityManager entityManager;
     private final ClientMapper clientMapper = new ClientMapper();
 
 
@@ -221,7 +229,7 @@ public class ClientServiceImpl implements ClientService {
             Expert expert = acceptedOffer.getExpert();
             if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()) {
                 expert.setScore(acceptedOffer.getExpert().getScore() - acceptedOffer.getExpertOfferedWorkDuration());
-                if (expert.getScore() < 0){
+                if (expert.getScore() < 0) {
                     adminService.editExpertStatus(expert.getId(), UserStatus.DISABLED);
                 }
                 expertRepository.save(expert);
@@ -235,5 +243,39 @@ public class ClientServiceImpl implements ClientService {
     public int calculateDuration(LocalTime localTime) {
         Duration duration = Duration.between(localTime, LocalTime.now());
         return (int) duration.toHours();
+    }
+
+    @Override
+    public List<ClientDTO> filterClient(ClientDTO clientDTO) {
+        List<Predicate> predicateList = new ArrayList<>();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Client> clientCriteriaQuery = criteriaBuilder.createQuery(Client.class);
+        Root<Client> clientRoot = clientCriteriaQuery.from(Client.class);
+        createFilters(clientDTO, predicateList, criteriaBuilder, clientRoot);
+        Predicate[] predicates = new Predicate[predicateList.size()];
+        predicateList.toArray(predicates);
+        clientCriteriaQuery.select(clientRoot).where(predicates);
+        List<Client> resultList = entityManager.createQuery(clientCriteriaQuery).getResultList();
+        List<ClientDTO> clientDTOList = new ArrayList<>();
+        for (Client client : resultList){
+            clientDTOList.add(clientMapper.convert(client));
+        }
+        return clientDTOList;
+    }
+
+    @Override
+    public void createFilters(ClientDTO clientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> clientRoot) {
+        if (clientDTO.getFirstName() != null) {
+            String firstName = "%" + clientDTO.getFirstName() + "%";
+            predicateList.add(criteriaBuilder.like(clientRoot.get("firstName"), firstName));
+        }
+        if (clientDTO.getLastName() != null) {
+            String lastName = "%" + clientDTO.getLastName() + "%";
+            predicateList.add(criteriaBuilder.like(clientRoot.get("lastName"), lastName));
+        }
+        if (clientDTO.getEmail() != null) {
+            String email = "%" + clientDTO.getEmail() + "%";
+            predicateList.add(criteriaBuilder.like(clientRoot.get("email"), email));
+        }
     }
 }

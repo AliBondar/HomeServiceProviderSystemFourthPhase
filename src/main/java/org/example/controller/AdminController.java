@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
@@ -8,10 +9,7 @@ import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
 import org.example.service.AdminService;
 import org.example.service.ExpertService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +32,7 @@ public class AdminController {
         adminService.removeExpertFromSubService(expertId, subServiceId);
     }
 
-    @PostMapping("/edit-expert-status")
+    @PutMapping("/edit-expert-status")
     public void editExpertStatus(Long expertId, UserStatus userStatus){
         adminService.editExpertStatus(expertId, userStatus);
     }
@@ -45,12 +43,12 @@ public class AdminController {
     }
 
     @PostMapping("/add-service")
-    public void addService(ServiceDTO serviceDTO){
+    public void addService(@RequestBody ServiceDTO serviceDTO){
         adminService.addService(serviceDTO);
     }
 
     @PostMapping("/add-sub-service")
-    public void addSubService(SubServiceDTO subServiceDTO){
+    public void addSubService(@RequestBody SubServiceDTO subServiceDTO){
         adminService.addSubService(subServiceDTO);
     }
 
@@ -66,5 +64,9 @@ public class AdminController {
         List<ExpertDTO> expertDTOList = new ArrayList<>();
 //        expertDTO = expertService.findExpertsByUserStatus(userStatus);
         return expertDTOList;
+    }
+
+    public List<ClientDTO> filterClient(ClientDTO clientDTO) {
+        return adminService.filterClient(clientDTO);
     }
 }

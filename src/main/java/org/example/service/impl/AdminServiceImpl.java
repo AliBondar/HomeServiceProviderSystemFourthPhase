@@ -1,6 +1,7 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.ClientDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
 import org.example.entity.SubService;
@@ -13,10 +14,12 @@ import org.example.repository.ExpertRepository;
 import org.example.repository.SubServiceRepository;
 import org.example.security.PasswordHash;
 import org.example.service.AdminService;
+import org.example.service.ClientService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,6 +32,7 @@ public class AdminServiceImpl implements AdminService {
     private final SubServiceRepository subServiceRepository;
     private final ServiceService serviceService;
     private final SubServiceService subServiceService;
+    private final ClientService clientService;
     PasswordHash passwordHash = new PasswordHash();
 
     @Override
@@ -142,4 +146,8 @@ public class AdminServiceImpl implements AdminService {
         return subServiceService.findByDescriptionAndService(description, service).isPresent();
     }
 
+    @Override
+    public List<ClientDTO> filterClient(ClientDTO clientDTO) {
+        return clientService.filterClient(clientDTO);
+    }
 }

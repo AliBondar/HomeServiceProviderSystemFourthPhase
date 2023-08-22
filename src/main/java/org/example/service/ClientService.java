@@ -2,6 +2,9 @@ package org.example.service;
 
 
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.entity.Offer;
@@ -43,4 +46,7 @@ public interface ClientService {
 
     int calculateDuration(LocalTime localTime);
 
+    List<ClientDTO> filterClient(ClientDTO clientDTO);
+
+    void createFilters(ClientDTO clientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> customerRoot);
 }
