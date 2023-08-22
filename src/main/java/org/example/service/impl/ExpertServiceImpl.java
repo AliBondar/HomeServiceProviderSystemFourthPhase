@@ -1,5 +1,11 @@
 package org.example.service.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ExpertDTO;
@@ -39,6 +45,8 @@ public class ExpertServiceImpl implements ExpertService {
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final OfferService offerService;
+    @PersistenceContext
+    private EntityManager entityManager;
     private final ExpertMapper expertMapper = new ExpertMapper();
 
     @Override
@@ -65,7 +73,7 @@ public class ExpertServiceImpl implements ExpertService {
         List<ExpertDTO> expertDTOList = new ArrayList<>();
         if (CollectionUtils.isEmpty(experts)) return null;
         else {
-            for (Expert expert : experts){
+            for (Expert expert : experts) {
                 expertDTOList.add(expertMapper.convert(expert));
             }
             return expertDTOList;
@@ -174,6 +182,43 @@ public class ExpertServiceImpl implements ExpertService {
             Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
             order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
             orderRepository.save(order);
+        }
+    }
+
+    @Override
+    public List<ExpertDTO> filterExpert(ExpertDTO expertDTO) {
+        List<Predicate> predicateList = new ArrayList<>();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Expert> expertCriteriaQuery = criteriaBuilder.createQuery(Expert.class);
+        Root<Expert> expertRoot = expertCriteriaQuery.from(Expert.class);
+        createFilters(expertDTO, predicateList, criteriaBuilder, expertRoot);
+        Predicate[] predicates = new Predicate[predicateList.size()];
+        predicateList.toArray(predicates);
+        expertCriteriaQuery.select(expertRoot).where(predicates);
+        List<Expert> resultList = entityManager.createQuery(expertCriteriaQuery).getResultList();
+        List<ExpertDTO> expertDTOList = new ArrayList<>();
+        for (Expert expert : resultList){
+            expertDTOList.add(expertMapper.convert(expert));
+        }
+        return expertDTOList;
+    }
+
+    @Override
+    public void createFilters(ExpertDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot) {
+        if (expertDTO.getFirstName() != null) {
+            String firstName = "%" + expertDTO.getFirstName() + "%";
+            predicateList.add(criteriaBuilder.like(expertRoot.get("firstName"), firstName));
+        }
+        if (expertDTO.getLastName() != null) {
+            String lastName = "%" + expertDTO.getLastName() + "%";
+            predicateList.add(criteriaBuilder.like(expertRoot.get("lastName"), lastName));
+        }
+        if (expertDTO.getEmail() != null) {
+            String email = "%" + expertDTO.getEmail() + "%";
+            predicateList.add(criteriaBuilder.like(expertRoot.get("email"), email));
+        }
+        if (expertDTO.getUserStatus() != null) {
+            predicateList.add(criteriaBuilder.equal(expertRoot.get("userStatus"), expertDTO.getUserStatus()));
         }
     }
 }

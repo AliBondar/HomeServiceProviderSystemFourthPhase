@@ -1,6 +1,9 @@
 package org.example.service;
 
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
@@ -34,4 +37,8 @@ public interface ExpertService{
     void editExpertPassword(Long expertId, String password);
 
     void createOffer(OfferDTO offerDTO);
+
+    List<ExpertDTO> filterExpert(ExpertDTO expertDTO);
+
+    void createFilters(ExpertDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot);
 }

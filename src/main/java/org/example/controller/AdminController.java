@@ -66,7 +66,13 @@ public class AdminController {
         return expertDTOList;
     }
 
-    public List<ClientDTO> filterClient(ClientDTO clientDTO) {
+    @PostMapping("/filter-clients")
+    public List<ClientDTO> filterClient(@RequestBody ClientDTO clientDTO) {
         return adminService.filterClient(clientDTO);
+    }
+
+    @PostMapping("/filter-experts")
+    public List<ExpertDTO> filterExpert(@RequestBody ExpertDTO expertDTO) {
+        return adminService.filterExpert(expertDTO);
     }
 }
