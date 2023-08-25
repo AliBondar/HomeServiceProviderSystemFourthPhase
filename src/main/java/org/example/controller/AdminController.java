@@ -23,44 +23,44 @@ public class AdminController {
     private final ExpertService expertService;
 
     @PostMapping("/add-expert-to-sub-service")
-    public void addExpertToSubService(Long expertId, Long subServiceId){
+    public void addExpertToSubService(Long expertId, Long subServiceId) {
         adminService.addExpertToSubService(expertId, subServiceId);
     }
 
-    @PostMapping("/remove-expert-from-sub-service")
-    public void removeExpertFromSubService(Long expertId, Long subServiceId){
+    @PostMapping("/remove-expert-from-sub-service/{expertId}/{subServiceId}")
+    public void removeExpertFromSubService(@PathVariable Long expertId, @PathVariable Long subServiceId) {
         adminService.removeExpertFromSubService(expertId, subServiceId);
     }
 
-    @PutMapping("/edit-expert-status")
-    public void editExpertStatus(Long expertId, UserStatus userStatus){
+    @PutMapping("/edit-expert-status/{expertId}/{userStatus}")
+    public void editExpertStatus(@PathVariable Long expertId, @PathVariable UserStatus userStatus) {
         adminService.editExpertStatus(expertId, userStatus);
     }
 
-    @PostMapping("/edit-sub-service")
-    public void editSubService(Long id, double newBasePrice, String newDescription){
+    @PutMapping("/edit-sub-service/{id}/{newBasePrice}/{newDescription}")
+    public void editSubService(@PathVariable Long id,@PathVariable double newBasePrice,@PathVariable String newDescription) {
         adminService.editSubService(id, newBasePrice, newDescription);
     }
 
     @PostMapping("/add-service")
-    public void addService(@RequestBody ServiceDTO serviceDTO){
+    public void addService(@RequestBody ServiceDTO serviceDTO) {
         adminService.addService(serviceDTO);
     }
 
     @PostMapping("/add-sub-service")
-    public void addSubService(@RequestBody SubServiceDTO subServiceDTO){
+    public void addSubService(@RequestBody SubServiceDTO subServiceDTO) {
         adminService.addSubService(subServiceDTO);
     }
 
     @GetMapping("/show-expert-by-email")
-    public ExpertDTO findExpertByEmail(String email){
+    public ExpertDTO findExpertByEmail(String email) {
         ExpertDTO expertDTO = new ExpertDTO();
 //        expertDTO = expertService.findExpertByEmail(email).get();
         return expertDTO;
     }
 
     @GetMapping("/show-experts-by-user-status")
-    public List<ExpertDTO> findExpertsByUserStatus(UserStatus userStatus){
+    public List<ExpertDTO> findExpertsByUserStatus(UserStatus userStatus) {
         List<ExpertDTO> expertDTOList = new ArrayList<>();
 //        expertDTO = expertService.findExpertsByUserStatus(userStatus);
         return expertDTOList;
