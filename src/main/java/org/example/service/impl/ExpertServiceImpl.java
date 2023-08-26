@@ -221,4 +221,9 @@ public class ExpertServiceImpl implements ExpertService {
             predicateList.add(criteriaBuilder.equal(expertRoot.get("userStatus"), expertDTO.getUserStatus()));
         }
     }
+
+    @Override
+    public void updateExpertWallet(Long expertId, double balance){
+        expertRepository.updateExpertWallet(expertId, balance);
+    }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public class ClientController {
 
     private final ClientService clientService;
-    private  final OrderService orderService;
+    private final OrderService orderService;
     private final OfferService offerService;
     private final ServiceService serviceService;
     private final SubServiceService subServiceService;
@@ -70,18 +70,23 @@ public class ClientController {
     }
 
     @GetMapping("/show-all-services")
-    public List<ServiceDTO> findAllServices(){
+    public List<ServiceDTO> findAllServices() {
         return serviceService.findAll();
     }
 
     @GetMapping("/show-all-sub-services")
-    public List<SubService> findSubServicesByServiceName(String name){
+    public List<SubService> findSubServicesByServiceName(String name) {
         return subServiceService.findSubServicesByServiceName(name);
     }
 
     @GetMapping("/show-client-wallet")
-    public WalletDTO findClientWalletByEmailAndPassword(String email, String password){
+    public WalletDTO findClientWalletByEmailAndPassword(String email, String password) {
         return walletService.findClientWalletByEmailAndPassword(email, password).get();
+    }
+
+    @PutMapping("/pay-by-wallet/{orderId}/{clientId}")
+    public void payByWallet(@PathVariable Long orderId, @PathVariable Long clientId) {
+        clientService.payByWallet(orderId, clientId);
     }
 
 

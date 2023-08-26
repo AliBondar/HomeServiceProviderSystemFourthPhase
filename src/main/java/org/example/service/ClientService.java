@@ -44,9 +44,15 @@ public interface ClientService {
 
     void changeOrderStatusToDone(Long orderId);
 
+    void changeOrderStatusToPaid(Long orderId);
+
     int calculateDuration(LocalTime localTime);
 
     List<ClientDTO> filterClient(ClientDTO clientDTO);
 
     void createFilters(ClientDTO clientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> customerRoot);
+
+    void payByWallet(Long orderId, Long clientId);
+
+    void updateClientWallet(Long clientId, double balance);
 }

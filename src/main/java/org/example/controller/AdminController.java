@@ -5,6 +5,7 @@ import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
+import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
 import org.example.service.AdminService;
@@ -22,8 +23,8 @@ public class AdminController {
     private final AdminService adminService;
     private final ExpertService expertService;
 
-    @PostMapping("/add-expert-to-sub-service")
-    public void addExpertToSubService(Long expertId, Long subServiceId) {
+    @PostMapping("/add-expert-to-sub-service/{expertId}/{subServiceId}")
+    public void addExpertToSubService(@PathVariable Long expertId,@PathVariable Long subServiceId) {
         adminService.addExpertToSubService(expertId, subServiceId);
     }
 
@@ -52,18 +53,14 @@ public class AdminController {
         adminService.addSubService(subServiceDTO);
     }
 
-    @GetMapping("/show-expert-by-email")
-    public ExpertDTO findExpertByEmail(String email) {
-        ExpertDTO expertDTO = new ExpertDTO();
-//        expertDTO = expertService.findExpertByEmail(email).get();
-        return expertDTO;
+    @GetMapping("/show-expert-by-email/{email}")
+    public Expert findExpertByEmail(@PathVariable String email) {
+        return expertService.findExpertByEmail(email).get();
     }
 
     @GetMapping("/show-experts-by-user-status")
-    public List<ExpertDTO> findExpertsByUserStatus(UserStatus userStatus) {
-        List<ExpertDTO> expertDTOList = new ArrayList<>();
-//        expertDTO = expertService.findExpertsByUserStatus(userStatus);
-        return expertDTOList;
+    public List<Expert> findExpertsByUserStatus(UserStatus userStatus) {
+       return expertService.findExpertsByUserStatus(userStatus);
     }
 
     @PostMapping("/filter-clients")

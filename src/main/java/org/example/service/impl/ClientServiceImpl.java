@@ -240,6 +240,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void changeOrderStatusToPaid(Long orderId) {
+        if (orderRepository.findById(orderId).isEmpty()) {
+            throw new NotFoundTheOrderException("not found the order.");
+        } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.DONE) {
+            throw new InvalidTimeException("Invalid time.");
+        } else {
+            Order order = orderRepository.findById(orderId).get();
+            order.setOrderStatus(OrderStatus.PAID);
+            orderRepository.save(order);
+        }
+    }
+
+    @Override
     public int calculateDuration(LocalTime localTime) {
         Duration duration = Duration.between(localTime, LocalTime.now());
         return (int) duration.toHours();
@@ -257,7 +270,7 @@ public class ClientServiceImpl implements ClientService {
         clientCriteriaQuery.select(clientRoot).where(predicates);
         List<Client> resultList = entityManager.createQuery(clientCriteriaQuery).getResultList();
         List<ClientDTO> clientDTOList = new ArrayList<>();
-        for (Client client : resultList){
+        for (Client client : resultList) {
             clientDTOList.add(clientMapper.convert(client));
         }
         return clientDTOList;
@@ -277,5 +290,34 @@ public class ClientServiceImpl implements ClientService {
             String email = "%" + clientDTO.getEmail() + "%";
             predicateList.add(criteriaBuilder.like(clientRoot.get("email"), email));
         }
+    }
+
+    @Override
+    public void payByWallet(Long orderId, Long clientId) {
+        ClientDTO clientDTO = findById(clientId);
+        OrderDTO orderDTO = orderService.findById(orderId);
+        if (clientDTO == null) {
+            throw new NotFoundTheUserException("not found the user.");
+        } else if (orderDTO == null) {
+            throw new NotFoundTheOrderException("not found the order.");
+        } else if (orderDTO.getOrderStatus() != OrderStatus.DONE) {
+            throw new OrderStatusException("order has not been done yet.");
+        }
+        Wallet wallet = clientDTO.getWallet();
+        Offer offer = offerService.findAcceptedOfferByOrderId(orderId).get();
+        if (offer.getOfferedPrice() > wallet.getBalance()) {
+            throw new WalletBalanceException("balance is not enough");
+        } else {
+            Expert expert = offer.getExpert();
+            updateClientWallet(clientId, clientDTO.getWallet().getBalance() + offer.getOfferedPrice());
+            expertService.updateExpertWallet(expert.getId(),
+                    expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
+            changeOrderStatusToPaid(orderId);
+        }
+    }
+
+    @Override
+    public void updateClientWallet(Long clientId, double balance) {
+        clientRepository.updateClientWallet(clientId, balance);
     }
 }
