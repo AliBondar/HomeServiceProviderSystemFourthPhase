@@ -152,6 +152,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ExpertDTO> filterExpert(ExpertDTO expertDTO) {
-        return ;
+        return expertService.filterExpert(expertDTO);
     }
 }
