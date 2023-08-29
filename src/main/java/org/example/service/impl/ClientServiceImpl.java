@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
+import org.example.dto.ScoreDTO;
 import org.example.entity.users.Expert;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
@@ -248,6 +249,11 @@ public class ClientServiceImpl implements ClientService {
             expert.setUserStatus(userStatus);
             expertRepository.save(expert);
         }
+    }
+
+    @Override
+    public void submitScore(ScoreDTO scoreDTO){
+
     }
 
     @Override

@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
+import org.example.dto.ScoreDTO;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
 import org.example.entity.users.enums.UserStatus;
@@ -46,6 +47,8 @@ public interface ClientService {
     void changeOrderStatusToDone(Long orderId);
 
     void editExpertStatus(Long expertId, UserStatus userStatus);
+
+    void submitScore(ScoreDTO scoreDTO);
 
     void changeOrderStatusToPaid(Long orderId);
 
