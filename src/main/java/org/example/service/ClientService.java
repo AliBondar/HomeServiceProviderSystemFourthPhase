@@ -50,6 +50,10 @@ public interface ClientService {
 
     void submitScore(ScoreDTO scoreDTO);
 
+    void submitScore(int score, String comment, Long orderId);
+
+    void submitScore(int score, Long orderId);
+
     void changeOrderStatusToPaid(Long orderId);
 
     int calculateDuration(LocalTime localTime);

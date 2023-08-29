@@ -49,6 +49,7 @@ public class ClientServiceImpl implements ClientService {
     private final OfferService offerService;
     private final ExpertService expertService;
     private final ExpertRepository expertRepository;
+    private final ScoreService scoreService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -244,7 +245,7 @@ public class ClientServiceImpl implements ClientService {
     public void editExpertStatus(Long expertId, UserStatus userStatus) {
         if (expertRepository.findById(expertId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        }else {
+        } else {
             Expert expert = expertRepository.findById(expertId).get();
             expert.setUserStatus(userStatus);
             expertRepository.save(expert);
@@ -252,7 +253,31 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void submitScore(ScoreDTO scoreDTO){
+    public void submitScore(ScoreDTO scoreDTO) {
+
+    }
+
+    @Override
+    public void submitScore(int score, String comment, Long orderId) {
+        OrderDTO orderDTO = orderService.findById(orderId);
+        Order order = orderRepository.findById(orderId).get();
+        if (orderDTO == null) {
+            throw new NotFoundTheOrderException("not found the order.");
+        }else if (orderDTO.getOrderStatus() != OrderStatus.DONE){
+            throw new OrderStatusException("order has not get done yet.");
+        } else {
+            ScoreDTO scoreDTO = new ScoreDTO();
+            scoreDTO.setScore(score);
+            scoreDTO.setComment(comment);
+            scoreDTO.setClient(orderDTO.getClient());
+            scoreDTO.setOrder(order);
+            scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
+            scoreService.save(scoreDTO);
+        }
+    }
+
+    @Override
+    public void submitScore(int score, Long orderId) {
 
     }
 
