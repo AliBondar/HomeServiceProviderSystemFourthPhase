@@ -9,6 +9,7 @@ import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
 import org.example.service.AdminService;
+import org.example.service.ClientService;
 import org.example.service.ExpertService;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final ExpertService expertService;
+    private final ClientService clientService;
 
     @PostMapping("/add-expert-to-sub-service/{expertId}/{subServiceId}")
     public void addExpertToSubService(@PathVariable Long expertId,@PathVariable Long subServiceId) {
@@ -65,11 +67,11 @@ public class AdminController {
 
     @PostMapping("/filter-clients")
     public List<ClientDTO> filterClient(@RequestBody ClientDTO clientDTO) {
-        return adminService.filterClient(clientDTO);
+        return clientService.filterClient(clientDTO);
     }
 
     @PostMapping("/filter-experts")
     public List<ExpertDTO> filterExpert(@RequestBody ExpertDTO expertDTO) {
-        return adminService.filterExpert(expertDTO);
+        return expertService.filterExpert(expertDTO);
     }
 }

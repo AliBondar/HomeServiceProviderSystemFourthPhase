@@ -1,11 +1,14 @@
 package org.example.controller;
 
+import cn.apiclub.captcha.Captcha;
 import lombok.RequiredArgsConstructor;
+import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
 import org.example.entity.*;
 import org.example.entity.users.Client;
 import org.example.repository.ClientRepository;
 import org.example.service.*;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -89,5 +92,20 @@ public class ClientController {
         clientService.payByWallet(orderId, clientId);
     }
 
+//    @GetMapping("/payment")
+//    public String showRegister(Model model) {
+//        Employee e = new Employee();
+//        setupCaptcha(e);
+//        model.addAttribute("employee", e);
+//
+//        return "EmployeeRegister";
+//    }
+//
+//    private void setupCaptcha(Client client) {
+//        Captcha captcha = CaptchaUtils.createCaptcha(200, 50);
+//        e.setHidden(captcha.getAnswer());
+//        e.setCaptcha("");
+//        e.setImage(CaptchaUtils.encodeBase64(captcha));
+//    }
 
 }

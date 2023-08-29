@@ -9,6 +9,7 @@ import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
+import org.example.entity.users.enums.UserStatus;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -43,6 +44,8 @@ public interface ClientService {
     void changeOrderStatusToStarted(Long orderId);
 
     void changeOrderStatusToDone(Long orderId);
+
+    void editExpertStatus(Long expertId, UserStatus userStatus);
 
     void changeOrderStatusToPaid(Long orderId);
 

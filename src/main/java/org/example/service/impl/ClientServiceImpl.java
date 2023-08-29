@@ -48,7 +48,7 @@ public class ClientServiceImpl implements ClientService {
     private final OfferService offerService;
     private final ExpertService expertService;
     private final ExpertRepository expertRepository;
-    private final AdminService adminService;
+
     @PersistenceContext
     private EntityManager entityManager;
     private final ClientMapper clientMapper = new ClientMapper();
@@ -230,12 +230,23 @@ public class ClientServiceImpl implements ClientService {
             if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()) {
                 expert.setScore(acceptedOffer.getExpert().getScore() - acceptedOffer.getExpertOfferedWorkDuration());
                 if (expert.getScore() < 0) {
-                    adminService.editExpertStatus(expert.getId(), UserStatus.DISABLED);
+                    editExpertStatus(expert.getId(), UserStatus.DISABLED);
                 }
                 expertRepository.save(expert);
             }
             order.setOrderStatus(OrderStatus.DONE);
             orderRepository.save(order);
+        }
+    }
+
+    @Override
+    public void editExpertStatus(Long expertId, UserStatus userStatus) {
+        if (expertRepository.findById(expertId).isEmpty()) {
+            throw new NotFoundTheUserException("Couldn't find the user !");
+        }else {
+            Expert expert = expertRepository.findById(expertId).get();
+            expert.setUserStatus(userStatus);
+            expertRepository.save(expert);
         }
     }
 
