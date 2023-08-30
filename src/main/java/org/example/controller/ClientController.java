@@ -10,6 +10,7 @@ import org.example.repository.ClientRepository;
 import org.example.service.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,20 +93,21 @@ public class ClientController {
         clientService.payByWallet(orderId, clientId);
     }
 
-//    @GetMapping("/payment")
-//    public String showRegister(Model model) {
-//        Employee e = new Employee();
-//        setupCaptcha(e);
-//        model.addAttribute("employee", e);
-//
-//        return "EmployeeRegister";
-//    }
-//
-//    private void setupCaptcha(Client client) {
-//        Captcha captcha = CaptchaUtils.createCaptcha(200, 50);
-//        e.setHidden(captcha.getAnswer());
-//        e.setCaptcha("");
-//        e.setImage(CaptchaUtils.encodeBase64(captcha));
-//    }
+    @GetMapping("/payment")
+    public ModelAndView showRegister(Model model) {
+       CardDTO card = new CardDTO();
+        setupCaptcha(card);
+        model.addAttribute("card", card);
+
+        return new ModelAndView("payment.html");
+    }
+
+    private void setupCaptcha(CardDTO card) {
+        Captcha captcha = CaptchaUtils.createCaptcha(200, 50);
+        card.setHidden(captcha.getAnswer());
+        card.setCaptcha("");
+        card.setImage(CaptchaUtils.encodeBase64(captcha));
+    }
+
 
 }
