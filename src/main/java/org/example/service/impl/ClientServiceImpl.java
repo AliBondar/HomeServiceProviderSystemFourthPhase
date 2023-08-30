@@ -271,6 +271,8 @@ public class ClientServiceImpl implements ClientService {
         } else if (!validation.isScoreValid(score)) {
             throw new ScoreRangeException("score is not valid");
         } else {
+            expertRepository.updateExpertScore(order.getExpert().getId(),
+                    order.getExpert().getScore() + score);
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
             scoreDTO.setComment(comment);
@@ -294,6 +296,8 @@ public class ClientServiceImpl implements ClientService {
         }else if (!validation.isScoreValid(score)) {
             throw new ScoreRangeException("score is not valid");
         } else {
+            expertRepository.updateExpertScore(order.getExpert().getId(),
+                    order.getExpert().getScore() + score);
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
             scoreDTO.setClient(orderDTO.getClient());

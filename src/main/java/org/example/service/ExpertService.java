@@ -43,4 +43,6 @@ public interface ExpertService{
     void createFilters(ExpertDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot);
 
     void updateExpertWallet(Long expertId, double balance);
+
+    void updateExpertScore(Long expertId, int score);
 }

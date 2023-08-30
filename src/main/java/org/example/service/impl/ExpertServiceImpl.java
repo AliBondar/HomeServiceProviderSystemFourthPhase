@@ -226,4 +226,9 @@ public class ExpertServiceImpl implements ExpertService {
     public void updateExpertWallet(Long expertId, double balance){
         expertRepository.updateExpertWallet(expertId, balance);
     }
+
+    @Override
+    public void updateExpertScore(Long expertId, int score) {
+        expertRepository.updateExpertScore(expertId, score);
+    }
 }

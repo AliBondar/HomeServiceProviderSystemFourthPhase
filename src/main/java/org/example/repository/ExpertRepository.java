@@ -22,4 +22,8 @@ public interface ExpertRepository extends JpaRepository<Expert, Long> {
     @Modifying
     @Query("update  Expert e set e.wallet.balance = :balance where e.id = :expertId ")
     void updateExpertWallet(Long expertId, double balance);
+
+    @Modifying
+    @Query("update Expert  e set e.score = :score where e.id = :expertId")
+    void updateExpertScore(Long expertId, int score);
 }
