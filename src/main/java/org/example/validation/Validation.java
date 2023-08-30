@@ -47,4 +47,8 @@ public class Validation {
     public boolean isOfferedPriceValid(OfferDTO offerCommand, SubService subService) {
         return offerCommand.getOfferedPrice() >= subService.getBasePrice();
     }
+
+    public boolean isScoreValid(int score){
+        return score >= 1 && score <= 5;
+    }
 }

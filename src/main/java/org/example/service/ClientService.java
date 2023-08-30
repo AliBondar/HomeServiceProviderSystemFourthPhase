@@ -48,11 +48,11 @@ public interface ClientService {
 
     void editExpertStatus(Long expertId, UserStatus userStatus);
 
-    void submitScore(ScoreDTO scoreDTO);
+    void createScore(ScoreDTO scoreDTO);
 
-    void submitScore(int score, String comment, Long orderId);
+    void createScore(int score, String comment, Long orderId);
 
-    void submitScore(int score, Long orderId);
+    void createScore(int score, Long orderId);
 
     void changeOrderStatusToPaid(Long orderId);
 

@@ -50,6 +50,7 @@ public class ClientServiceImpl implements ClientService {
     private final ExpertService expertService;
     private final ExpertRepository expertRepository;
     private final ScoreService scoreService;
+    private final Validation validation = new Validation();
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -253,18 +254,22 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void submitScore(ScoreDTO scoreDTO) {
+    public void createScore(ScoreDTO scoreDTO) {
 
     }
 
     @Override
-    public void submitScore(int score, String comment, Long orderId) {
+    public void createScore(int score, String comment, Long orderId) {
         OrderDTO orderDTO = orderService.findById(orderId);
         Order order = orderRepository.findById(orderId).get();
         if (orderDTO == null) {
             throw new NotFoundTheOrderException("not found the order.");
-        }else if (orderDTO.getOrderStatus() != OrderStatus.DONE){
+        } else if (orderDTO.getOrderStatus() != OrderStatus.DONE) {
             throw new OrderStatusException("order has not get done yet.");
+        } else if (order.getScore() != null) {
+            throw new DuplicatedScoreException("order already has score.");
+        } else if (!validation.isScoreValid(score)) {
+            throw new ScoreRangeException("score is not valid");
         } else {
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
@@ -277,18 +282,38 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void submitScore(int score, Long orderId) {
-
+    public void createScore(int score, Long orderId) {
+        OrderDTO orderDTO = orderService.findById(orderId);
+        Order order = orderRepository.findById(orderId).get();
+        if (orderDTO == null) {
+            throw new NotFoundTheOrderException("not found the order.");
+        } else if (orderDTO.getOrderStatus() != OrderStatus.DONE) {
+            throw new OrderStatusException("order has not get done yet.");
+        } else if (order.getScore() != null) {
+            throw new DuplicatedScoreException("order already has score.");
+        }else if (!validation.isScoreValid(score)) {
+            throw new ScoreRangeException("score is not valid");
+        } else {
+            ScoreDTO scoreDTO = new ScoreDTO();
+            scoreDTO.setScore(score);
+            scoreDTO.setClient(orderDTO.getClient());
+            scoreDTO.setOrder(order);
+            scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
+            scoreService.save(scoreDTO);
+        }
     }
 
     @Override
     public void changeOrderStatusToPaid(Long orderId) {
-        if (orderRepository.findById(orderId).isEmpty()) {
+        OrderDTO orderDTO = orderService.findById(orderId);
+        Order order = orderRepository.findById(orderId).get();
+        if (orderDTO == null) {
             throw new NotFoundTheOrderException("not found the order.");
         } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.DONE) {
-            throw new InvalidTimeException("Invalid time.");
+            throw new OrderStatusException("order has not get done yet.");
+        } else if (order.getScore() == null) {
+            throw new NotFoundTheScoreException("order must have score.");
         } else {
-            Order order = orderRepository.findById(orderId).get();
             order.setOrderStatus(OrderStatus.PAID);
             orderRepository.save(order);
         }
