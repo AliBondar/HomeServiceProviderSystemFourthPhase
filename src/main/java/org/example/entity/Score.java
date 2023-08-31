@@ -4,12 +4,15 @@ package org.example.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.base.domain.BaseEntity;
 import org.example.entity.users.Client;
 import org.example.entity.users.Expert;
-
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 
 @Setter
@@ -20,8 +23,11 @@ import org.example.entity.users.Expert;
 @Entity
 public class Score extends BaseEntity<Long> {
 
+    @Min(1)
+    @Max(5)
     int score;
 
+    @ColumnDefault("no comment")
     String comment;
 
     @ManyToOne

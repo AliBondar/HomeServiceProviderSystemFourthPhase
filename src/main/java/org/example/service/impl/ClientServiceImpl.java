@@ -255,7 +255,23 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void createScore(ScoreDTO scoreDTO) {
-
+        Order order = scoreDTO.getOrder();
+        if (order == null){
+           throw new EmptyFieldException("not found the order.");
+        }else if (order.getOrderStatus() != OrderStatus.DONE){
+            throw new OrderStatusException("order has not get done yet.");
+        }else if (order.getScore() != null){
+            throw new DuplicatedScoreException("order already has score.");
+        }else if (!validation.isScoreValid(scoreDTO.getScore())){
+            throw new ScoreRangeException("score is not valid. It must be between 1 and 5");
+        }else {
+            expertRepository.updateExpertScore(order.getExpert().getId(),
+                    order.getExpert().getScore() + scoreDTO.getScore());
+            scoreDTO.setClient(order.getClient());
+            scoreDTO.setOrder(order);
+            scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(order.getId()).get().getExpert());
+            scoreService.save(scoreDTO);
+        }
     }
 
     @Override

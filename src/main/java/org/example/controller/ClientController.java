@@ -93,6 +93,11 @@ public class ClientController {
         clientService.payByWallet(orderId, clientId);
     }
 
+    @PostMapping("/create-score")
+    public void createScore(@RequestBody ScoreDTO scoreDTO){
+        clientService.createScore(scoreDTO);
+    }
+
     @GetMapping("/payment")
     public ModelAndView showRegister(Model model) {
        CardDTO card = new CardDTO();

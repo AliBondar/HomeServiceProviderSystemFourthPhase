@@ -13,6 +13,7 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
     @Override
     public Order convert(OrderDTO orderDTO) {
         Order order = new Order();
+        order.setId(orderDTO.getId());
         order.setDescription(orderDTO.getDescription());
         order.setLocalDate(orderDTO.getLocalDate());
         order.setTime(Time.valueOf(orderDTO.getLocalTime()));
@@ -28,6 +29,7 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
     @Override
     public OrderDTO convert(Order order) {
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(order.getId());
         orderDTO.setDescription(order.getDescription());
         orderDTO.setLocalDate(order.getLocalDate());
         orderDTO.setLocalTime(order.getTime().toLocalTime());
