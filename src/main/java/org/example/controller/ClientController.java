@@ -33,9 +33,9 @@ public class ClientController {
         clientService.clientSignUp(clientDTO);
     }
 
-    @PostMapping("/edit-client-password")
+    @PutMapping("/edit-client-password/{clientId}/{newPassword}")
     @ResponseBody
-    public void editClientPassword(Long clientId, String newPassword) {
+    public void editClientPassword(@PathVariable Long clientId,@PathVariable String newPassword) {
         clientService.editClientPassword(clientId, newPassword);
     }
 
@@ -51,25 +51,25 @@ public class ClientController {
         clientService.acceptOffer(offer);
     }
 
-    @PostMapping("/change-order-status-to-STARTED")
+    @PostMapping("/change-order-status-to-STARTED/{orderId}")
     @ResponseBody
-    public void changeOrderStatusToStarted(Long orderId) {
+    public void changeOrderStatusToStarted(@PathVariable Long orderId) {
         clientService.changeOrderStatusToStarted(orderId);
     }
 
-    @PostMapping("/change-order-status-to-DONE")
+    @PostMapping("/change-order-status-to-DONE/{orderId}")
     @ResponseBody
-    public void changeOrderStatusToDone(Long orderId) {
+    public void changeOrderStatusToDone(@PathVariable Long orderId) {
         clientService.changeOrderStatusToDone(orderId);
     }
 
-    @GetMapping("/show-orders-history")
-    public List<Order> findOrdersByClientId(Long id) {
+    @GetMapping("/show-orders-history/{id}")
+    public List<Order> findOrdersByClientId(@PathVariable Long id) {
         return orderService.findOrdersByClientId(id);
     }
 
-    @GetMapping("/show-offers-by-order")
-    public List<Offer> findOffersByOrderId(Long id) {
+    @GetMapping("/show-offers-by-order/{id}")
+    public List<Offer> findOffersByOrderId(@PathVariable Long id) {
         return offerService.findOffersByOrderId(id);
     }
 
@@ -78,13 +78,13 @@ public class ClientController {
         return serviceService.findAll();
     }
 
-    @GetMapping("/show-all-sub-services")
-    public List<SubService> findSubServicesByServiceName(String name) {
+    @GetMapping("/show-all-sub-services/{name}")
+    public List<SubService> findSubServicesByServiceName(@PathVariable String name) {
         return subServiceService.findSubServicesByServiceName(name);
     }
 
-    @GetMapping("/show-client-wallet")
-    public WalletDTO findClientWalletByEmailAndPassword(String email, String password) {
+    @GetMapping("/show-client-wallet/{email}/{password}")
+    public WalletDTO findClientWalletByEmailAndPassword(@PathVariable String email,@PathVariable String password) {
         return walletService.findClientWalletByEmailAndPassword(email, password).get();
     }
 

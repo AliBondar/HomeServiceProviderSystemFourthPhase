@@ -74,7 +74,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expert@gmail.com");
         expertDTO.setPassword("@Expert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         expertService.expertSignUp(expertDTO);
         assertEquals(expertService.findExpertByEmail("expert@gmail.com").get().getEmail(),
@@ -105,7 +105,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expertcom");
         expertDTO.setPassword("@Expert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(InvalidEmailException.class, () -> {
             expertService.expertSignUp(expertDTO);
@@ -122,7 +122,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expert@gmail.com");
         expertDTO.setPassword("ert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(InvalidPasswordException.class, () -> {
             expertService.expertSignUp(expertDTO);
@@ -139,7 +139,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expert@gmail.com");
         expertDTO.setPassword("@Expert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(DuplicatedEmailException.class, () -> {
             expertService.expertSignUp(expertDTO);
@@ -156,7 +156,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expert@gmail.com");
         expertDTO.setPassword("@Expert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(ImageFormatException.class, () -> {
             expertService.expertSignUp(expertDTO);
@@ -173,7 +173,7 @@ class ExpertServiceImplTest {
         expertDTO.setLastName("expertian");
         expertDTO.setEmail("expert@gmail.com");
         expertDTO.setPassword("@Expert1234");
-        expertDTO.setImageData(file);
+//        expertDTO.setImageData(file);
         expertDTO.setService(serviceService.findServiceByName("testService").get());
         assertThrows(ImageSizeException.class, () -> {
             expertService.expertSignUp(expertDTO);

@@ -44,7 +44,10 @@ public class Expert extends User {
     @Override
     public String toString() {
         return "Expert{" +
-                "score=" + score +
+                "firstName=" + getFirstName() +
+                ", lastName=" + getLastName() +
+                ", email=" + getEmail() +
+                ", score=" + score +
                 ", service=" + service.getName() +
                 ", subServiceList=" + subServiceList +
                 '}';

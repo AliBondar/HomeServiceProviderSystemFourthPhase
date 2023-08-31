@@ -15,7 +15,7 @@ import java.io.File;
 public class ExpertDTO extends UserDTO {
 
 
-    File imageData;
+    String imageData;
 
     int score;
 

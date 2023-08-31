@@ -1,20 +1,24 @@
 package org.example.controller;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
+import org.example.dto.request.EmailDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
 import org.example.service.AdminService;
 import org.example.service.ClientService;
 import org.example.service.ExpertService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -26,7 +30,7 @@ public class AdminController {
     private final ClientService clientService;
 
     @PostMapping("/add-expert-to-sub-service/{expertId}/{subServiceId}")
-    public void addExpertToSubService(@PathVariable Long expertId,@PathVariable Long subServiceId) {
+    public void addExpertToSubService(@PathVariable Long expertId, @PathVariable Long subServiceId) {
         adminService.addExpertToSubService(expertId, subServiceId);
     }
 
@@ -41,7 +45,7 @@ public class AdminController {
     }
 
     @PutMapping("/edit-sub-service/{id}/{newBasePrice}/{newDescription}")
-    public void editSubService(@PathVariable Long id,@PathVariable double newBasePrice,@PathVariable String newDescription) {
+    public void editSubService(@PathVariable Long id, @PathVariable double newBasePrice, @PathVariable String newDescription) {
         adminService.editSubService(id, newBasePrice, newDescription);
     }
 
@@ -50,19 +54,30 @@ public class AdminController {
         adminService.addService(serviceDTO);
     }
 
+    @Transactional
     @PostMapping("/add-sub-service")
     public void addSubService(@RequestBody SubServiceDTO subServiceDTO) {
         adminService.addSubService(subServiceDTO);
     }
 
-    @GetMapping("/show-expert-by-email/{email}")
-    public Expert findExpertByEmail(@PathVariable String email) {
-        return expertService.findExpertByEmail(email).get();
+    @GetMapping("/show-expert-by-email")
+    public Expert findExpertByEmail(@RequestBody EmailDTO emailDTO) {
+        return expertService.findExpertByEmail(emailDTO.getEmail()).get();
     }
 
-    @GetMapping("/show-experts-by-user-status")
-    public List<Expert> findExpertsByUserStatus(UserStatus userStatus) {
-       return expertService.findExpertsByUserStatus(userStatus);
+    @GetMapping("/show-experts-by-user-status/{strUserStatus}")
+    public List<Expert> findExpertsByUserStatus(@PathVariable String strUserStatus) {
+//        if (Objects.equals(strUserStatus, "CONFIRMED") || Objects.equals(strUserStatus, "WAITING")
+//                || Objects.equals(strUserStatus, "DISABLED") || Objects.equals(strUserStatus, "NEW")){
+//            UserStatus userStatus = null;
+//            if (Objects.equals(strUserStatus, "CONFIRMED")) userStatus = UserStatus.CONFIRMED;
+//            else if (Objects.equals(strUserStatus, "WAITING")) userStatus = UserStatus.WAITING;
+//            else if (Objects.equals(strUserStatus, "DISABLED")) userStatus = UserStatus.DISABLED;
+//            else if (Objects.equals(strUserStatus, "NEW")) userStatus = UserStatus.NEW;
+//            return expertService.findExpertsByUserStatus(userStatus);
+//        } else return null;
+//        if (Objects.equals(strUserStatus, "2"))
+        return expertService.findExpertsByUserStatus(UserStatus.CONFIRMED);
     }
 
     @PostMapping("/filter-clients")

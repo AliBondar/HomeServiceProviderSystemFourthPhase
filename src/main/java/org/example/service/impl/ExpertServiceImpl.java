@@ -27,6 +27,7 @@ import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -107,7 +108,8 @@ public class ExpertServiceImpl implements ExpertService {
                 || expertDTO.getService() == null || expertDTO.getImageData() == null) {
             throw new EmptyFieldException("Field must be filled out.");
         }
-        String[] path = expertDTO.getImageData().getPath().split("\\.");
+        File file = new File(expertDTO.getImageData());
+        String[] path = file.getPath().split("\\.");
         if (validation.emailPatternMatches(expertDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
         } else if (isExpertEmailDuplicated(expertDTO.getEmail())) {
@@ -116,7 +118,7 @@ public class ExpertServiceImpl implements ExpertService {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
         } else if (!path[path.length - 1].equalsIgnoreCase("JPG")) {
             throw new ImageFormatException("Image format must be jpg");
-        } else if (Files.size(Paths.get(expertDTO.getImageData().getPath())) > 300000) {
+        } else if (Files.size(Paths.get(file.getPath())) > 300000) {
             throw new ImageSizeException("Image size must be less than 300kb");
         } else {
             expertDTO.setSignUpDate(LocalDate.now());

@@ -299,5 +299,14 @@ class AdminServiceImplTest {
                 , serviceService.findServiceByName("testService").get()));
     }
 
+    @Test
+    void showExpertsByUserStatus(){
+        System.out.println(expertService.findExpertsByUserStatus(UserStatus.CONFIRMED));
+    }
+
+    @Test
+    void findExpertByEmail(){
+        System.out.println(expertService.findExpertByEmail("expert@gmail.com").get());
+    }
 
 }

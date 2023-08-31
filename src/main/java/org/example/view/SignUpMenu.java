@@ -111,7 +111,7 @@ public class SignUpMenu {
                         String imageStr = "D:\\Pictures\\cat.jpg";
                         File file = new File(imageAddress);
                         byte[] imageContent = FileUtils.readFileToByteArray(file);
-                        expertSignUpCommand.setImageData(file);
+                        expertSignUpCommand.setImageData(imageStr);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

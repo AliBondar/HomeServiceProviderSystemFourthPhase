@@ -92,7 +92,7 @@
 </body>
 <script>
     window.onload = function() {
-        var timeLimit = 10 * 60; // 10 minutes in seconds
+        var timeLimit = 10 * 60;
         var countdownElement = document.getElementById('countdown');
 
         function updateCountdown() {
@@ -102,11 +102,9 @@
 
             if (timeLimit <= 0) {
                 countdownElement.innerHTML = 'Time limit exceeded!';
-                // Disable or hide the payment form here
-                // Example: document.getElementById('paymentForm').disabled = true;
             } else {
                 timeLimit--;
-                setTimeout(updateCountdown, 1000); // Update every second
+                setTimeout(updateCountdown, 1000);
             }
         }
 

@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.OfferDTO;
 import org.example.entity.Offer;
@@ -16,6 +17,7 @@ import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
