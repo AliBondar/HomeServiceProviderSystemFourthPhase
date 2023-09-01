@@ -31,7 +31,7 @@ public class SubService extends BaseEntity<Long> {
     List<Expert> expertList = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "subservice_id")
+    @JoinColumn(name = "sub_service_id")
     List<Order> orderList = new ArrayList<>();
 
     @Override

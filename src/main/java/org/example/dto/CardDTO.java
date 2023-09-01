@@ -19,7 +19,9 @@ public class CardDTO extends BaseDTO<Long>{
     @Pattern(regexp = "^[0-9]{3,4}$", message = "invalid format for CVV2")
     String cvv2;
 
-    String expireDate;
+    String expireYear;
+
+    String expireMonth;
 
     String password;
 

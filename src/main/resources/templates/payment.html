@@ -29,7 +29,7 @@
         }
 
         .form-group input {
-            width: 15%;
+            width: 35%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -58,19 +58,19 @@
 <body>
 <div class="container">
     <p>Time remaining: <span id="countdown"></span></p>
-    <form th:object="${card}">
+    <form th:object="${card}" th:action="@{/payment/pay}" method="POST">
         <div class="form-group">
-            <input type="text" maxlength="4" placeholder="Card Number" required>
-            <input type="text" maxlength="4" placeholder="Card Number" required>
-            <input type="text" maxlength="4" placeholder="Card Number" required>
-            <input type="text" maxlength="4" placeholder="Card Number" required>
+            <input type="text" th:field="*{cardNumber}" maxlength="16" placeholder="Card Number" required>
+<!--            <input type="text" maxlength="4" placeholder="Card Number" required>-->
+<!--            <input type="text" maxlength="4" placeholder="Card Number" required>-->
+<!--            <input type="text" maxlength="4" placeholder="Card Number" required>-->
         </div>
         <div class="form-group cvv-group">
-            <input type="text" maxlength="3" placeholder="CVV2" required>
+            <input type="text" th:field="*{cvv2}" maxlength="3" placeholder="CVV2" required>
         </div>
         <div class="form-group">
-            <input type="text" maxlength="2" placeholder="Month" required>
-            <input type="text" maxlength="2" placeholder="Year" required>
+            <input type="text" th:field="*{expireYear}" maxlength="2" placeholder="Month" required>
+            <input type="text" th:field="*{expireMonth}" maxlength="2" placeholder="Year" required>
         </div>
         <div class="row">
             <div class="col-2"></div>
@@ -102,6 +102,10 @@
 
             if (timeLimit <= 0) {
                 countdownElement.innerHTML = 'Time limit exceeded!';
+                // Refresh the page after 10 minutes
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
             } else {
                 timeLimit--;
                 setTimeout(updateCountdown, 1000);

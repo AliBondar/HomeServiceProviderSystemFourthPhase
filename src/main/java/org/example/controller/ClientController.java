@@ -105,11 +105,9 @@ public class ClientController {
     }
 
     @PostMapping("/payment/pay")
-    @ResponseBody
     private String pay(@Valid final CardDTO cardDto, final HttpServletRequest request) {
         final String response = request.getParameter("g-recaptcha-response");
 //        captchaService.processResponse(response);
-
         return "successful payment";
     }
 
