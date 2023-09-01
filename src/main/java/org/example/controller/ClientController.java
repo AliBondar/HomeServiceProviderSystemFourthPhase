@@ -45,9 +45,9 @@ public class ClientController {
         clientService.createOrder(orderDTO);
     }
 
-    @PostMapping("/accept-offer")
-    public void acceptOffer(Offer offer) {
-        clientService.acceptOffer(offer);
+    @PostMapping("/accept-offer/{id}")
+    public void acceptOffer(@PathVariable Long id) {
+        clientService.acceptOffer(id);
     }
 
     @PostMapping("/change-order-status-to-STARTED/{orderId}")

@@ -189,9 +189,9 @@ class ClientServiceImplTest {
     @Order(19)
     void createOrder() {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+//        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
         orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+//        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderDTO.setLocalTime(LocalTime.of(20, 30));
         orderDTO.setClientOfferedPrice(25000);
         orderDTO.setClientOfferedWorkDuration(2);
@@ -204,7 +204,7 @@ class ClientServiceImplTest {
     @Order(15)
     void createOrderWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+//        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
         orderDTO.setLocalTime(LocalTime.now());
         assertThrows(EmptyFieldException.class, () -> {
             clientService.createOrder(orderDTO);
@@ -219,9 +219,9 @@ class ClientServiceImplTest {
                 15000, "testSubServiceForClient", serviceService.findServiceByName("testServiceForClient").get()
         ));
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+//        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
         orderDTO.setLocalDate(LocalDate.of(2022, 4, 6));
-        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+//        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderDTO.setLocalTime(LocalTime.of(20, 30));
         orderDTO.setClientOfferedPrice(25000);
         orderDTO.setClientOfferedWorkDuration(2);
@@ -235,9 +235,9 @@ class ClientServiceImplTest {
     @Order(17)
     void createOrderWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+//        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
         orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+//        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderDTO.setLocalTime(LocalTime.of(23, 30));
         orderDTO.setClientOfferedPrice(25000);
         orderDTO.setClientOfferedWorkDuration(2);
@@ -251,9 +251,9 @@ class ClientServiceImplTest {
     @Order(18)
     void createOrderWhenInvalidPriceExceptionThrown_thenAssertionSucceed() {
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
+//        orderDTO.setClient(clientService.findClientByEmail("ali@gmail.com").get());
         orderDTO.setLocalDate(LocalDate.of(2023, 12, 5));
-        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
+//        orderDTO.setSubService(subServiceService.findSubServiceByDescription("testSubServiceForClient").get());
         orderDTO.setLocalTime(LocalTime.of(20, 30));
         orderDTO.setClientOfferedPrice(1000);
         orderDTO.setClientOfferedWorkDuration(2);

@@ -205,6 +205,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public void acceptOffer(Long id){
+        Offer offer = offerRepository.findById(id).get();
+        offer.setAccepted(true);
+        Order order = offer.getOrder();
+        order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_ARRIVES);
+        order.setExpert(offer.getExpert());
+        orderRepository.save(order);
+        offerRepository.save(offer);
+    }
+
+
+
+    @Override
     public void changeOrderStatusToStarted(Long orderId) {
         if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("Couldn't find the order.");

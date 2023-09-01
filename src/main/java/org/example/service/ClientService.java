@@ -42,6 +42,8 @@ public interface ClientService {
 
     void acceptOffer(Offer offer);
 
+    void acceptOffer(Long id);
+
     void changeOrderStatusToStarted(Long orderId);
 
     void changeOrderStatusToDone(Long orderId);
