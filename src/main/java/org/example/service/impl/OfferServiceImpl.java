@@ -64,10 +64,14 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public List<Offer> findOffersByOrderId(Long id) {
+    public List<OfferDTO> findOffersByOrderId(Long id) {
         List<Offer> offers = offerRepository.findOffersByOrderId(id);
+        List<OfferDTO> offerDTOList = new ArrayList<>();
         offers.sort(Comparator.comparingDouble(Offer::getOfferedPrice).thenComparingInt(o -> o.getExpert().getScore()));
-        return offers;
+        for (Offer offer : offers){
+            offerDTOList.add(offerMapper.convert(offer));
+        }
+        return offerDTOList;
     }
 
     @Override

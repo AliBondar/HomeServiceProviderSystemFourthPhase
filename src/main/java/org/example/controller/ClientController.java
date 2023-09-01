@@ -1,6 +1,8 @@
 package org.example.controller;
 
 import cn.apiclub.captcha.Captcha;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
@@ -54,7 +56,6 @@ public class ClientController {
     }
 
     @PostMapping("/change-order-status-to-DONE/{orderId}")
-    @ResponseBody
     public void changeOrderStatusToDone(@PathVariable Long orderId) {
         clientService.changeOrderStatusToDone(orderId);
     }
@@ -65,7 +66,7 @@ public class ClientController {
     }
 
     @GetMapping("/show-offers-by-order/{id}")
-    public List<Offer> findOffersByOrderId(@PathVariable Long id) {
+    public List<OfferDTO> findOffersByOrderId(@PathVariable Long id) {
         return offerService.findOffersByOrderId(id);
     }
 
@@ -101,6 +102,15 @@ public class ClientController {
         model.addAttribute("card", card);
 
         return new ModelAndView("payment.html");
+    }
+
+    @PostMapping("/payment/pay")
+    @ResponseBody
+    private String pay(@Valid final CardDTO cardDto, final HttpServletRequest request) {
+        final String response = request.getParameter("g-recaptcha-response");
+//        captchaService.processResponse(response);
+
+        return "successful payment";
     }
 
     private void setupCaptcha(CardDTO card) {
