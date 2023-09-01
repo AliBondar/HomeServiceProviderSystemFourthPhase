@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
+import org.example.dto.response.ExpertResponseDTO;
 import org.example.mapper.ExpertMapper;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -88,6 +89,11 @@ public class ExpertServiceImpl implements ExpertService {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public ExpertResponseDTO findExpertDTOByEmail(String email) {
+        return expertMapper.modelToExpertResponseDTO(expertRepository.findExpertByEmail(email).get());
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
 import org.example.dto.request.EmailDTO;
+import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
@@ -60,9 +61,9 @@ public class AdminController {
         adminService.addSubService(subServiceDTO);
     }
 
-    @GetMapping("/show-expert-by-email")
-    public Expert findExpertByEmail(@RequestBody EmailDTO emailDTO) {
-        return expertService.findExpertByEmail(emailDTO.getEmail()).get();
+    @GetMapping("/show-expert-by-email/{email}")
+    public ExpertResponseDTO findExpertByEmail(@PathVariable String email) {
+        return expertService.findExpertDTOByEmail(email);
     }
 
     @GetMapping("/show-experts-by-user-status/{strUserStatus}")

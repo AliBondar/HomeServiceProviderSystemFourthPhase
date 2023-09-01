@@ -46,11 +46,11 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
         return null;
     }
 
-    ExpertResponseDTO modelToExpertResponseDTO(Expert expert) {
+    public ExpertResponseDTO modelToExpertResponseDTO(Expert expert) {
         ExpertResponseDTO expertResponseDTO = new ExpertResponseDTO();
-        expertResponseDTO.setFirstName(expertResponseDTO.getFirstName());
-        expertResponseDTO.setLastName(expertResponseDTO.getLastName());
-        expertResponseDTO.setEmail(expertResponseDTO.getEmail());
+        expertResponseDTO.setFirstName(expert.getFirstName());
+        expertResponseDTO.setLastName(expert.getLastName());
+        expertResponseDTO.setEmail(expert.getEmail());
         return expertResponseDTO;
     }
 }

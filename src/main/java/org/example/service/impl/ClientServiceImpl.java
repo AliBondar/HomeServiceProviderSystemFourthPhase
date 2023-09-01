@@ -44,6 +44,7 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
+    private final SubServiceRepository subServiceRepository;
     private final OrderService orderService;
     private final OfferRepository offerRepository;
     private final OfferService offerService;
@@ -180,13 +181,13 @@ public class ClientServiceImpl implements ClientService {
         Validation validation = new Validation();
         if (orderDTO.getClientOfferedPrice() == 0 || orderDTO.getDescription() == null
                 || orderDTO.getLocalTime() == null || orderDTO.getLocalDate() == null
-                || orderDTO.getSubService() == null || orderDTO.getClientOfferedWorkDuration() == 0) {
+                || orderDTO.getSubServiceId() == null || orderDTO.getClientOfferedWorkDuration() == 0) {
             throw new EmptyFieldException("Fields must filled out.");
         } else if (!validation.isDateValid(orderDTO.getLocalDate())) {
             throw new InvalidDateException("Invalid date.");
         } else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
             throw new InvalidTimeException("Invalid Time.");
-        } else if (!validation.isOfferedPriceValid(orderDTO, orderDTO.getSubService())) {
+        } else if (!validation.isOfferedPriceValid(orderDTO, subServiceRepository.findById(orderDTO.getSubServiceId()).get())) {
             throw new InvalidPriceException("Invalid price.");
         } else {
             orderService.save(orderDTO);
@@ -292,7 +293,7 @@ public class ClientServiceImpl implements ClientService {
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
             scoreDTO.setComment(comment);
-            scoreDTO.setClient(orderDTO.getClient());
+            scoreDTO.setClient(clientRepository.findById(orderDTO.getClientId()).get());
             scoreDTO.setOrder(order);
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
             scoreService.save(scoreDTO);
@@ -316,7 +317,7 @@ public class ClientServiceImpl implements ClientService {
                     order.getExpert().getScore() + score);
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
-            scoreDTO.setClient(orderDTO.getClient());
+            scoreDTO.setClient(clientRepository.findById(orderDTO.getClientId()).get());
             scoreDTO.setOrder(order);
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
             scoreService.save(scoreDTO);

@@ -1,14 +1,26 @@
 package org.example.mapper;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.dto.OrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
+import org.example.repository.ClientRepository;
+import org.example.repository.OrderRepository;
+import org.example.repository.SubServiceRepository;
+import org.example.service.impl.ClientServiceImpl;
+import org.hibernate.annotations.Comment;
+import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 
+@Component
+@RequiredArgsConstructor
 public class OrderMapper implements BaseMapper<OrderDTO, Order> {
 
+    final ClientRepository clientRepository;
+    final SubServiceRepository subServiceRepository;
 
     @Override
     public Order convert(OrderDTO orderDTO) {
@@ -19,8 +31,8 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
         order.setTime(Time.valueOf(orderDTO.getLocalTime()));
         order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
         order.setPaid(0);
-        order.setClient(orderDTO.getClient());
-        order.setSubService(orderDTO.getSubService());
+        order.setClient(clientRepository.findById(orderDTO.getClientId()).get());
+        order.setSubService(subServiceRepository.findById(orderDTO.getSubServiceId()).get());
         order.setClientOfferedPrice(orderDTO.getClientOfferedPrice());
         order.setClientOfferedWorkDuration(orderDTO.getClientOfferedWorkDuration());
         return order;
@@ -35,8 +47,8 @@ public class OrderMapper implements BaseMapper<OrderDTO, Order> {
         orderDTO.setLocalTime(order.getTime().toLocalTime());
         orderDTO.setOrderStatus(order.getOrderStatus());
         orderDTO.setPaid(order.getPaid());
-        orderDTO.setClient(order.getClient());
-        orderDTO.setSubService(order.getSubService());
+        orderDTO.setClientId(order.getClient().getId());
+        orderDTO.setSubServiceId(order.getSubService().getId());
         orderDTO.setClientOfferedPrice(order.getClientOfferedPrice());
         orderDTO.setClientOfferedWorkDuration(order.getClientOfferedWorkDuration());
         return orderDTO;

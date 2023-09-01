@@ -34,25 +34,21 @@ public class ClientController {
     }
 
     @PutMapping("/edit-client-password/{clientId}/{newPassword}")
-    @ResponseBody
     public void editClientPassword(@PathVariable Long clientId,@PathVariable String newPassword) {
         clientService.editClientPassword(clientId, newPassword);
     }
 
     @PostMapping("/create-order")
-    @ResponseBody
     public void createOrder(@RequestBody OrderDTO orderDTO) {
         clientService.createOrder(orderDTO);
     }
 
     @PostMapping("/accept-offer")
-    @ResponseBody
     public void acceptOffer(Offer offer) {
         clientService.acceptOffer(offer);
     }
 
     @PostMapping("/change-order-status-to-STARTED/{orderId}")
-    @ResponseBody
     public void changeOrderStatusToStarted(@PathVariable Long orderId) {
         clientService.changeOrderStatusToStarted(orderId);
     }

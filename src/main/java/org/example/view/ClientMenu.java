@@ -98,11 +98,11 @@ public class ClientMenu {
                     System.out.println("Enter your offered work duration :");
                     int offeredWordDuration = scanner.nextInt();
                     OrderDTO orderCommand = new OrderDTO();
-                    orderCommand.setClient(client);
+//                    orderCommand.setClient(client);
                     orderCommand.setDescription(description);
                     orderCommand.setLocalDate(LocalDate.of(2023, 11, 2));
                     orderCommand.setLocalTime(LocalTime.of(20,30));
-                    orderCommand.setSubService(subService);
+//                    orderCommand.setSubService(subService);
                     orderCommand.setClientOfferedPrice(offeredPrice);
                     orderCommand.setClientOfferedWorkDuration(offeredWordDuration);
                     try {

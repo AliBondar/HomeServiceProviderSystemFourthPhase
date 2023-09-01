@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Root;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
+import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 
@@ -25,6 +26,8 @@ public interface ExpertService{
     List<ExpertDTO> findAll();
 
     Optional<Expert> findExpertByEmail(String email);
+
+    ExpertResponseDTO findExpertDTOByEmail(String email);
 
     Optional<Expert> findExpertByEmailAndPassword(String email, String password);
 
