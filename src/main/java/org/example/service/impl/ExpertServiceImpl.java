@@ -233,8 +233,11 @@ public class ExpertServiceImpl implements ExpertService {
         if (expertDTO.getUserStatus() != null) {
             predicateList.add(criteriaBuilder.equal(expertRoot.get("userStatus"), expertDTO.getUserStatus()));
         }
-        if (expertDTO.getScore() != 0){
+        if (expertDTO.getScore() != 0) {
             predicateList.add(criteriaBuilder.equal(expertRoot.get("score"), expertDTO.getScore()));
+        }
+        if (expertDTO.getServiceId() != null) {
+            predicateList.add(criteriaBuilder.equal(expertRoot.get("serviceId"), expertDTO.getServiceId()));
         }
     }
 
@@ -252,7 +255,7 @@ public class ExpertServiceImpl implements ExpertService {
     public List<OrderDTO> findOrdersByOrderStatus(OrderStatus orderStatus) {
         List<Order> orders = orderService.findOrdersByOrderStatus(orderStatus);
         List<OrderDTO> orderDTOList = new ArrayList<>();
-        for (Order order : orders){
+        for (Order order : orders) {
             orderDTOList.add(orderMapper.convert(order));
         }
         return orderDTOList;
