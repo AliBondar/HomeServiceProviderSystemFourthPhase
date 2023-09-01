@@ -45,6 +45,11 @@ public class AdminController {
         adminService.editExpertStatus(expertId, userStatus);
     }
 
+    @PutMapping("/confirm-expert/{expertId}")
+    public void confirmExpert(@PathVariable Long expertId){
+        adminService.editExpertStatus(expertId, UserStatus.CONFIRMED);
+    }
+
     @PutMapping("/edit-sub-service/{id}/{newBasePrice}/{newDescription}")
     public void editSubService(@PathVariable Long id, @PathVariable double newBasePrice, @PathVariable String newDescription) {
         adminService.editSubService(id, newBasePrice, newDescription);

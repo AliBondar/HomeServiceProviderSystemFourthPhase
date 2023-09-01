@@ -16,6 +16,7 @@ public class WalletMapper implements BaseMapper<WalletDTO , Wallet> {
     @Override
     public WalletDTO convert(Wallet wallet) {
         WalletDTO walletDTO = new WalletDTO();
+        walletDTO.setId(wallet.getId());
         walletDTO.setBalance(wallet.getBalance());
         return walletDTO;
     }

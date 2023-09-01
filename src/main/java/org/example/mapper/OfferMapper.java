@@ -36,6 +36,7 @@ public class OfferMapper implements BaseMapper<OfferDTO, Offer> {
     @Override
     public OfferDTO convert(Offer offer) {
         OfferDTO offerDTO = new OfferDTO();
+        offerDTO.setId(offer.getId());
         offerDTO.setExpertId(offer.getExpert().getId());
         offerDTO.setOrderId(offer.getOrder().getId());
         offerDTO.setOfferedPrice(offer.getOfferedPrice());

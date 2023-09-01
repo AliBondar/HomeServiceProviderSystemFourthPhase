@@ -17,6 +17,7 @@ public class ServiceMapper implements BaseMapper<ServiceDTO, Service> {
     @Override
     public ServiceDTO convert(Service service) {
         ServiceDTO serviceDTO = new ServiceDTO();
+        serviceDTO.setId(service.getId());
         serviceDTO.setName(service.getName());
         return serviceDTO;
     }

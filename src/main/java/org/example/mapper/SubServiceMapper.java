@@ -19,6 +19,7 @@ public class SubServiceMapper implements BaseMapper<SubServiceDTO, SubService> {
     @Override
     public SubServiceDTO convert(SubService subService) {
         SubServiceDTO subServiceDTO = new SubServiceDTO();
+        subServiceDTO.setId(subService.getId());
         subServiceDTO.setBasePrice(subService.getBasePrice());
         subServiceDTO.setDescription(subService.getDescription());
         subServiceDTO.setService(subServiceDTO.getService());

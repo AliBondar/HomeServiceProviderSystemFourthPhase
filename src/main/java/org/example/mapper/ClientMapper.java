@@ -33,6 +33,7 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
         clientDTO.setFirstName(client.getFirstName());
         clientDTO.setLastName(client.getLastName());
         clientDTO.setEmail(client.getEmail());
+        clientDTO.setId(client.getId());
         try {
             clientDTO.setPassword(passwordHash.createHashedPassword(client.getPassword()));
         } catch (NoSuchAlgorithmException e) {
