@@ -3,9 +3,9 @@ package org.example.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
-import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
+import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.SubService;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
@@ -153,7 +153,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<ExpertDTO> filterExpert(ExpertDTO expertDTO) {
+    public List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO) {
         return expertService.filterExpert(expertDTO);
     }
 }

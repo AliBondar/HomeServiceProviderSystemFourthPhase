@@ -2,6 +2,9 @@ package org.example.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.example.entity.users.enums.UserStatus;
+
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -16,4 +19,12 @@ public class ExpertResponseDTO {
     String lastName;
 
     String email;
+
+    int score;
+
+    UserStatus userStatus;
+
+    LocalDate signUpdate;
+
+    Long serviceId;
 }

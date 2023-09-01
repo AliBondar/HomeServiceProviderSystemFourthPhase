@@ -92,7 +92,7 @@ public class AdminController {
     }
 
     @PostMapping("/filter-experts")
-    public List<ExpertDTO> filterExpert(@RequestBody ExpertDTO expertDTO) {
+    public List<ExpertResponseDTO> filterExpert(@RequestBody ExpertResponseDTO expertDTO) {
         return expertService.filterExpert(expertDTO);
     }
 }

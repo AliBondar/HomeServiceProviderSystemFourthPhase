@@ -199,7 +199,7 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
-    public List<ExpertDTO> filterExpert(ExpertDTO expertDTO) {
+    public List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO) {
         List<Predicate> predicateList = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Expert> expertCriteriaQuery = criteriaBuilder.createQuery(Expert.class);
@@ -209,15 +209,15 @@ public class ExpertServiceImpl implements ExpertService {
         predicateList.toArray(predicates);
         expertCriteriaQuery.select(expertRoot).where(predicates);
         List<Expert> resultList = entityManager.createQuery(expertCriteriaQuery).getResultList();
-        List<ExpertDTO> expertDTOList = new ArrayList<>();
+        List<ExpertResponseDTO> expertDTOList = new ArrayList<>();
         for (Expert expert : resultList) {
-            expertDTOList.add(expertMapper.convert(expert));
+            expertDTOList.add(expertMapper.modelToExpertResponseDTO(expert));
         }
         return expertDTOList;
     }
 
     @Override
-    public void createFilters(ExpertDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot) {
+    public void createFilters(ExpertResponseDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot) {
         if (expertDTO.getFirstName() != null) {
             String firstName = "%" + expertDTO.getFirstName() + "%";
             predicateList.add(criteriaBuilder.like(expertRoot.get("firstName"), firstName));

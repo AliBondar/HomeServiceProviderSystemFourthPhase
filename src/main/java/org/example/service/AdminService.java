@@ -2,9 +2,9 @@ package org.example.service;
 
 
 import org.example.dto.ClientDTO;
-import org.example.dto.ExpertDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
+import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.Service;
 import org.example.entity.users.Admin;
 import org.example.entity.users.enums.UserStatus;
@@ -37,5 +37,5 @@ public interface AdminService {
 
     List<ClientDTO> filterClient(ClientDTO clientDTO);
 
-    List<ExpertDTO> filterExpert(ExpertDTO expertDTO);
+    List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
 }

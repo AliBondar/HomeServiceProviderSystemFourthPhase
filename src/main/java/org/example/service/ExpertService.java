@@ -42,9 +42,9 @@ public interface ExpertService{
 
     void createOffer(OfferDTO offerDTO);
 
-    List<ExpertDTO> filterExpert(ExpertDTO expertDTO);
+    List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
 
-    void createFilters(ExpertDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot);
+    void createFilters(ExpertResponseDTO expertDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Expert> expertRoot);
 
     void updateExpertWallet(Long expertId, double balance);
 
