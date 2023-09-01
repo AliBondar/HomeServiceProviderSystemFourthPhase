@@ -233,6 +233,9 @@ public class ExpertServiceImpl implements ExpertService {
         if (expertDTO.getUserStatus() != null) {
             predicateList.add(criteriaBuilder.equal(expertRoot.get("userStatus"), expertDTO.getUserStatus()));
         }
+        if (expertDTO.getScore() != 0){
+            predicateList.add(criteriaBuilder.equal(expertRoot.get("score"), expertDTO.getScore()));
+        }
     }
 
     @Override
