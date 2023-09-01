@@ -105,10 +105,20 @@ public class ClientController {
     }
 
     @PostMapping("/payment/pay")
-    private String pay(@Valid final CardDTO cardDto, final HttpServletRequest request) {
-        final String response = request.getParameter("g-recaptcha-response");
-//        captchaService.processResponse(response);
-        return "successful payment";
+    public String pay(
+            @ModelAttribute("card") CardDTO card,
+            Model model)
+    {
+        String page="";
+        if(card.getCaptcha().equals(card.getHidden()))
+        {
+            clientService.payByCard(card);
+            page ="redirect:all";
+        } else {
+            setupCaptcha(card);
+            return "payment";
+        }
+        return page;
     }
 
     private void setupCaptcha(CardDTO card) {

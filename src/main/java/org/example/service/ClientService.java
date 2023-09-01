@@ -5,6 +5,7 @@ package org.example.service;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
@@ -67,4 +68,6 @@ public interface ClientService {
     void payByWallet(Long orderId, Long clientId);
 
     void updateClientWallet(Long clientId, double balance);
+
+    void payByCard(CardDTO cardDTO);
 }

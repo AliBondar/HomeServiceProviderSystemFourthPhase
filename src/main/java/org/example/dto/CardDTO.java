@@ -25,6 +25,8 @@ public class CardDTO extends BaseDTO<Long>{
 
     String password;
 
+    Long orderId;
+
     @Transient
     private String captcha;
     @Transient

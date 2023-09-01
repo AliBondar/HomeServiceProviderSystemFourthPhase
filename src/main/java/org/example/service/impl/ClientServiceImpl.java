@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
@@ -420,5 +421,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void updateClientWallet(Long clientId, double balance) {
         clientRepository.updateClientWallet(clientId, balance);
+    }
+
+    @Override
+    public void payByCard(CardDTO cardDTO){
+        Order order = orderRepository.findById(cardDTO.getOrderId()).get();
+        Offer offer = offerService.findAcceptedOfferByOrderId(order.getId()).get();
+        Expert expert = offer.getExpert();
+        expertService.updateExpertWallet(expert.getId(),
+                expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
+        changeOrderStatusToPaid(order.getId());
     }
 }
