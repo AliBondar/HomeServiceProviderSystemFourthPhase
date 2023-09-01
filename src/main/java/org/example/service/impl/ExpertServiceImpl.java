@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
+import org.example.dto.OrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.mapper.ExpertMapper;
 import org.example.entity.Order;
@@ -18,12 +19,14 @@ import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
+import org.example.mapper.OrderMapper;
 import org.example.repository.ExpertRepository;
 import org.example.repository.OrderRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.ExpertService;
 import org.example.service.OfferService;
+import org.example.service.OrderService;
 import org.example.validation.Validation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,8 +50,10 @@ public class ExpertServiceImpl implements ExpertService {
     private final WalletRepository walletRepository;
     private final OrderRepository orderRepository;
     private final OfferService offerService;
+    private final OrderService orderService;
     @PersistenceContext
     private EntityManager entityManager;
+    private final OrderMapper orderMapper;
     private final ExpertMapper expertMapper = new ExpertMapper();
 
     @Override
@@ -173,13 +178,13 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public void createOffer(OfferDTO offerDTO) {
         Validation validation = new Validation();
-        if (offerDTO.getExpert() == null || offerDTO.getOfferedPrice() == 0
-                || offerDTO.getExpertOfferedWorkDuration() == 0 || offerDTO.getOrder() == null
+        if (offerDTO.getExpertId() == null || offerDTO.getOfferedPrice() == 0
+                || offerDTO.getExpertOfferedWorkDuration() == 0 || offerDTO.getOrderId() == null
                 || offerDTO.getOfferedStartTime() == null || offerDTO.getOfferedStartDate() == null) {
             throw new EmptyFieldException("Fields must filled out.");
-        } else if (offerDTO.getExpert().getUserStatus() != UserStatus.CONFIRMED) {
+        } else if (expertRepository.findById(offerDTO.getExpertId()).get().getUserStatus() != UserStatus.CONFIRMED) {
             throw new UserConfirmationException("User is not confirmed yet.");
-        } else if (!validation.isOfferedPriceValid(offerDTO, offerDTO.getOrder().getSubService())) {
+        } else if (!validation.isOfferedPriceValid(offerDTO, orderRepository.findById(offerDTO.getOrderId()).get().getSubService())) {
             throw new InvalidPriceException("Price is not valid.");
         } else if (!validation.isTimeValid(offerDTO.getOfferedStartTime())) {
             throw new InvalidTimeException("Time is invalid.");
@@ -187,7 +192,7 @@ public class ExpertServiceImpl implements ExpertService {
             throw new InvalidDateException("Date is invalid.");
         } else {
             offerService.save(offerDTO);
-            Order order = orderRepository.findById(offerDTO.getOrder().getId()).get();
+            Order order = orderRepository.findById(offerDTO.getOrderId()).get();
             order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
             orderRepository.save(order);
         }
@@ -205,7 +210,7 @@ public class ExpertServiceImpl implements ExpertService {
         expertCriteriaQuery.select(expertRoot).where(predicates);
         List<Expert> resultList = entityManager.createQuery(expertCriteriaQuery).getResultList();
         List<ExpertDTO> expertDTOList = new ArrayList<>();
-        for (Expert expert : resultList){
+        for (Expert expert : resultList) {
             expertDTOList.add(expertMapper.convert(expert));
         }
         return expertDTOList;
@@ -231,12 +236,22 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
-    public void updateExpertWallet(Long expertId, double balance){
+    public void updateExpertWallet(Long expertId, double balance) {
         expertRepository.updateExpertWallet(expertId, balance);
     }
 
     @Override
     public void updateExpertScore(Long expertId, int score) {
         expertRepository.updateExpertScore(expertId, score);
+    }
+
+    @Override
+    public List<OrderDTO> findOrdersByOrderStatus(OrderStatus orderStatus) {
+        List<Order> orders = orderService.findOrdersByOrderStatus(orderStatus);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders){
+            orderDTOList.add(orderMapper.convert(order));
+        }
+        return orderDTOList;
     }
 }

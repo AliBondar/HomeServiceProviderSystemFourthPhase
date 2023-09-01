@@ -8,6 +8,7 @@ import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
 import org.example.mapper.OfferMapper;
 import org.example.repository.OfferRepository;
+import org.example.repository.OrderRepository;
 import org.example.service.OfferService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,7 +22,8 @@ import java.util.function.Predicate;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepository offerRepository;
-    private final OfferMapper offerMapper = new OfferMapper();
+    private final OrderRepository orderRepository;
+    private final OfferMapper offerMapper;
 
     @Override
     public void save(OfferDTO offerDTO) {
@@ -85,7 +87,7 @@ public class OfferServiceImpl implements OfferService {
     //TODO
     @Override
     public List<OfferDTO> findNewOffersByOrderId(Long id) {
-        Predicate<OfferDTO> newOffer = offerDTO -> offerDTO.getOrder().getOrderStatus() == OrderStatus.WAITING_FOR_EXPERT_OFFER;
+        Predicate<OfferDTO> newOffer = offerDTO -> orderRepository.findById(offerDTO.getOrderId()).get().getOrderStatus() == OrderStatus.WAITING_FOR_EXPERT_OFFER;
         return null;
     }
 }

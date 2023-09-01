@@ -7,6 +7,7 @@ import org.example.dto.OrderDTO;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.SubService;
+import org.example.entity.enums.OrderStatus;
 import org.example.service.ExpertService;
 import org.example.service.OfferService;
 import org.example.service.OrderService;
@@ -44,7 +45,6 @@ public class ExpertController {
     }
 
     @PostMapping("/create-offer")
-    @ResponseBody
     public void createOffer(@RequestBody OfferDTO offerDTO) {
         expertService.createOffer(offerDTO);
     }
@@ -68,4 +68,10 @@ public class ExpertController {
     public int showExpertScore(Long id){
         return expertService.findById(id).getScore();
     }
+
+    @GetMapping("/show-WAITING-orders")
+    public List<OrderDTO> findWaitingOrders(){
+        return expertService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
+    }
+
 }

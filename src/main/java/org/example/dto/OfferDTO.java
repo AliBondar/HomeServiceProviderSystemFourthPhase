@@ -17,9 +17,9 @@ import java.time.LocalTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OfferDTO extends BaseDTO<Long> {
 
-    Expert expert;
+    Long expertId;
 
-    Order order;
+    Long orderId;
 
     double offeredPrice;
 
