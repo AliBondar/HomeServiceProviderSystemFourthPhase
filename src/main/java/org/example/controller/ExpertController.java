@@ -29,7 +29,6 @@ public class ExpertController {
     private final OfferService offerService;
 
     @PostMapping("/expert-signup")
-    @ResponseBody
     public void signup(@ModelAttribute ExpertDTO expertDTO) {
         try {
             expertService.expertSignUp(expertDTO);
@@ -39,7 +38,6 @@ public class ExpertController {
     }
 
     @PostMapping("/edit-expert-password")
-    @ResponseBody
     public void editExpertPassword(@RequestBody Long expertId, @RequestBody String password) {
         expertService.editExpertPassword(expertId, password);
     }
