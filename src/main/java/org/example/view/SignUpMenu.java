@@ -1,5 +1,6 @@
 package org.example.view;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
@@ -31,16 +32,16 @@ public class SignUpMenu {
     ServiceRepository serviceRepository;
     SubServiceService subServiceService;
 
-    @Autowired
-    public SignUpMenu(ClientService clientService, ClientRepository clientRepository, ExpertService expertService, ExpertRepository expertRepository, ServiceService serviceService, ServiceRepository serviceRepository, SubServiceService subServiceService) {
-        this.clientService = clientService;
-        this.clientRepository = clientRepository;
-        this.expertService = expertService;
-        this.expertRepository = expertRepository;
-        this.serviceService = serviceService;
-        this.serviceRepository = serviceRepository;
-        this.subServiceService = subServiceService;
-    }
+//    @Autowired
+//    public SignUpMenu(ClientService clientService, ClientRepository clientRepository, ExpertService expertService, ExpertRepository expertRepository, ServiceService serviceService, ServiceRepository serviceRepository, SubServiceService subServiceService) {
+//        this.clientService = clientService;
+//        this.clientRepository = clientRepository;
+//        this.expertService = expertService;
+//        this.expertRepository = expertRepository;
+//        this.serviceService = serviceService;
+//        this.serviceRepository = serviceRepository;
+//        this.subServiceService = subServiceService;
+//    }
 
     private final Scanner scanner = new Scanner(System.in);
 
@@ -94,7 +95,7 @@ public class SignUpMenu {
                     System.out.println("Enter password :");
                     String password = scanner.next();
                     System.out.println("Choose a service :");
-                    serviceRepository.findAll().forEach(service -> {
+                    serviceService.findAll().forEach(service -> {
                         System.out.println(service.getId() + ". " + service.getName());
                     });
                     int serviceId = scanner.nextInt();

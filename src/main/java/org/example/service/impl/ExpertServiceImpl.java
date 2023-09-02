@@ -134,7 +134,7 @@ public class ExpertServiceImpl implements ExpertService {
         } else {
             expertDTO.setSignUpDate(LocalDate.now());
             expertDTO.setUserStatus(UserStatus.NEW);
-            expertDTO.setScore(0);
+            expertDTO.setScore(5);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);

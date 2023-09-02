@@ -228,8 +228,8 @@ class ExpertServiceImplTest {
     @Order(18)
     void createOffer() {
         OfferDTO offerDTO = new OfferDTO();
-        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+//        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+//        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
         offerDTO.setOfferedPrice(12000);
         offerDTO.setOfferedStartTime(LocalTime.of(20,10));
         offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
@@ -242,7 +242,7 @@ class ExpertServiceImplTest {
     @Order(13)
     void createOfferWhenEmptyFieldExceptionThrown_thenAssertionSucceed() {
         OfferDTO offerCommand = new OfferDTO();
-        offerCommand.setExpert(null);
+//        offerCommand.setExpert(null);
         assertThrows(EmptyFieldException.class, () -> {
             expertService.createOffer(offerCommand);
         });
@@ -262,8 +262,8 @@ class ExpertServiceImplTest {
         order.setSubService(subService);
         orderRepository.save(order);
         OfferDTO offerDTO = new OfferDTO();
-        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerDTO.setOrder(order);
+//        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+//        offerDTO.setOrder(order);
         offerDTO.setOfferedPrice(8000);
         offerDTO.setOfferedStartTime(LocalTime.of(20,10));
         offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
@@ -281,8 +281,8 @@ class ExpertServiceImplTest {
         expert.setUserStatus(UserStatus.CONFIRMED);
         expertRepository.save(expert);
         OfferDTO offerDTO = new OfferDTO();
-        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+//        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+//        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
         offerDTO.setOfferedPrice(8000);
         offerDTO.setOfferedStartTime(LocalTime.of(20,10));
         offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
@@ -296,8 +296,8 @@ class ExpertServiceImplTest {
     @Order(16)
     void createOfferWhenInvalidTimeExceptionThrown_thenAssertionSucceed() {
         OfferDTO offerDTO = new OfferDTO();
-        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+//        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+//        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
         offerDTO.setOfferedPrice(12000);
         offerDTO.setOfferedStartTime(LocalTime.of(23,10));
         offerDTO.setOfferedStartDate(LocalDate.of(2023, 9,5));
@@ -311,8 +311,8 @@ class ExpertServiceImplTest {
     @Order(17)
     void createOfferWhenInvalidDateExceptionThrown_thenAssertionSucceed() {
         OfferDTO offerDTO = new OfferDTO();
-        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
-        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
+//        offerDTO.setExpert(expertService.findExpertByEmail("expert@gmail.com").get());
+//        offerDTO.setOrder(orderService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER).get(0));
         offerDTO.setOfferedPrice(12000);
         offerDTO.setOfferedStartTime(LocalTime.of(20,10));
         offerDTO.setOfferedStartDate(LocalDate.of(2020, 9,5));

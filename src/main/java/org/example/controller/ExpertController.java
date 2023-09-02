@@ -29,7 +29,7 @@ public class ExpertController {
     private final OfferService offerService;
 
     @PostMapping("/expert-signup")
-    public void signup(@ModelAttribute ExpertDTO expertDTO) {
+    public void signup(@RequestBody ExpertDTO expertDTO) {
         try {
             expertService.expertSignUp(expertDTO);
         } catch (IOException e) {

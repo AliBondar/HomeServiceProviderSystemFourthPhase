@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmptyFieldException.class)
     public ResponseEntity<String> handleSomeException(EmptyFieldException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty field.");
     }
 
     @ExceptionHandler(InvalidTimeException.class)

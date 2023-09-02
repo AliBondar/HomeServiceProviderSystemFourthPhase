@@ -61,6 +61,7 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
         expertResponseDTO.setSignUpdate(expert.getSignUpDate());
         expertResponseDTO.setUserStatus(expert.getUserStatus());
         expertResponseDTO.setServiceId(expert.getService().getId());
+        expertResponseDTO.setImageData(expert.getImageData());
         return expertResponseDTO;
     }
 }

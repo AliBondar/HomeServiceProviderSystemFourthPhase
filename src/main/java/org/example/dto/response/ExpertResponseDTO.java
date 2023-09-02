@@ -27,4 +27,6 @@ public class ExpertResponseDTO {
     LocalDate signUpdate;
 
     Long serviceId;
+
+    byte[] imageData;
 }

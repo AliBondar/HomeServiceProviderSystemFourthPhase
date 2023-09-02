@@ -15,6 +15,7 @@ import org.example.service.AdminService;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
+import org.example.view.MainMenu;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -309,4 +310,9 @@ class AdminServiceImplTest {
         System.out.println(expertService.findExpertByEmail("expert@gmail.com").get());
     }
 
+    @Test
+    void menu(){
+        MainMenu menu = new MainMenu();
+        menu.showMenu();
+    }
 }
