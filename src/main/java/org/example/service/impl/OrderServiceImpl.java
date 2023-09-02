@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderDTO> orderDTOList = new ArrayList<>();
         if (CollectionUtils.isEmpty(orders)) return null;
         else {
-            for (Order order : orders){
+            for (Order order : orders) {
                 orderDTOList.add(orderMapper.convert(order));
             }
             return orderDTOList;
@@ -67,11 +67,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findNewOrdersBySubServiceId(Long id) {
+    public List<OrderDTO> findNewOrdersBySubServiceId(Long id) {
         Predicate<Order> newOrder = order -> order.getOrderStatus() == OrderStatus.WAITING_FOR_EXPERT_OFFER;
-        return findOrdersBySubServiceId(id).stream()
-                .filter(newOrder)
-                .collect(Collectors.toList());
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        List<Order> orders = findOrdersBySubServiceId(id).stream().filter(newOrder).toList();
+        for (Order order : orders) {
+            orderDTOList.add(orderMapper.convert(order));
+        }
+        return orderDTOList;
     }
 
     @Override

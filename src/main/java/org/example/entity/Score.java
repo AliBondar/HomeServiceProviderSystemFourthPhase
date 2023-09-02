@@ -27,7 +27,7 @@ public class Score extends BaseEntity<Long> {
     @Max(5)
     int score;
 
-    @ColumnDefault("no comment")
+//    @ColumnDefault("no comment")
     String comment;
 
     @ManyToOne

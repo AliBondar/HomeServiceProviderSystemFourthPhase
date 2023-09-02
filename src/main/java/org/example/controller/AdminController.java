@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
@@ -56,7 +57,7 @@ public class AdminController {
     }
 
     @PostMapping("/add-service")
-    public void addService(@RequestBody ServiceDTO serviceDTO) {
+    public void addService(@RequestBody @Valid ServiceDTO serviceDTO) {
         adminService.addService(serviceDTO);
     }
 

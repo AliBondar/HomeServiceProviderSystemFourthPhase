@@ -245,8 +245,9 @@ public class ClientServiceImpl implements ClientService {
             Order order = orderRepository.findById(orderId).get();
             Offer acceptedOffer = offerRepository.findAcceptedOfferByOrderId(orderId).get();
             Expert expert = acceptedOffer.getExpert();
-            if (calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime()) > acceptedOffer.getExpertOfferedWorkDuration()) {
-                expert.setScore(acceptedOffer.getExpert().getScore() - acceptedOffer.getExpertOfferedWorkDuration());
+            int delay = calculateDuration(acceptedOffer.getOfferedStartTime().toLocalTime());
+            if (delay > acceptedOffer.getExpertOfferedWorkDuration()) {
+                expert.setScore(acceptedOffer.getExpert().getScore() - delay);
                 if (expert.getScore() < 0) {
                     editExpertStatus(expert.getId(), UserStatus.DISABLED);
                 }

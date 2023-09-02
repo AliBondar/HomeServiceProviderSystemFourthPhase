@@ -37,8 +37,8 @@ public class ExpertController {
         }
     }
 
-    @PostMapping("/edit-expert-password")
-    public void editExpertPassword(@RequestBody Long expertId, @RequestBody String password) {
+    @PostMapping("/edit-expert-password/{expertId}/{password}")
+    public void editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
         expertService.editExpertPassword(expertId, password);
     }
 
@@ -47,29 +47,29 @@ public class ExpertController {
         expertService.createOffer(offerDTO);
     }
 
-    @GetMapping("/show-new-orders")
-    public List<Order> findNewOrdersBySubServiceId(Long id) {
+    @GetMapping("/show-new-orders/{id}")
+    public List<OrderDTO> findNewOrdersBySubServiceId(@PathVariable Long id) {
         return orderService.findNewOrdersBySubServiceId(id);
     }
 
-    @GetMapping("/show-sub-services-by-expert")
-    public List<SubService> findSubServicesByExpertId(Long id) {
+    @GetMapping("/show-sub-services-by-expert/{id}")
+    public List<SubService> findSubServicesByExpertId(@PathVariable Long id) {
         return subServiceService.findByExpertId(id);
     }
 
-    @GetMapping("/show-accepted-offers-by-expert")
-    public List<Offer> findAcceptedOffersByExpertId(Long id){
+    @GetMapping("/show-accepted-offers-by-expert/{id}")
+    public List<Offer> findAcceptedOffersByExpertId(@PathVariable Long id){
         return offerService.findAcceptedOffersByExpertId(id);
     }
 
-    @GetMapping("/show-expert-score")
-    public int showExpertScore(Long id){
+    @GetMapping("/show-expert-score/{id}")
+    public int showExpertScore(@PathVariable Long id){
         return expertService.findById(id).getScore();
     }
 
     @GetMapping("/show-WAITING-orders")
     public List<OrderDTO> findWaitingOrders(){
-        return expertService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
+        return expertService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
     }
 
 }
