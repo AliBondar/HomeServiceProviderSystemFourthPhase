@@ -404,7 +404,7 @@ public class ClientServiceImpl implements ClientService {
         } else if (orderDTO == null) {
             throw new NotFoundTheOrderException("not found the order.");
         } else if (orderDTO.getOrderStatus() != OrderStatus.DONE) {
-            throw new OrderStatusException("order has not been done yet.");
+            throw new OrderStatusException("order has not get done yet.");
         }
         Wallet wallet = clientDTO.getWallet();
         Offer offer = offerService.findAcceptedOfferByOrderId(orderId).get();

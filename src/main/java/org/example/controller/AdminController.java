@@ -63,7 +63,7 @@ public class AdminController {
 
     @Transactional
     @PostMapping("/add-sub-service")
-    public void addSubService(@RequestBody SubServiceDTO subServiceDTO) {
+    public void addSubService(@RequestBody @Valid SubServiceDTO subServiceDTO) {
         adminService.addSubService(subServiceDTO);
     }
 
