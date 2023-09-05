@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/expert")
+@RequestMapping( "/api/expert")
 @RequiredArgsConstructor
 public class ExpertController {
 

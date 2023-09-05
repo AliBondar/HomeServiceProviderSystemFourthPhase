@@ -31,7 +31,7 @@ public interface ClientService {
 
     Optional<Client> findClientByEmailAndPassword(String email, String password);
 
-    void clientSignUp(ClientDTO clientDTO);
+    String clientSignUp(ClientDTO clientDTO);
 
     void clientLogin(ClientDTO clientDTO);
 

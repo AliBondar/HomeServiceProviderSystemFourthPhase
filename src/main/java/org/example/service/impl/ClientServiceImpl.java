@@ -12,7 +12,9 @@ import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
+import org.example.entity.Token;
 import org.example.entity.users.Expert;
+import org.example.entity.users.enums.Role;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
@@ -25,6 +27,7 @@ import org.example.repository.*;
 import org.example.security.PasswordHash;
 import org.example.service.*;
 import org.example.validation.Validation;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -32,10 +35,12 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +57,9 @@ public class ClientServiceImpl implements ClientService {
     private final ExpertService expertService;
     private final ExpertRepository expertRepository;
     private final ScoreService scoreService;
+    private final TokenService tokenService;
+    private final EmailSenderService emailSenderService;
+
     private final Validation validation = new Validation();
 
     @PersistenceContext
@@ -111,7 +119,7 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public void clientSignUp(ClientDTO clientDTO) {
+    public String clientSignUp(ClientDTO clientDTO) {
         Validation validation = new Validation();
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
@@ -125,12 +133,24 @@ public class ClientServiceImpl implements ClientService {
         } else {
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
+            clientDTO.setRole(Role.CLIENT);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
             this.save(clientDTO);
         }
+        String token = UUID.randomUUID().toString();
+        Token confirmationToken = new Token(
+                token, clientMapper.convert(clientDTO), LocalDateTime.now(),LocalDateTime.now().plusMinutes(15));
+        confirmationToken.setToken(UUID.randomUUID().toString());
+        tokenService.saveToken(confirmationToken);
+
+        SimpleMailMessage mailMessage = emailSenderService.createEmail(clientDTO.getEmail(), confirmationToken.getToken(), "customer");
+        emailSenderService.sendEmail(mailMessage);
+
+        return token;
+
     }
 
     @Override

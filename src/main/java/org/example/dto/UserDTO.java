@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.example.entity.Wallet;
+import org.example.entity.users.enums.Role;
 import org.example.entity.users.enums.UserStatus;
 
 
@@ -26,6 +27,8 @@ public class UserDTO extends BaseDTO<Long> {
     String email;
 
     String password;
+
+    Role role;
 
     UserStatus userStatus;
 

@@ -39,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Optional<Admin> findAdminByEmail(String email) {
         try {
-            return adminRepository.findAdminByEmail(email);
+            return adminRepository.findByEmail(email);
         }catch (Exception e){
             return Optional.empty();
         }
@@ -48,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Optional<Admin> findAdminByEmailAndPassword(String email, String password) {
         try {
-            return adminRepository.findAdminByEmailAndPassword(email, passwordHash.createHashedPassword(password));
+            return adminRepository.findByEmailAndPassword(email, passwordHash.createHashedPassword(password));
         }catch (Exception e){
             return Optional.empty();
         }
