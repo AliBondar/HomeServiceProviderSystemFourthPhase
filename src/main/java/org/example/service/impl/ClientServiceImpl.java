@@ -121,6 +121,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String clientSignUp(ClientDTO clientDTO) throws SendFailedException {
+        System.out.println("ClientSignup+++++++++++++++++++++++++++++++++++++++");
         Validation validation = new Validation();
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
@@ -142,7 +143,6 @@ public class ClientServiceImpl implements ClientService {
             String token = UUID.randomUUID().toString();
             Token confirmationToken = new Token(
                     token, clientMapper.convert(clientDTO), LocalDateTime.now(), LocalDateTime.now().plusMinutes(15));
-//            confirmationToken.setToken(UUID.randomUUID().toString());
             tokenService.saveToken(confirmationToken);
 
             SimpleMailMessage mailMessage = emailSenderService.createEmail(

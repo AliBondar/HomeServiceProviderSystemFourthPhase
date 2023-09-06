@@ -31,7 +31,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             helper.setText(emailMessage, true);
             helper.setTo(to);
             helper.setSubject("Confirm your email");
-            helper.setFrom("bondarali1380@gmail.com");
+            helper.setFrom("ali.bondar2001@gmail.com");
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
             throw new SendEmailFailedException("Failed to send email for: " + emailMessage);
@@ -42,15 +42,15 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public void sendEmail(SimpleMailMessage email) {
         System.out.println("sendEmail2++++++++++++++++++++");
         javaMailSender.send(email);
+        System.out.println("sendEmail2After++++++++++++++++++++++++++++++");
     }
 
     @Override
-    @Async
     public SimpleMailMessage createEmail(String toEmail, String confirmationToken, String accountType) {
         System.out.println("createEmail+++++++++++++++++++++++++++++++++++++++++");
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
-        mailMessage.setFrom("bondarali1380@gmail.com");
+        mailMessage.setFrom("ali.bondar2001@gmail.com");
         if (accountType.equals("client")) {
             mailMessage.setSubject("Complete Client signup.");
             mailMessage.setText("To confirm your account, please click here : "
