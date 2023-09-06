@@ -90,7 +90,11 @@ class ClientServiceImplTest {
         clientDTO.setLastName("bon");
         clientDTO.setEmail("ali@gmail.com");
         clientDTO.setPassword("@Ali1234");
-        clientService.clientSignUp(clientDTO);
+        try {
+            clientService.clientSignUp(clientDTO);
+        } catch (jakarta.mail.SendFailedException e) {
+            throw new RuntimeException(e);
+        }
         assertEquals(clientService.findClientByEmail(clientDTO.getEmail()).get().getEmail(),
                 clientDTO.getEmail());
     }

@@ -2,6 +2,7 @@ package org.example.mapper;
 
 import org.example.dto.ClientDTO;
 import org.example.entity.users.Client;
+import org.example.entity.users.enums.Role;
 import org.example.security.PasswordHash;
 
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +17,7 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
         client.setFirstName(clientDTO.getFirstName());
         client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());
+        client.setRole(Role.CLIENT);
         try {
             client.setPassword(passwordHash.createHashedPassword(clientDTO.getPassword()));
         } catch (NoSuchAlgorithmException e) {

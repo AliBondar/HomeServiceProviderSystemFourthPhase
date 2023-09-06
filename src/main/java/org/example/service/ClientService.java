@@ -2,6 +2,7 @@ package org.example.service;
 
 
 
+import jakarta.mail.SendFailedException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -31,7 +32,7 @@ public interface ClientService {
 
     Optional<Client> findClientByEmailAndPassword(String email, String password);
 
-    String clientSignUp(ClientDTO clientDTO);
+    String clientSignUp(ClientDTO clientDTO) throws SendFailedException;
 
     void clientLogin(ClientDTO clientDTO);
 

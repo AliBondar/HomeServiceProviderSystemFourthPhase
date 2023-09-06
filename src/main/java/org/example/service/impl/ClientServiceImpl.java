@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import jakarta.mail.SendFailedException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -119,7 +120,7 @@ public class ClientServiceImpl implements ClientService {
 
 
     @Override
-    public String clientSignUp(ClientDTO clientDTO) {
+    public String clientSignUp(ClientDTO clientDTO) throws SendFailedException {
         Validation validation = new Validation();
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
@@ -133,23 +134,23 @@ public class ClientServiceImpl implements ClientService {
         } else {
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
-            clientDTO.setRole(Role.CLIENT);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
             this.save(clientDTO);
+            String token = UUID.randomUUID().toString();
+            Token confirmationToken = new Token(
+                    token, clientMapper.convert(clientDTO), LocalDateTime.now(), LocalDateTime.now().plusMinutes(15));
+//            confirmationToken.setToken(UUID.randomUUID().toString());
+            tokenService.saveToken(confirmationToken);
+
+            SimpleMailMessage mailMessage = emailSenderService.createEmail(
+                    clientDTO.getEmail(), confirmationToken.getToken(), "client");
+            emailSenderService.sendEmail(mailMessage);
+
+            return token;
         }
-        String token = UUID.randomUUID().toString();
-        Token confirmationToken = new Token(
-                token, clientMapper.convert(clientDTO), LocalDateTime.now(),LocalDateTime.now().plusMinutes(15));
-        confirmationToken.setToken(UUID.randomUUID().toString());
-        tokenService.saveToken(confirmationToken);
-
-        SimpleMailMessage mailMessage = emailSenderService.createEmail(clientDTO.getEmail(), confirmationToken.getToken(), "customer");
-        emailSenderService.sendEmail(mailMessage);
-
-        return token;
 
     }
 

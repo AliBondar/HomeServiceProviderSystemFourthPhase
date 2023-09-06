@@ -1,20 +1,15 @@
 package org.example.controller;
 
 import cn.apiclub.captcha.Captcha;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
 import org.example.entity.*;
-import org.example.entity.users.Client;
-import org.example.repository.ClientRepository;
 import org.example.service.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,7 +27,11 @@ public class ClientController {
     @PostMapping("/client-signup")
     @ResponseBody
     public void signUp(@RequestBody ClientDTO clientDTO) {
-        clientService.clientSignUp(clientDTO);
+        try {
+            clientService.clientSignUp(clientDTO);
+        } catch (jakarta.mail.SendFailedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping("/edit-client-password/{clientId}/{newPassword}")

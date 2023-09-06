@@ -1,6 +1,5 @@
 package org.example.view;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
@@ -13,7 +12,6 @@ import org.example.service.ClientService;
 import org.example.service.ExpertService;
 import org.example.service.ServiceService;
 import org.example.service.SubServiceService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -82,6 +80,8 @@ public class SignUpMenu {
                     }catch (RuntimeException e){
                         e.printStackTrace();
                         showMenu();
+                    } catch (jakarta.mail.SendFailedException e) {
+                        throw new RuntimeException(e);
                     }
                 }
                 case 2 -> {
