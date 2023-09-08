@@ -1,12 +1,17 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.entity.users.User;
 import org.example.entity.users.enums.Role;
 import org.example.repository.UserRepository;
+import org.example.security.CustomAuthProvider;
+import org.example.security.CustomUserDetails;
+import org.example.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

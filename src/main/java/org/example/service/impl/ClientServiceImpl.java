@@ -14,6 +14,7 @@ import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
 import org.example.entity.users.Expert;
+import org.example.entity.users.enums.Role;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
@@ -29,6 +30,7 @@ import org.example.token.ConfirmationToken;
 import org.example.token.ConfirmationTokenService;
 import org.example.validation.Validation;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -61,6 +63,7 @@ public class ClientServiceImpl implements ClientService {
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
     private final ConfirmationTokenService confirmationTokenService;
+    private final PasswordEncoder passwordEncoder;
 
     private final Validation validation = new Validation();
 
@@ -72,6 +75,19 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void save(ClientDTO clientDTO) {
         Client client = clientMapper.convert(clientDTO);
+        clientRepository.save(client);
+    }
+
+    public void saveClient(ClientDTO clientDTO) {
+        Client client = new Client();
+        client.setFirstName(clientDTO.getFirstName());
+        client.setLastName(clientDTO.getLastName());
+        client.setEmail(clientDTO.getEmail());
+        client.setRole(Role.CLIENT);
+        client.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
+        client.setSignUpDate(clientDTO.getSignUpDate());
+        client.setUserStatus(clientDTO.getUserStatus());
+        client.setWallet(clientDTO.getWallet());
         clientRepository.save(client);
     }
 
@@ -122,7 +138,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String clientSignUp(ClientDTO clientDTO) throws SendFailedException {
-        System.out.println("ClientSignup+++++++++++++++++++++++++++++++++++++++");
         Validation validation = new Validation();
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
@@ -134,22 +149,26 @@ public class ClientServiceImpl implements ClientService {
         } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
         } else {
+
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
             Wallet wallet = new Wallet();
             wallet.setBalance(0);
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
-            this.save(clientDTO);
-            System.out.println("client saved __++++++++++++++++++++++++++++___________++++++++++++++");
+//            this.save(clientDTO);
+            saveClient(clientDTO);
+
             String token = UUID.randomUUID().toString();
             ConfirmationToken confirmationToken = new ConfirmationToken(
                     token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15),
                     clientRepository.findClientByEmail(clientDTO.getEmail()).get());
             tokenService.saveToken(confirmationToken);
+
             SimpleMailMessage mailMessage = emailSenderService.createEmail(
                     clientDTO.getEmail(), confirmationToken.getToken(), "client");
             emailSenderService.sendEmail(mailMessage);
+
             return token;
         }
 
@@ -189,13 +208,14 @@ public class ClientServiceImpl implements ClientService {
         } else if (validation.passwordPatternMatches(password)) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
         } else {
-            try {
+//            try {
                 Client client = clientRepository.findById(clientId).get();
-                client.setPassword(passwordHash.createHashedPassword(password));
+//                client.setPassword(passwordHash.createHashedPassword(password));
+                client.setPassword(passwordEncoder.encode(password));
                 clientRepository.save(client);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
+//            } catch (NoSuchAlgorithmException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
@@ -228,7 +248,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void acceptOffer(Long id){
+    public void acceptOffer(Long id) {
         Offer offer = offerRepository.findById(id).get();
         offer.setAccepted(true);
         Order order = offer.getOrder();
@@ -237,7 +257,6 @@ public class ClientServiceImpl implements ClientService {
         orderRepository.save(order);
         offerRepository.save(offer);
     }
-
 
 
     @Override
@@ -294,15 +313,15 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void createScore(ScoreDTO scoreDTO) {
         Order order = scoreDTO.getOrder();
-        if (order == null){
-           throw new EmptyFieldException("not found the order.");
-        }else if (order.getOrderStatus() != OrderStatus.DONE){
+        if (order == null) {
+            throw new EmptyFieldException("not found the order.");
+        } else if (order.getOrderStatus() != OrderStatus.DONE) {
             throw new OrderStatusException("order has not get done yet.");
-        }else if (order.getScore() != null){
+        } else if (order.getScore() != null) {
             throw new DuplicatedScoreException("order already has score.");
-        }else if (!validation.isScoreValid(scoreDTO.getScore())){
+        } else if (!validation.isScoreValid(scoreDTO.getScore())) {
             throw new ScoreRangeException("score is not valid. It must be between 1 and 5");
-        }else {
+        } else {
             expertRepository.updateExpertScore(order.getExpert().getId(),
                     order.getExpert().getScore() + scoreDTO.getScore());
             scoreDTO.setClient(order.getClient());
@@ -347,7 +366,7 @@ public class ClientServiceImpl implements ClientService {
             throw new OrderStatusException("order has not get done yet.");
         } else if (order.getScore() != null) {
             throw new DuplicatedScoreException("order already has score.");
-        }else if (!validation.isScoreValid(score)) {
+        } else if (!validation.isScoreValid(score)) {
             throw new ScoreRangeException("score is not valid");
         } else {
             expertRepository.updateExpertScore(order.getExpert().getId(),
@@ -447,7 +466,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void payByCard(CardDTO cardDTO){
+    public void payByCard(CardDTO cardDTO) {
         Order order = orderRepository.findById(cardDTO.getOrderId()).get();
         Offer offer = offerService.findAcceptedOfferByOrderId(order.getId()).get();
         Expert expert = offer.getExpert();

@@ -1,9 +1,11 @@
 package org.example.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.entity.users.enums.Role;
 import org.example.security.CustomAuthProvider;
 import org.example.security.CustomUserDetailsService;
 import org.example.service.impl.UserDetailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
@@ -32,12 +37,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
 
                         .requestMatchers("/signup/**").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/expert/**").hasAuthority("EXPERT")
-                        .requestMatchers("/client/**").hasAuthority("CLIENT")
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/expert/**").hasAuthority("EXPERT")
+                        .requestMatchers("/api/client/**").hasAuthority("CLIENT")
                         .anyRequest().authenticated()
                 )
-                .httpBasic(basic -> {});
+//                .httpBasic(basic -> {});
+
+                .httpBasic(basic -> {
+                })
+                .authenticationProvider(new CustomAuthProvider(customUserDetailsService, passwordEncoder()));
+
 //                .httpBasic(withDefaults())
 //                .authenticationProvider(new CustomAuthProvider((CustomUserDetailsService) userDetailsService(),passwordEncoder()));
 
@@ -54,6 +64,12 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

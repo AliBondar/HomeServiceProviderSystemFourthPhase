@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
 import org.example.entity.*;
+import org.example.entity.users.Client;
+import org.example.entity.users.User;
 import org.example.service.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,8 +37,11 @@ public class ClientController {
         }
     }
 
-    @PutMapping("/edit-client-password/{clientId}/{newPassword}")
-    public void editClientPassword(@PathVariable Long clientId,@PathVariable String newPassword) {
+    @PutMapping("/edit-client-password/{newPassword}/{clientId}")
+    public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
+        System.out.println("ssssssssssssssssssssssssssssssssssssssss");
+//        String email = (String) authentication.getPrincipal();
+//        System.out.println("adffffffffffffffffff" + email);
         clientService.editClientPassword(clientId, newPassword);
     }
 

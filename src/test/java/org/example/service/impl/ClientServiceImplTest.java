@@ -11,6 +11,7 @@ import org.example.exception.*;
 import org.example.repository.ClientRepository;
 import org.example.repository.OfferRepository;
 import org.example.repository.OrderRepository;
+import org.example.repository.UserRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
 import org.junit.jupiter.api.MethodOrderer;
@@ -56,6 +57,8 @@ class ClientServiceImplTest {
     private ClientRepository clientRepository;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private JavaMailSenderImpl javaMailSenderImpl;
 
@@ -390,4 +393,5 @@ class ClientServiceImplTest {
         props.put("mail.debug", "true");
         javaMailSenderImpl.send(mailMessage);
     }
+
 }
