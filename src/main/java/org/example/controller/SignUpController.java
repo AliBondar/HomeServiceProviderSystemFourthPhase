@@ -17,7 +17,6 @@ public class SignUpController {
 
     @PostMapping("/client-signup")
     public String signup(@RequestBody ClientDTO clientDTO){
-        System.out.println("Controller+++++++++++++++++++++++++++++++++++++++");
             return signUpService.register(clientDTO);
     }
 

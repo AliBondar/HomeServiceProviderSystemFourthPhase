@@ -4,11 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
-import org.example.entity.Token;
 import org.example.service.ClientService;
 import org.example.service.EmailSenderService;
 import org.example.service.SignUpService;
 import org.example.service.TokenService;
+import org.example.token.ConfirmationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,17 +25,16 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     @Transactional
     public String register(ClientDTO clientDTO) {
-        System.out.println("register++++++++++++++++++++++++++++++++++++++++++++++");
         String token = null;
         try {
             token = clientService.clientSignUp(clientDTO);
         } catch (jakarta.mail.SendFailedException e) {
             throw new RuntimeException(e);
         }
-        String link = "http://localhost:8081/signup/client-signup/confirm?token=" + token;
-        emailSenderService.sendEmail(
-                clientDTO.getEmail(),
-                buildEmail(clientDTO.getFirstName(), link));
+//        String link = "http://localhost:8081/signup/client-signup/confirm?token=";
+//        emailSenderService.sendEmail(
+//                clientDTO.getEmail(),
+//                buildEmail(clientDTO.getFirstName(), link));
         return token;
     }
 
@@ -46,16 +45,16 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     public String confirmToken(String token) {
-        Token confirmationToken = tokenService
+        ConfirmationToken confirmationToken = tokenService
                 .getToken(token)
                 .orElseThrow(() ->
                         new IllegalStateException("token not found"));
 
-        if (confirmationToken.getConfirmAt() != null) {
+        if (confirmationToken.getConfirmedAt() != null) {
             throw new IllegalStateException("email already confirmed");
         }
 
-        LocalDateTime expiredAt = confirmationToken.getExpireAt();
+        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("token expired");

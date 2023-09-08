@@ -3,7 +3,6 @@ package org.example.entity.users;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,13 +12,16 @@ import org.example.base.domain.BaseEntity;
 import org.example.entity.Wallet;
 import org.example.entity.users.enums.Role;
 import org.example.entity.users.enums.UserStatus;
+import org.example.token.ConfirmationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 @NoArgsConstructor
@@ -51,11 +53,14 @@ public class User extends BaseEntity<Long> implements UserDetails{
 
     LocalDate signUpDate;
 
-    private Boolean locked = false;
+    Boolean locked = false;
 
-    private Boolean enabled = false;
+    Boolean enabled = false;
 
     boolean isDeleted;
+
+//    @OneToMany(mappedBy = "user")
+//    List<ConfirmationToken> confirmationTokens = new ArrayList<>();
 
     @Override
     public String toString() {

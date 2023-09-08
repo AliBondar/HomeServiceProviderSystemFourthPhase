@@ -1,9 +1,9 @@
 package org.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.entity.Token;
 import org.example.repository.TokenRepository;
 import org.example.service.TokenService;
+import org.example.token.ConfirmationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,12 +16,12 @@ public class TokenServiceImpl implements TokenService {
     private final TokenRepository tokenRepository;
 
     @Override
-    public void saveToken(Token confirmationToken) {
+    public void saveToken(ConfirmationToken confirmationToken) {
         tokenRepository.save(confirmationToken);
     }
 
     @Override
-    public Optional<Token> getToken(String token) {
+    public Optional<ConfirmationToken> getToken(String token) {
         return tokenRepository.findByToken(token);
     }
 

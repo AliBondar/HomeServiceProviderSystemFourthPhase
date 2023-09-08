@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import jakarta.mail.SendFailedException;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ServiceDTO;
@@ -18,12 +19,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +54,11 @@ class ClientServiceImplTest {
     private OrderRepository orderRepository;
     @Autowired
     private ClientRepository clientRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
+    private JavaMailSenderImpl javaMailSenderImpl;
+
 
     @Test
     @Order(8)
@@ -347,7 +357,37 @@ class ClientServiceImplTest {
     }
 
     @Test
-    void calculateHour(){
+    void calculateHour() {
         System.out.println(clientService.calculateDuration(LocalTime.of(17, 30)));
+    }
+
+    @Test
+    void save() throws SendFailedException {
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setFirstName("ped");
+        clientDTO.setLastName("dada");
+        clientDTO.setEmail("pedadashj@gmail.com");
+        clientDTO.setPassword("@Peda1234");
+        String token = clientService.clientSignUp(clientDTO);
+        System.out.println(token);
+    }
+
+    @Test
+    void sendEmail() {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo("pedadashii@gmail.com");
+        mailMessage.setFrom("ali.bondar2001@gmail.com");
+        mailMessage.setSubject("Complete Client signup.");
+        mailMessage.setText("To confirm your account, please click here : ");
+        javaMailSenderImpl.setHost("smtp.gmail.com");
+        javaMailSenderImpl.setPort(587);
+        javaMailSenderImpl.setUsername("ali.bondar2001@gmail.com");
+        javaMailSenderImpl.setPassword("bqcmzkqakxzqzeop");
+        Properties props = javaMailSenderImpl.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable", true);
+        props.put("mail.debug", "true");
+        javaMailSenderImpl.send(mailMessage);
     }
 }

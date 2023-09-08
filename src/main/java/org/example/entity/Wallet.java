@@ -17,9 +17,6 @@ public class Wallet extends BaseEntity<Long> {
 
     double balance;
 
-    @OneToOne(mappedBy = "wallet")
-    User user;
-
     @Override
     public String toString() {
         return "Wallet{" +

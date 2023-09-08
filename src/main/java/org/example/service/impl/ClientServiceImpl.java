@@ -13,9 +13,7 @@ import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
-import org.example.entity.Token;
 import org.example.entity.users.Expert;
-import org.example.entity.users.enums.Role;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
 import org.example.entity.Order;
@@ -27,6 +25,8 @@ import org.example.exception.*;
 import org.example.repository.*;
 import org.example.security.PasswordHash;
 import org.example.service.*;
+import org.example.token.ConfirmationToken;
+import org.example.token.ConfirmationTokenService;
 import org.example.validation.Validation;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
@@ -60,6 +60,7 @@ public class ClientServiceImpl implements ClientService {
     private final ScoreService scoreService;
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
+    private final ConfirmationTokenService confirmationTokenService;
 
     private final Validation validation = new Validation();
 
@@ -140,15 +141,15 @@ public class ClientServiceImpl implements ClientService {
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
             this.save(clientDTO);
+            System.out.println("client saved __++++++++++++++++++++++++++++___________++++++++++++++");
             String token = UUID.randomUUID().toString();
-            Token confirmationToken = new Token(
-                    token, clientMapper.convert(clientDTO), LocalDateTime.now(), LocalDateTime.now().plusMinutes(15));
+            ConfirmationToken confirmationToken = new ConfirmationToken(
+                    token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15),
+                    clientRepository.findClientByEmail(clientDTO.getEmail()).get());
             tokenService.saveToken(confirmationToken);
-
             SimpleMailMessage mailMessage = emailSenderService.createEmail(
                     clientDTO.getEmail(), confirmationToken.getToken(), "client");
             emailSenderService.sendEmail(mailMessage);
-
             return token;
         }
 

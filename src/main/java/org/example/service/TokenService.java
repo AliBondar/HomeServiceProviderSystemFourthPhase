@@ -1,13 +1,14 @@
 package org.example.service;
 
-import org.example.entity.Token;
+
+import org.example.token.ConfirmationToken;
 
 import java.util.Optional;
 
 public interface TokenService {
 
-    void saveToken(Token confirmationToken);
+    void saveToken(ConfirmationToken confirmationToken);
 
-    Optional<Token> getToken(String token);
+    Optional<ConfirmationToken> getToken(String token);
     void setConfirmedAt(String token);
 }
