@@ -20,7 +20,7 @@ public class SignUpController {
             return signUpService.register(clientDTO);
     }
 
-    @GetMapping(path = "confirm")
+    @GetMapping(path = "/confirm")
     public String confirm(@RequestParam("token") String token) {
         return signUpService.confirmToken(token);
     }

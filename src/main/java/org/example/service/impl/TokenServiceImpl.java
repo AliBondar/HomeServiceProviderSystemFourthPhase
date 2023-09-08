@@ -1,5 +1,6 @@
 package org.example.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.repository.TokenRepository;
 import org.example.service.TokenService;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TokenServiceImpl implements TokenService {
 
     private final TokenRepository tokenRepository;
