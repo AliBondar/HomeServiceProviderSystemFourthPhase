@@ -22,12 +22,15 @@ import org.example.exception.*;
 import org.example.mapper.OrderMapper;
 import org.example.repository.ExpertRepository;
 import org.example.repository.OrderRepository;
+import org.example.repository.ServiceRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
-import org.example.service.ExpertService;
-import org.example.service.OfferService;
-import org.example.service.OrderService;
+import org.example.service.*;
+import org.example.token.ConfirmationToken;
 import org.example.validation.Validation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -37,9 +40,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +56,18 @@ public class ExpertServiceImpl implements ExpertService {
     private final OrderRepository orderRepository;
     private final OfferService offerService;
     private final OrderService orderService;
+    private final TokenService tokenService;
+    private final EmailSenderService emailSenderService;
+    private final ServiceRepository serviceRepository;
     @PersistenceContext
     private EntityManager entityManager;
     private final OrderMapper orderMapper;
     private final ExpertMapper expertMapper = new ExpertMapper();
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void save(ExpertDTO expertDTO) {
+        expertDTO.setPassword(passwordEncoder.encode(expertDTO.getPassword()));
         Expert expert = expertMapper.convert(expertDTO);
         expertRepository.save(expert);
     }
@@ -112,8 +122,9 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
-    public void expertSignUp(ExpertDTO expertDTO) throws IOException {
+    public String expertSignUp(ExpertDTO expertDTO) throws IOException {
         Validation validation = new Validation();
+
         if (expertDTO.getFirstName() == null || expertDTO.getLastName() == null
                 || expertDTO.getEmail() == null || expertDTO.getPassword() == null
                 || expertDTO.getService() == null || expertDTO.getImageData() == null) {
@@ -121,17 +132,24 @@ public class ExpertServiceImpl implements ExpertService {
         }
         File file = new File(expertDTO.getImageData());
         String[] path = file.getPath().split("\\.");
+
         if (validation.emailPatternMatches(expertDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isExpertEmailDuplicated(expertDTO.getEmail())) {
+        }
+        else if (isExpertEmailDuplicated(expertDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(expertDTO.getPassword())) {
+        }
+        else if (validation.passwordPatternMatches(expertDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
-        } else if (!path[path.length - 1].equalsIgnoreCase("JPG")) {
+        }
+        else if (!path[path.length - 1].equalsIgnoreCase("JPG")) {
             throw new ImageFormatException("Image format must be jpg");
-        } else if (Files.size(Paths.get(file.getPath())) > 300000) {
+        }
+        else if (Files.size(Paths.get(file.getPath())) > 300000) {
             throw new ImageSizeException("Image size must be less than 300kb");
-        } else {
+        }
+        else {
+
             expertDTO.setSignUpDate(LocalDate.now());
             expertDTO.setUserStatus(UserStatus.NEW);
             expertDTO.setScore(5);
@@ -140,6 +158,18 @@ public class ExpertServiceImpl implements ExpertService {
             walletRepository.save(wallet);
             expertDTO.setWallet(wallet);
             this.save(expertDTO);
+
+            String token = UUID.randomUUID().toString();
+            ConfirmationToken confirmationToken = new ConfirmationToken(
+                    token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15),
+                    expertRepository.findExpertByEmail(expertDTO.getEmail()).get());
+            tokenService.saveToken(confirmationToken);
+
+            SimpleMailMessage mailMessage = emailSenderService.createEmail(
+                    expertDTO.getEmail(), confirmationToken.getToken(), "expert");
+            emailSenderService.sendEmail(mailMessage);
+
+            return token;
         }
     }
 

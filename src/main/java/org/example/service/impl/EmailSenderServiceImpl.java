@@ -62,7 +62,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public SimpleMailMessage createEmail(String toEmail, String confirmationToken, String accountType) {
-        System.out.println("createEmail+++++++++++++++++++++++++++++++++++++++++");
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setFrom("ali.bondar2001@gmail.com");

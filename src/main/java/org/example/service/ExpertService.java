@@ -32,7 +32,7 @@ public interface ExpertService{
 
     Optional<Expert> findExpertByEmailAndPassword(String email, String password);
 
-    void expertSignUp(ExpertDTO expertDTO) throws IOException;
+    String expertSignUp(ExpertDTO expertDTO) throws IOException;
 
     boolean isExpertEmailDuplicated(String email);
 

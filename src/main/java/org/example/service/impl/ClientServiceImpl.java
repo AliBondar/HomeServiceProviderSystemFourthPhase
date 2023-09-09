@@ -139,16 +139,21 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public String clientSignUp(ClientDTO clientDTO) throws SendFailedException {
         Validation validation = new Validation();
+
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must be filled out.");
-        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
+        }
+        else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
+        }
+        else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
+        }
+        else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
-        } else {
+        }
+        else {
 
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);

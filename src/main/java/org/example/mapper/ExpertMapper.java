@@ -1,18 +1,22 @@
 package org.example.mapper;
 
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.example.dto.ExpertDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
+import org.example.entity.users.enums.Role;
 import org.example.security.PasswordHash;
 import org.mapstruct.Mapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 @Mapper
+@RequiredArgsConstructor
 public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
 
     @Override
@@ -22,11 +26,13 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
         expert.setFirstName(expertDTO.getFirstName());
         expert.setLastName(expertDTO.getLastName());
         expert.setEmail(expertDTO.getEmail());
-        try {
-            expert.setPassword(passwordHash.createHashedPassword(expertDTO.getPassword()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            expert.setPassword(passwordHash.createHashedPassword(expertDTO.getPassword()));
+//        } catch (NoSuchAlgorithmException e) {
+//            throw new RuntimeException(e);
+//        }
+        expert.setPassword(expertDTO.getPassword());
+        expert.setRole(Role.EXPERT);
         expert.setSignUpDate(expertDTO.getSignUpDate());
         expert.setScore(expertDTO.getScore());
         expert.setUserStatus(expertDTO.getUserStatus());

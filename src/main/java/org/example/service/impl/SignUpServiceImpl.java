@@ -1,16 +1,15 @@
 package org.example.service.impl;
 
+import jakarta.mail.SendFailedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
-import org.example.service.ClientService;
-import org.example.service.EmailSenderService;
-import org.example.service.SignUpService;
-import org.example.service.TokenService;
+import org.example.service.*;
 import org.example.token.ConfirmationToken;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Service
@@ -18,6 +17,7 @@ import java.time.LocalDateTime;
 public class SignUpServiceImpl implements SignUpService {
 
     private final ClientService clientService;
+    private final ExpertService expertService;
     private final EmailSenderService emailSenderService;
     private final TokenService tokenService;
     private final UserDetailService userDetailService;
@@ -40,7 +40,13 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     public String register(ExpertDTO expertDTO) {
-        return null;
+        String token = null;
+        try{
+            token = expertService.expertSignUp(expertDTO);
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        return token;
     }
 
     @Override
