@@ -3,18 +3,16 @@ package org.example.service.impl;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
 import org.example.entity.Service;
+import org.example.entity.Wallet;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
+import org.example.entity.users.enums.Role;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
-import org.example.repository.AdminRepository;
-import org.example.repository.ExpertRepository;
-import org.example.repository.SubServiceRepository;
+import org.example.repository.*;
 import org.example.security.PasswordHash;
-import org.example.service.AdminService;
-import org.example.service.ExpertService;
-import org.example.service.ServiceService;
-import org.example.service.SubServiceService;
+import org.example.service.*;
+import org.example.token.ConfirmationToken;
 import org.example.view.MainMenu;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -22,9 +20,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +47,14 @@ class AdminServiceImplTest {
     private ExpertRepository expertRepository;
     @Autowired
     private ExpertService expertService;
+    @Autowired
+    private WalletRepository walletRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private UserRepository userRepository;
 
     PasswordHash passwordHash = new PasswordHash();
 
@@ -154,7 +163,7 @@ class AdminServiceImplTest {
         adminService.removeExpertFromSubService(
                 expertService.findExpertByEmail("expert@gmail.com").get().getId(),
                 subServiceService.findSubServiceByDescription("testSubService").get().getId()
-                );
+        );
         assertEquals(0, expertService.findExpertByEmail("expert@gmail.com").get().getSubServiceList().size());
     }
 
@@ -301,18 +310,46 @@ class AdminServiceImplTest {
     }
 
     @Test
-    void showExpertsByUserStatus(){
+    void showExpertsByUserStatus() {
         System.out.println(expertService.findExpertsByUserStatus(UserStatus.CONFIRMED));
     }
 
     @Test
-    void findExpertByEmail(){
+    void findExpertByEmail() {
         System.out.println(expertService.findExpertByEmail("expert@gmail.com").get());
     }
 
     @Test
-    void menu(){
+    void menu() {
         MainMenu menu = new MainMenu();
         menu.showMenu();
     }
+
+    @Test
+    void saveAdmin() {
+        Admin admin = new Admin();
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+        admin.setEmail("alibondar1380@yahoo.com");
+        admin.setPassword(passwordEncoder.encode("@Admin1234"));
+        admin.setRole(Role.ADMIN);
+        admin.setEnabled(true);
+        admin.setSignUpDate(LocalDate.now());
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0);
+        walletRepository.save(wallet);
+        admin.setWallet(wallet);
+        adminRepository.save(admin);
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15),
+                adminRepository.findByEmail(admin.getEmail()).get());
+        tokenService.saveToken(confirmationToken);
+    }
+
+    @Test
+    void findEmailByEmail(){
+        System.out.println(userRepository.findByEmail("bondarali1380@gmail.com").get());
+    }
+
 }

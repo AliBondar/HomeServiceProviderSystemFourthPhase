@@ -1,8 +1,8 @@
 package org.example.service.impl;
 
-import jakarta.mail.SendFailedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.AdminDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.ExpertDTO;
 import org.example.service.*;
@@ -18,7 +18,7 @@ public class SignUpServiceImpl implements SignUpService {
 
     private final ClientService clientService;
     private final ExpertService expertService;
-    private final EmailSenderService emailSenderService;
+    private final AdminService adminService;
     private final TokenService tokenService;
     private final UserDetailService userDetailService;
 
@@ -31,10 +31,6 @@ public class SignUpServiceImpl implements SignUpService {
         } catch (jakarta.mail.SendFailedException e) {
             throw new RuntimeException(e);
         }
-//        String link = "http://localhost:8081/signup/client-signup/confirm?token=";
-//        emailSenderService.sendEmail(
-//                clientDTO.getEmail(),
-//                buildEmail(clientDTO.getFirstName(), link));
         return token;
     }
 
@@ -46,6 +42,13 @@ public class SignUpServiceImpl implements SignUpService {
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+        return token;
+    }
+
+    @Override
+    public String register(AdminDTO adminDTO) {
+        String token = null;
+        token = adminService.adminSignup(adminDTO);
         return token;
     }
 
@@ -67,7 +70,7 @@ public class SignUpServiceImpl implements SignUpService {
         }
 
         tokenService.setConfirmedAt(token);
-        userDetailService.enableAppUser(
+        userDetailService.enableUser(
                 confirmationToken.getUser().getEmail(), confirmationToken.getUser().getRole());
         return "confirmed";
     }
@@ -75,7 +78,6 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     @Transactional
     public String buildEmail(String name, String link) {
-        System.out.println("BuildEmail++++++++++++++++++++++++++++++++++++++++++++");
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +

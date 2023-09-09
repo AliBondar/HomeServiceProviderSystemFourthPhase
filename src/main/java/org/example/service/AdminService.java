@@ -1,6 +1,7 @@
 package org.example.service;
 
 
+import org.example.dto.AdminDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
@@ -13,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AdminService {
+
+    void save(AdminDTO adminDTO);
+
+    String adminSignup(AdminDTO adminDTO);
 
     Optional<Admin> findAdminByEmail(String email);
 

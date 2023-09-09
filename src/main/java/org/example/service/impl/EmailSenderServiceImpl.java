@@ -18,8 +18,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private final JavaMailSender javaMailSender;
 
 
-
-
     public EmailSenderServiceImpl(JavaMailSenderImpl javaMailSenderImpl, JavaMailSender javaMailSender) {
         this.javaMailSenderImpl = javaMailSenderImpl;
         this.javaMailSender = javaMailSender;
@@ -71,6 +69,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                     + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
         } else if (accountType.equals("expert")) {
             mailMessage.setSubject("Complete Expert signup.");
+            mailMessage.setText("To confirm your account, please click here : "
+                    + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
+        } else if (accountType.equals("admin")) {
+            mailMessage.setSubject("Complete Admin signup.");
             mailMessage.setText("To confirm your account, please click here : "
                     + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
         }

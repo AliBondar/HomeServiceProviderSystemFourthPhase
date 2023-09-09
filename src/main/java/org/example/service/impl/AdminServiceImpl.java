@@ -2,25 +2,35 @@ package org.example.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.example.dto.AdminDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.ServiceDTO;
 import org.example.dto.SubServiceDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.SubService;
+import org.example.entity.Wallet;
 import org.example.entity.users.Admin;
 import org.example.entity.users.Expert;
 import org.example.entity.users.enums.UserStatus;
 import org.example.exception.*;
+import org.example.mapper.AdminMapper;
 import org.example.repository.AdminRepository;
 import org.example.repository.ExpertRepository;
 import org.example.repository.SubServiceRepository;
+import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
+import org.example.token.ConfirmationToken;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -34,7 +44,42 @@ public class AdminServiceImpl implements AdminService {
     private final SubServiceService subServiceService;
     private final ClientService clientService;
     private final ExpertService expertService;
+    private final WalletRepository walletRepository;
+    private final TokenService tokenService;
+    private final EmailSenderService emailSenderService;
+    private final PasswordEncoder passwordEncoder;
+    private final AdminMapper adminMapper = new AdminMapper();
     PasswordHash passwordHash = new PasswordHash();
+
+    @Override
+    public void save(AdminDTO adminDTO){
+        adminDTO.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        Admin admin = adminMapper.convert(adminDTO);
+        adminRepository.save(admin);
+    }
+
+    @Override
+    public String adminSignup(AdminDTO adminDTO) {
+        adminDTO.setSignUpDate(LocalDate.now());
+        adminDTO.setUserStatus(UserStatus.ADMIN);
+        Wallet wallet = new Wallet();
+        wallet.setBalance(0);
+        walletRepository.save(wallet);
+        adminDTO.setWallet(wallet);
+        save(adminDTO);
+
+        String token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+                token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15),
+                adminRepository.findByEmail(adminDTO.getEmail()).get());
+        tokenService.saveToken(confirmationToken);
+
+        SimpleMailMessage mailMessage = emailSenderService.createEmail(
+                adminDTO.getEmail(), confirmationToken.getToken(), "admin");
+        emailSenderService.sendEmail(mailMessage);
+
+        return token;
+    }
 
     @Override
     public Optional<Admin> findAdminByEmail(String email) {
