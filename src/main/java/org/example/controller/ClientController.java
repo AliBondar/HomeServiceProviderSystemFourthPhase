@@ -39,9 +39,6 @@ public class ClientController {
 
     @PutMapping("/edit-client-password/{newPassword}/{clientId}")
     public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
-        System.out.println("ssssssssssssssssssssssssssssssssssssssss");
-//        String email = (String) authentication.getPrincipal();
-//        System.out.println("adffffffffffffffffff" + email);
         clientService.editClientPassword(clientId, newPassword);
     }
 

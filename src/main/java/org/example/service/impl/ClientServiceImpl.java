@@ -74,6 +74,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void save(ClientDTO clientDTO) {
+        clientDTO.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
         Client client = clientMapper.convert(clientDTO);
         clientRepository.save(client);
     }
@@ -161,8 +162,7 @@ public class ClientServiceImpl implements ClientService {
             wallet.setBalance(0);
             walletRepository.save(wallet);
             clientDTO.setWallet(wallet);
-//            this.save(clientDTO);
-            saveClient(clientDTO);
+            this.save(clientDTO);
 
             String token = UUID.randomUUID().toString();
             ConfirmationToken confirmationToken = new ConfirmationToken(
@@ -181,22 +181,30 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void clientLogin(ClientDTO clientDTO) {
+
         Validation validation = new Validation();
         ClientMapper clientmapper = new ClientMapper();
+
         if (clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must filled out !");
-        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
+        }
+        else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
+        }
+        else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
+        }
+        else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        } else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
+        }
+        else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        } else {
+        }
+        else {
             Client client = clientmapper.convert(clientDTO);
             System.out.println("Welcome " + client.getFirstName() + " " + client.getLastName());
         }
+
     }
 
     @Override
@@ -206,88 +214,108 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void editClientPassword(Long clientId, String password) {
+
         Validation validation = new Validation();
-        PasswordHash passwordHash = new PasswordHash();
+
         if (clientRepository.findById(clientId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        } else if (validation.passwordPatternMatches(password)) {
+        }
+        else if (validation.passwordPatternMatches(password)) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        } else {
-//            try {
+        }
+        else {
                 Client client = clientRepository.findById(clientId).get();
-//                client.setPassword(passwordHash.createHashedPassword(password));
                 client.setPassword(passwordEncoder.encode(password));
                 clientRepository.save(client);
-//            } catch (NoSuchAlgorithmException e) {
-//                throw new RuntimeException(e);
-//            }
         }
     }
 
     @Override
     public void createOrder(OrderDTO orderDTO) {
+
         Validation validation = new Validation();
+
         if (orderDTO.getClientOfferedPrice() == 0 || orderDTO.getDescription() == null
                 || orderDTO.getLocalTime() == null || orderDTO.getLocalDate() == null
                 || orderDTO.getSubServiceId() == null || orderDTO.getClientOfferedWorkDuration() == 0) {
             throw new EmptyFieldException("Fields must filled out.");
-        } else if (!validation.isDateValid(orderDTO.getLocalDate())) {
+        }
+        else if (!validation.isDateValid(orderDTO.getLocalDate())) {
             throw new InvalidDateException("Invalid date.");
-        } else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
+        }
+        else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
             throw new InvalidTimeException("Invalid Time.");
-        } else if (!validation.isOfferedPriceValid(orderDTO, subServiceRepository.findById(orderDTO.getSubServiceId()).get())) {
+        }
+        else if (!validation.isOfferedPriceValid(orderDTO, subServiceRepository.findById(orderDTO.getSubServiceId()).get())) {
             throw new InvalidPriceException("Invalid price.");
-        } else {
+        }
+        else {
             orderService.save(orderDTO);
         }
+
     }
 
     @Override
     public void acceptOffer(Offer offer) {
+
         offer.setAccepted(true);
         Order order = offer.getOrder();
         order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_ARRIVES);
         order.setExpert(offer.getExpert());
+
         orderRepository.save(order);
         offerRepository.save(offer);
+
     }
 
     @Override
     public void acceptOffer(Long id) {
+
         Offer offer = offerRepository.findById(id).get();
         offer.setAccepted(true);
         Order order = offer.getOrder();
         order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_ARRIVES);
         order.setExpert(offer.getExpert());
+
         orderRepository.save(order);
         offerRepository.save(offer);
+
     }
 
 
     @Override
     public void changeOrderStatusToStarted(Long orderId) {
+
         if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("Couldn't find the order.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
+        }
+        else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
             throw new NotFoundTheOfferException("Couldn't find the offer.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
+        }
+        else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
             throw new InvalidDateException("Invalid date.");
-        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))) {
+        }
+        else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))) {
             throw new InvalidTimeException("Invalid time.");
-        } else {
+        }
+        else {
             Order order = orderRepository.findById(orderId).get();
             order.setOrderStatus(OrderStatus.STARTED);
             orderRepository.save(order);
         }
+
     }
 
     @Override
     public void changeOrderStatusToDone(Long orderId) {
+
         if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("not found the order.");
-        } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
+        }
+        else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
             throw new InvalidTimeException("Invalid time.");
-        } else {
+        }
+        else {
             Order order = orderRepository.findById(orderId).get();
             Offer acceptedOffer = offerRepository.findAcceptedOfferByOrderId(orderId).get();
             Expert expert = acceptedOffer.getExpert();
@@ -302,10 +330,12 @@ public class ClientServiceImpl implements ClientService {
             order.setOrderStatus(OrderStatus.DONE);
             orderRepository.save(order);
         }
+
     }
 
     @Override
     public void editExpertStatus(Long expertId, UserStatus userStatus) {
+
         if (expertRepository.findById(expertId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
         } else {
@@ -313,6 +343,7 @@ public class ClientServiceImpl implements ClientService {
             expert.setUserStatus(userStatus);
             expertRepository.save(expert);
         }
+
     }
 
     @Override

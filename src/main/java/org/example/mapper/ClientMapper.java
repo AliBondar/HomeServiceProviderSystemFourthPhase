@@ -18,11 +18,8 @@ public class ClientMapper implements BaseMapper<ClientDTO, Client> {
         client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());
         client.setRole(Role.CLIENT);
-        try {
-            client.setPassword(passwordHash.createHashedPassword(clientDTO.getPassword()));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+
+            client.setPassword(clientDTO.getPassword());
         client.setSignUpDate(clientDTO.getSignUpDate());
         client.setUserStatus(clientDTO.getUserStatus());
         client.setWallet(clientDTO.getWallet());

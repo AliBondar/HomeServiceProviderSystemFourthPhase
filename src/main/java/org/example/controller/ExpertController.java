@@ -37,7 +37,7 @@ public class ExpertController {
         }
     }
 
-    @PostMapping("/edit-expert-password/{expertId}/{password}")
+    @PutMapping("/edit-expert-password/{expertId}/{password}")
     public void editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
         expertService.editExpertPassword(expertId, password);
     }

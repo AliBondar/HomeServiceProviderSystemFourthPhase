@@ -58,7 +58,6 @@ public class ExpertServiceImpl implements ExpertService {
     private final OrderService orderService;
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
-    private final ServiceRepository serviceRepository;
     @PersistenceContext
     private EntityManager entityManager;
     private final OrderMapper orderMapper;
@@ -181,7 +180,8 @@ public class ExpertServiceImpl implements ExpertService {
     public List<Expert> findExpertsByUserStatus(UserStatus userStatus) {
         if (expertRepository.findExpertsByUserStatus(userStatus).size() == 0) {
             throw new NotFoundTheUserException("No user with this status !");
-        } else {
+        }
+        else {
             return expertRepository.findExpertsByUserStatus(userStatus);
         }
     }
@@ -189,19 +189,16 @@ public class ExpertServiceImpl implements ExpertService {
     @Override
     public void editExpertPassword(Long expertId, String password) {
         Validation validation = new Validation();
-        PasswordHash passwordHash = new PasswordHash();
         if (expertRepository.findById(expertId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        } else if (validation.passwordPatternMatches(password)) {
+        }
+        else if (validation.passwordPatternMatches(password)) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        } else {
-            try {
+        }
+        else {
                 Expert expert = expertRepository.findById(expertId).get();
-                expert.setPassword(passwordHash.createHashedPassword(password));
+                expert.setPassword(passwordEncoder.encode(password));
                 expertRepository.save(expert);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -212,15 +209,20 @@ public class ExpertServiceImpl implements ExpertService {
                 || offerDTO.getExpertOfferedWorkDuration() == 0 || offerDTO.getOrderId() == null
                 || offerDTO.getOfferedStartTime() == null || offerDTO.getOfferedStartDate() == null) {
             throw new EmptyFieldException("Fields must filled out.");
-        } else if (expertRepository.findById(offerDTO.getExpertId()).get().getUserStatus() != UserStatus.CONFIRMED) {
+        }
+        else if (expertRepository.findById(offerDTO.getExpertId()).get().getUserStatus() != UserStatus.CONFIRMED) {
             throw new UserConfirmationException("User is not confirmed yet.");
-        } else if (!validation.isOfferedPriceValid(offerDTO, orderRepository.findById(offerDTO.getOrderId()).get().getSubService())) {
+        }
+        else if (!validation.isOfferedPriceValid(offerDTO, orderRepository.findById(offerDTO.getOrderId()).get().getSubService())) {
             throw new InvalidPriceException("Price is not valid.");
-        } else if (!validation.isTimeValid(offerDTO.getOfferedStartTime())) {
+        }
+        else if (!validation.isTimeValid(offerDTO.getOfferedStartTime())) {
             throw new InvalidTimeException("Time is invalid.");
-        } else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
+        }
+        else if (!validation.isDateValid(offerDTO.getOfferedStartDate())) {
             throw new InvalidDateException("Date is invalid.");
-        } else {
+        }
+        else {
             offerService.save(offerDTO);
             Order order = orderRepository.findById(offerDTO.getOrderId()).get();
             order.setOrderStatus(OrderStatus.WAITING_FOR_EXPERT_CHOOSE);
@@ -235,9 +237,11 @@ public class ExpertServiceImpl implements ExpertService {
         CriteriaQuery<Expert> expertCriteriaQuery = criteriaBuilder.createQuery(Expert.class);
         Root<Expert> expertRoot = expertCriteriaQuery.from(Expert.class);
         createFilters(expertDTO, predicateList, criteriaBuilder, expertRoot);
+
         Predicate[] predicates = new Predicate[predicateList.size()];
         predicateList.toArray(predicates);
         expertCriteriaQuery.select(expertRoot).where(predicates);
+
         List<Expert> resultList = entityManager.createQuery(expertCriteriaQuery).getResultList();
         List<ExpertResponseDTO> expertDTOList = new ArrayList<>();
         for (Expert expert : resultList) {

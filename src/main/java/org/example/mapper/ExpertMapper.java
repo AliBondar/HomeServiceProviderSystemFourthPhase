@@ -22,15 +22,9 @@ public class ExpertMapper implements BaseMapper<ExpertDTO, Expert> {
     @Override
     public Expert convert(ExpertDTO expertDTO) {
         Expert expert = new Expert();
-        PasswordHash passwordHash = new PasswordHash();
         expert.setFirstName(expertDTO.getFirstName());
         expert.setLastName(expertDTO.getLastName());
         expert.setEmail(expertDTO.getEmail());
-//        try {
-//            expert.setPassword(passwordHash.createHashedPassword(expertDTO.getPassword()));
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
         expert.setPassword(expertDTO.getPassword());
         expert.setRole(Role.EXPERT);
         expert.setSignUpDate(expertDTO.getSignUpDate());
