@@ -29,4 +29,5 @@ public interface SubServiceService {
 
     List<SubService> findSubServicesByServiceName(String name);
 
+    List<SubServiceDTO> findSubServiceDTOByServiceName(String name);
 }

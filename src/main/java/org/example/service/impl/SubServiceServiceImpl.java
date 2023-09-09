@@ -86,4 +86,17 @@ public class SubServiceServiceImpl implements SubServiceService {
     public List<SubService> findSubServicesByServiceName(String name) {
         return subServiceRepository.findSubServicesByServiceName(name);
     }
+
+    @Override
+    public List<SubServiceDTO> findSubServiceDTOByServiceName(String name){
+        List<SubService> subServices = subServiceRepository.findSubServicesByServiceName(name);
+        List<SubServiceDTO> subServiceDTOList = new ArrayList<>();
+        if (CollectionUtils.isEmpty(subServices)) return null;
+        else {
+            for (SubService subService : subServices){
+                subServiceDTOList.add(subServiceMapper.convert(subService));
+            }
+            return subServiceDTOList;
+        }
+    }
 }

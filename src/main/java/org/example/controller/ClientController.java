@@ -77,13 +77,18 @@ public class ClientController {
         return serviceService.findAll();
     }
 
-    @GetMapping("/show-all-sub-services/{name}")
-    public List<SubService> findSubServicesByServiceName(@PathVariable String name) {
-        return subServiceService.findSubServicesByServiceName(name);
+    @GetMapping("/show-all-sub-services")
+    public List<SubServiceDTO> findAllSubServices() {
+        return subServiceService.findAll();
+    }
+
+    @GetMapping("/show-all-sub-services-by-name/{name}")
+    public List<SubServiceDTO> findSubServicesByServiceName(@PathVariable String name) {
+        return subServiceService.findSubServiceDTOByServiceName(name);
     }
 
     @GetMapping("/show-client-wallet/{email}/{password}")
-    public WalletDTO findClientWalletByEmailAndPassword(@PathVariable String email,@PathVariable String password) {
+    public WalletDTO findClientWalletByEmailAndPassword(@PathVariable String email, @PathVariable String password) {
         return walletService.findClientWalletByEmailAndPassword(email, password).get();
     }
 
@@ -93,13 +98,13 @@ public class ClientController {
     }
 
     @PostMapping("/create-score")
-    public void createScore(@RequestBody ScoreDTO scoreDTO){
+    public void createScore(@RequestBody ScoreDTO scoreDTO) {
         clientService.createScore(scoreDTO);
     }
 
     @GetMapping("/payment")
     public ModelAndView showRegister(Model model) {
-       CardDTO card = new CardDTO();
+        CardDTO card = new CardDTO();
         setupCaptcha(card);
         model.addAttribute("card", card);
 
@@ -109,13 +114,11 @@ public class ClientController {
     @PostMapping("/payment/pay")
     public String pay(
             @ModelAttribute("card") CardDTO card,
-            Model model)
-    {
-        String page="";
-        if(card.getCaptcha().equals(card.getHidden()))
-        {
+            Model model) {
+        String page = "";
+        if (card.getCaptcha().equals(card.getHidden())) {
             clientService.payByCard(card);
-            page ="redirect:all";
+            page = "redirect:all";
         } else {
             setupCaptcha(card);
             return "payment";
