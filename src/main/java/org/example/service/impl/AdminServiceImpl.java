@@ -2,10 +2,7 @@ package org.example.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.dto.AdminDTO;
-import org.example.dto.ClientDTO;
-import org.example.dto.ServiceDTO;
-import org.example.dto.SubServiceDTO;
+import org.example.dto.*;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.SubService;
 import org.example.entity.Wallet;
@@ -45,6 +42,7 @@ public class AdminServiceImpl implements AdminService {
     private final ClientService clientService;
     private final ExpertService expertService;
     private final WalletRepository walletRepository;
+    private final OrderService orderService;
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
     private final PasswordEncoder passwordEncoder;
@@ -52,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
     PasswordHash passwordHash = new PasswordHash();
 
     @Override
-    public void save(AdminDTO adminDTO){
+    public void save(AdminDTO adminDTO) {
         adminDTO.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
         Admin admin = adminMapper.convert(adminDTO);
         adminRepository.save(admin);
@@ -85,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
     public Optional<Admin> findAdminByEmail(String email) {
         try {
             return adminRepository.findByEmail(email);
-        }catch (Exception e){
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
@@ -94,7 +92,7 @@ public class AdminServiceImpl implements AdminService {
     public Optional<Admin> findAdminByEmailAndPassword(String email, String password) {
         try {
             return adminRepository.findByEmailAndPassword(email, passwordHash.createHashedPassword(password));
-        }catch (Exception e){
+        } catch (Exception e) {
             return Optional.empty();
         }
     }
@@ -129,7 +127,7 @@ public class AdminServiceImpl implements AdminService {
             throw new NotFoundTheSubServiceException("Couldn't find the sub service !");
         } else if (!expertRepository.findById(expertId).get().getSubServiceList().contains(subServiceRepository.findById(subServiceId).get())) {
             throw new NotInSubServiceException("Expert already is not a member of this sub service !");
-        }else {
+        } else {
             Expert expert = expertRepository.findById(expertId).get();
             SubService subService = subServiceRepository.findById(subServiceId).get();
             expert.getSubServiceList().remove(subService);
@@ -143,7 +141,7 @@ public class AdminServiceImpl implements AdminService {
     public void editExpertStatus(Long expertId, UserStatus userStatus) {
         if (expertRepository.findById(expertId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        }else {
+        } else {
             Expert expert = expertRepository.findById(expertId).get();
             expert.setUserStatus(userStatus);
             expertRepository.save(expert);
@@ -152,9 +150,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void editSubService(Long id, double newBasePrice, String newDescription) {
-        if (subServiceRepository.findById(id).isEmpty()){
+        if (subServiceRepository.findById(id).isEmpty()) {
             throw new NotFoundTheSubServiceException("Couldn't find the sub service !");
-        }else {
+        } else {
             SubService subService = subServiceRepository.findById(id).get();
             subService.setBasePrice(newBasePrice);
             subService.setDescription(newDescription);
@@ -200,5 +198,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO) {
         return expertService.filterExpert(expertDTO);
+    }
+
+    @Override
+    public List<OrderDTO> filterOrder(OrderDTO orderDTO) {
+        return orderService.filterOrder(orderDTO);
     }
 }

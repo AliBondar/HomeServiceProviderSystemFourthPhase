@@ -1,10 +1,7 @@
 package org.example.service;
 
 
-import org.example.dto.AdminDTO;
-import org.example.dto.ClientDTO;
-import org.example.dto.ServiceDTO;
-import org.example.dto.SubServiceDTO;
+import org.example.dto.*;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.Service;
 import org.example.entity.users.Admin;
@@ -43,4 +40,6 @@ public interface AdminService {
     List<ClientDTO> filterClient(ClientDTO clientDTO);
 
     List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
+
+    List<OrderDTO> filterOrder(OrderDTO orderDTO);
 }

@@ -3,10 +3,7 @@ package org.example.controller;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.dto.ClientDTO;
-import org.example.dto.ExpertDTO;
-import org.example.dto.ServiceDTO;
-import org.example.dto.SubServiceDTO;
+import org.example.dto.*;
 import org.example.dto.request.EmailDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
@@ -95,5 +92,10 @@ public class AdminController {
     @PostMapping("/filter-experts")
     public List<ExpertResponseDTO> filterExpert(@RequestBody ExpertResponseDTO expertDTO) {
         return expertService.filterExpert(expertDTO);
+    }
+
+    @PostMapping("/filter-orders")
+    public List<OrderDTO> filterOrder(@RequestBody OrderDTO orderDTO) {
+        return adminService.filterOrder(orderDTO);
     }
 }
