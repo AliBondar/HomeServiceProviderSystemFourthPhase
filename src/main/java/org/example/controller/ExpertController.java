@@ -28,15 +28,6 @@ public class ExpertController {
     private final OfferService offerService;
     private final WalletService walletService;
 
-//    @PostMapping("/expert-signup")
-//    public void signup(@RequestBody ExpertDTO expertDTO) {
-//        try {expert_sub_service_list
-//            expertService.expertSignUp(expertDTO);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     @PutMapping("/edit-expert-password/{expertId}/{password}")
     public ResponseEntity<String> editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
         expertService.editExpertPassword(expertId, password);

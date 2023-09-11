@@ -28,20 +28,6 @@ public class ClientController {
     private final SubServiceService subServiceService;
     private final WalletService walletService;
 
-//    @PostMapping("/client-signup")
-//    @ResponseBody
-//    public void signUp(@RequestBody ClientDTO clientDTO) {
-//        try {
-//            clientService.clientSignUp(clientDTO);
-//        } catch (jakarta.mail.SendFailedException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    @PutMapping("/edit-client-password/{newPassword}/{clientId}")
-//    public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
-//        clientService.editClientPassword(clientId, newPassword);
-//    }
 
     @PutMapping("/edit-client-password/{newPassword}")
     public ResponseEntity<String> editClientPassword(@PathVariable String newPassword){
