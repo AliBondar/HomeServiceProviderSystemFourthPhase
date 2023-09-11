@@ -15,6 +15,6 @@ public interface TokenRepository extends JpaRepository<ConfirmationToken, Long> 
     Optional<ConfirmationToken> findByToken(String token);
 
     @Modifying
-    @Query("update ConfirmationToken t set t.createdAt= :localDateTime where t.token = :token")
+    @Query("update ConfirmationToken t set t.confirmedAt= :localDateTime where t.token = :token")
     void updateConfirmedAt(String token, LocalDateTime localDateTime);
 }
