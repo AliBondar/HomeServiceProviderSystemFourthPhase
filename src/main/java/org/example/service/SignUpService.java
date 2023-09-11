@@ -9,5 +9,4 @@ public interface SignUpService {
     String register(ExpertDTO expertDTO);
     String register(AdminDTO adminDTO);
     String confirmToken(String token);
-    String buildEmail(String name, String link);
 }

@@ -23,25 +23,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         this.javaMailSender = javaMailSender;
     }
 
-//    @Override
-//    public void sendEmail(String to, String emailMessage) {
-//        System.out.println("sendEmail1+++++++++++++++++++++++++++++++++++++++++++");
-//        try {
-//            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-//            helper.setText(emailMessage, true);
-//            helper.setTo(to);
-//            helper.setSubject("Confirm your email");
-//            helper.setFrom("ali.bondar2001@gmail.com");
-//            System.out.println("into the tyr +++++++++++");
-//            javaMailSender.send(mimeMessage);
-//            System.out.println("email sent ++++++++++++++++++++++++++++++++++++");
-//        } catch (MessagingException e) {
-//            System.out.println("EMAIL DIDNT SENT ++++++++++++++++++++++++++++");
-//            throw new SendEmailFailedException("Failed to send email for: " + emailMessage);
-//        }
-//    }
-
     @Override
     public void sendEmail(SimpleMailMessage email) {
         email.setFrom("ali.bondar2001@gmail.com");
@@ -64,16 +45,16 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         mailMessage.setTo(toEmail);
         mailMessage.setFrom("ali.bondar2001@gmail.com");
         if (accountType.equals("client")) {
-            mailMessage.setSubject("Complete Client signup.");
-            mailMessage.setText("To confirm your account, please click here : "
+            mailMessage.setSubject("Verify Your Email Address");
+            mailMessage.setText("To continue the registration process, please click here : "
                     + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
         } else if (accountType.equals("expert")) {
-            mailMessage.setSubject("Complete Expert signup.");
-            mailMessage.setText("To confirm your account, please click here : "
+            mailMessage.setSubject("Verify Your Email Address");
+            mailMessage.setText("To continue the registration process, please click here : "
                     + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
         } else if (accountType.equals("admin")) {
-            mailMessage.setSubject("Complete Admin signup.");
-            mailMessage.setText("To confirm your account, please click here : "
+            mailMessage.setSubject("Verify Your Email Address");
+            mailMessage.setText("To continue the registration process, please click here : "
                     + "http://localhost:8081/signup/confirm?token=" + confirmationToken);
         }
         return mailMessage;

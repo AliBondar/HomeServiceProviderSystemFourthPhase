@@ -25,5 +25,5 @@ public interface OrderService {
 
     List<Order> findOrdersByOrderStatus(OrderStatus orderStatus);
 
-    List<OrderDTO> ordersFilter(OrderDTO orderDTO);
+    List<OrderDTO> filterOrder(OrderDTO orderDTO);
 }

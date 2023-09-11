@@ -8,6 +8,7 @@ import org.example.entity.*;
 import org.example.entity.users.Client;
 import org.example.entity.users.User;
 import org.example.service.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,15 +28,15 @@ public class ClientController {
     private final SubServiceService subServiceService;
     private final WalletService walletService;
 
-    @PostMapping("/client-signup")
-    @ResponseBody
-    public void signUp(@RequestBody ClientDTO clientDTO) {
-        try {
-            clientService.clientSignUp(clientDTO);
-        } catch (jakarta.mail.SendFailedException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostMapping("/client-signup")
+//    @ResponseBody
+//    public void signUp(@RequestBody ClientDTO clientDTO) {
+//        try {
+//            clientService.clientSignUp(clientDTO);
+//        } catch (jakarta.mail.SendFailedException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PutMapping("/edit-client-password/{newPassword}/{clientId}")
     public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
@@ -43,23 +44,27 @@ public class ClientController {
     }
 
     @PostMapping("/create-order")
-    public void createOrder(@RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<String> createOrder(@RequestBody OrderDTO orderDTO) {
         clientService.createOrder(orderDTO);
+        return ResponseEntity.ok().body("Order has been submitted successfully.");
     }
 
-    @PostMapping("/accept-offer/{id}")
-    public void acceptOffer(@PathVariable Long id) {
+    @PutMapping("/accept-offer/{id}")
+    public ResponseEntity<String> acceptOffer(@PathVariable Long id) {
         clientService.acceptOffer(id);
+        return ResponseEntity.ok().body("Offer accepted successfully.");
     }
 
-    @PostMapping("/change-order-status-to-STARTED/{orderId}")
-    public void changeOrderStatusToStarted(@PathVariable Long orderId) {
+    @PutMapping("/change-order-status-to-STARTED/{orderId}")
+    public ResponseEntity<String> changeOrderStatusToStarted(@PathVariable Long orderId) {
         clientService.changeOrderStatusToStarted(orderId);
+        return ResponseEntity.ok().body("Order status has been changed into STARTED.");
     }
 
-    @PostMapping("/change-order-status-to-DONE/{orderId}")
-    public void changeOrderStatusToDone(@PathVariable Long orderId) {
+    @PutMapping("/change-order-status-to-DONE/{orderId}")
+    public ResponseEntity<String> changeOrderStatusToDone(@PathVariable Long orderId) {
         clientService.changeOrderStatusToDone(orderId);
+        return ResponseEntity.ok().body("Order status has been changed into DONE");
     }
 
     @GetMapping("/show-orders-history/{id}")
@@ -93,13 +98,15 @@ public class ClientController {
     }
 
     @PutMapping("/pay-by-wallet/{orderId}/{clientId}")
-    public void payByWallet(@PathVariable Long orderId, @PathVariable Long clientId) {
+    public ResponseEntity<String> payByWallet(@PathVariable Long orderId, @PathVariable Long clientId) {
         clientService.payByWallet(orderId, clientId);
+        return ResponseEntity.ok().body("Payment operation successfully done.");
     }
 
     @PostMapping("/create-score")
-    public void createScore(@RequestBody ScoreDTO scoreDTO) {
+    public ResponseEntity<String> createScore(@RequestBody ScoreDTO scoreDTO) {
         clientService.createScore(scoreDTO);
+        return ResponseEntity.ok().body("Score has been submitted successfully.");
     }
 
     @GetMapping("/payment")
@@ -107,14 +114,11 @@ public class ClientController {
         CardDTO card = new CardDTO();
         setupCaptcha(card);
         model.addAttribute("card", card);
-
         return new ModelAndView("payment.html");
     }
 
     @PostMapping("/payment/pay")
-    public String pay(
-            @ModelAttribute("card") CardDTO card,
-            Model model) {
+    public String pay(@ModelAttribute("card") CardDTO card, Model model) {
         String page = "";
         if (card.getCaptcha().equals(card.getHidden())) {
             clientService.payByCard(card);

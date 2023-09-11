@@ -53,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> findAll() {
         List<Order> orders = orderRepository.findAll();
         List<OrderDTO> orderDTOList = new ArrayList<>();
+
         if (CollectionUtils.isEmpty(orders)) return null;
         else {
             for (Order order : orders) {
@@ -89,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> ordersFilter(OrderDTO orderDTO) {
+    public List<OrderDTO> filterOrder(OrderDTO orderDTO) {
         List<jakarta.persistence.criteria.Predicate> predicateList = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> orderCriteriaQuery = criteriaBuilder.createQuery(Order.class);

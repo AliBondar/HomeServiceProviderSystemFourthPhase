@@ -13,6 +13,7 @@ import org.example.service.AdminService;
 import org.example.service.ClientService;
 import org.example.service.ExpertService;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,11 +30,12 @@ public class AdminController {
     private final ClientService clientService;
 
     @PostMapping("/add-expert-to-sub-service/{expertId}/{subServiceId}")
-    public void addExpertToSubService(@PathVariable Long expertId, @PathVariable Long subServiceId) {
+    public ResponseEntity<String> addExpertToSubService(@PathVariable Long expertId, @PathVariable Long subServiceId) {
         adminService.addExpertToSubService(expertId, subServiceId);
+        return ResponseEntity.ok().body("Expert has been added to the sub service successfully.");
     }
 
-    @PostMapping("/remove-expert-from-sub-service/{expertId}/{subServiceId}")
+    @PutMapping("/remove-expert-from-sub-service/{expertId}/{subServiceId}")
     public void removeExpertFromSubService(@PathVariable Long expertId, @PathVariable Long subServiceId) {
         adminService.removeExpertFromSubService(expertId, subServiceId);
     }
@@ -54,14 +56,16 @@ public class AdminController {
     }
 
     @PostMapping("/add-service")
-    public void addService(@RequestBody @Valid ServiceDTO serviceDTO) {
+    public ResponseEntity<String> addService(@RequestBody @Valid ServiceDTO serviceDTO) {
         adminService.addService(serviceDTO);
+        return ResponseEntity.ok().body("Service has been added successfully.");
     }
 
     @Transactional
     @PostMapping("/add-sub-service")
-    public void addSubService(@RequestBody @Valid SubServiceDTO subServiceDTO) {
+    public ResponseEntity<String> addSubService(@RequestBody @Valid SubServiceDTO subServiceDTO) {
         adminService.addSubService(subServiceDTO);
+        return ResponseEntity.ok().body("Sub service has been added successfully.");
     }
 
     @GetMapping("/show-expert-by-email/{email}")
@@ -84,17 +88,17 @@ public class AdminController {
         return expertService.findExpertsByUserStatus(UserStatus.CONFIRMED);
     }
 
-    @PostMapping("/filter-clients")
+    @GetMapping("/filter-clients")
     public List<ClientDTO> filterClient(@RequestBody ClientDTO clientDTO) {
         return clientService.filterClient(clientDTO);
     }
 
-    @PostMapping("/filter-experts")
+    @GetMapping("/filter-experts")
     public List<ExpertResponseDTO> filterExpert(@RequestBody ExpertResponseDTO expertDTO) {
         return expertService.filterExpert(expertDTO);
     }
 
-    @PostMapping("/filter-orders")
+    @GetMapping("/filter-orders")
     public List<OrderDTO> filterOrder(@RequestBody OrderDTO orderDTO) {
         return adminService.filterOrder(orderDTO);
     }

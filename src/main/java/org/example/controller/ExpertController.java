@@ -12,6 +12,7 @@ import org.example.service.ExpertService;
 import org.example.service.OfferService;
 import org.example.service.OrderService;
 import org.example.service.SubServiceService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -28,23 +29,25 @@ public class ExpertController {
     private final SubServiceService subServiceService;
     private final OfferService offerService;
 
-    @PostMapping("/expert-signup")
-    public void signup(@RequestBody ExpertDTO expertDTO) {
-        try {
-            expertService.expertSignUp(expertDTO);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    @PostMapping("/expert-signup")
+//    public void signup(@RequestBody ExpertDTO expertDTO) {
+//        try {expert_sub_service_list
+//            expertService.expertSignUp(expertDTO);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @PutMapping("/edit-expert-password/{expertId}/{password}")
-    public void editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
+    public ResponseEntity<String> editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
         expertService.editExpertPassword(expertId, password);
+        return ResponseEntity.ok().body("Password has been edited successfully.");
     }
 
     @PostMapping("/create-offer")
-    public void createOffer(@RequestBody OfferDTO offerDTO) {
+    public ResponseEntity<String> createOffer(@RequestBody OfferDTO offerDTO) {
         expertService.createOffer(offerDTO);
+        return ResponseEntity.ok().body("Offer has been submitted successfully.");
     }
 
     @GetMapping("/show-new-orders/{id}")
