@@ -4,9 +4,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.SubServiceDTO;
 import org.example.entity.SubService;
+import org.example.entity.users.User;
 import org.example.mapper.SubServiceMapper;
 import org.example.repository.SubServiceRepository;
 import org.example.service.SubServiceService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -66,6 +69,18 @@ public class SubServiceServiceImpl implements SubServiceService {
     @Override
     public List<SubService> findByExpertId(Long id) {
         return subServiceRepository.findByExpertId(id);
+    }
+
+    @Override
+    public List<SubServiceDTO> findByExpert(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long id = ((User) authentication.getPrincipal()).getId();
+        List<SubService> subServices = subServiceRepository.findByExpertId(id);
+        List<SubServiceDTO> subServiceDTOList = new ArrayList<>();
+        for (SubService subService : subServices){
+            subServiceDTOList.add(subServiceMapper.convert(subService));
+        }
+        return subServiceDTOList;
     }
 
     @Override

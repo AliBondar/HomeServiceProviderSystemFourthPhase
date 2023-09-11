@@ -23,6 +23,8 @@ public interface SubServiceService {
 
     List<SubService> findByExpertId(Long id);
 
+    List<SubServiceDTO> findByExpert();
+
     List<SubService> findSubServicesByServiceId(Long id);
 
     Optional<SubService> findSubServiceByDescription(String description);

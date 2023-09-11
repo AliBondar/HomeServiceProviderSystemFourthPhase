@@ -1,10 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.dto.ExpertDTO;
-import org.example.dto.OfferDTO;
-import org.example.dto.OrderDTO;
-import org.example.dto.WalletDTO;
+import org.example.dto.*;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.SubService;
@@ -18,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping( "/api/expert")
+@RequestMapping("/api/expert")
 @RequiredArgsConstructor
 public class ExpertController {
 
@@ -50,23 +47,28 @@ public class ExpertController {
         return subServiceService.findByExpertId(id);
     }
 
+    @GetMapping("/show-sub-services")
+    public List<SubServiceDTO> findSubServiceByExpert() {
+        return subServiceService.findByExpert();
+    }
+
     @GetMapping("/show-accepted-offers-by-expert/{id}")
-    public List<Offer> findAcceptedOffersByExpertId(@PathVariable Long id){
+    public List<Offer> findAcceptedOffersByExpertId(@PathVariable Long id) {
         return offerService.findAcceptedOffersByExpertId(id);
     }
 
     @GetMapping("/show-expert-score/{id}")
-    public int showExpertScore(@PathVariable Long id){
+    public int showExpertScore(@PathVariable Long id) {
         return expertService.findById(id).getScore();
     }
 
-    @GetMapping("/show-WAITING-orders")
-    public List<OrderDTO> findWaitingOrders(){
+    @GetMapping("/show-WAITING-FOR-OFFER-orders")
+    public List<OrderDTO> findWaitingOrders() {
         return expertService.findOrdersByOrderStatus(OrderStatus.WAITING_FOR_EXPERT_OFFER);
     }
 
     @GetMapping("/show-expert-wallet")
-    public WalletDTO findExpertWallet(){
+    public WalletDTO findExpertWallet() {
         return walletService.findUserWallet().get();
     }
 
