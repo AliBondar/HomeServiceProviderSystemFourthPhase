@@ -38,9 +38,15 @@ public class ClientController {
 //        }
 //    }
 
-    @PutMapping("/edit-client-password/{newPassword}/{clientId}")
-    public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
-        clientService.editClientPassword(clientId, newPassword);
+//    @PutMapping("/edit-client-password/{newPassword}/{clientId}")
+//    public void editClientPassword(@PathVariable String newPassword, @PathVariable Long clientId) {
+//        clientService.editClientPassword(clientId, newPassword);
+//    }
+
+    @PutMapping("/edit-client-password/{newPassword}")
+    public ResponseEntity<String> editClientPassword(@PathVariable String newPassword){
+        clientService.editClientPassword(newPassword);
+        return ResponseEntity.ok().body("Password has been changed.");
     }
 
     @PostMapping("/create-order")

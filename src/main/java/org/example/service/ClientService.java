@@ -40,6 +40,8 @@ public interface ClientService {
 
     void editClientPassword(Long clientId, String password);
 
+    void editClientPassword(String password);
+
     void createOrder(OrderDTO orderDTO);
 
     void acceptOffer(Offer offer);

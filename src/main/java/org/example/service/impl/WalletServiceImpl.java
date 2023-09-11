@@ -37,7 +37,7 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public Optional<WalletDTO> findClientWalletByEmailAndPassword(String email, String password) {
-        Optional<Wallet> wallet = walletRepository.findUserWalletByEmailAndPassword(email, password);
+        Optional<Wallet> wallet = walletRepository.findClientWalletByEmailAndPassword(email, password);
         if (wallet.isEmpty()){
             throw new NotFoundTheUserException("not found the user.");
         }else {

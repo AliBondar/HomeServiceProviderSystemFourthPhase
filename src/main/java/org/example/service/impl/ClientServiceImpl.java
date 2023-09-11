@@ -7,13 +7,13 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
 import org.example.entity.users.Expert;
+import org.example.entity.users.User;
 import org.example.entity.users.enums.Role;
 import org.example.mapper.ClientMapper;
 import org.example.entity.Offer;
@@ -30,11 +30,12 @@ import org.example.token.ConfirmationToken;
 import org.example.token.ConfirmationTokenService;
 import org.example.validation.Validation;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Time;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -215,8 +216,6 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void editClientPassword(Long clientId, String password) {
 
-        Validation validation = new Validation();
-
         if (clientRepository.findById(clientId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
         }
@@ -228,6 +227,27 @@ public class ClientServiceImpl implements ClientService {
                 client.setPassword(passwordEncoder.encode(password));
                 clientRepository.save(client);
         }
+
+    }
+
+    @Override
+    public void editClientPassword(String password){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long clientId = ((User) authentication.getPrincipal()).getId();
+
+        if (clientRepository.findById(clientId).isEmpty()) {
+            throw new NotFoundTheUserException("Couldn't find the user !");
+        }
+        else if (validation.passwordPatternMatches(password)) {
+            throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
+        }
+        else {
+            Client client = clientRepository.findById(clientId).get();
+            client.setPassword(passwordEncoder.encode(password));
+            clientRepository.save(client);
+        }
+
     }
 
     @Override
@@ -281,7 +301,6 @@ public class ClientServiceImpl implements ClientService {
         offerRepository.save(offer);
 
     }
-
 
     @Override
     public void changeOrderStatusToStarted(Long orderId) {
