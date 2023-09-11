@@ -10,9 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.OrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
+import org.example.entity.users.User;
 import org.example.mapper.OrderMapper;
 import org.example.repository.OrderRepository;
 import org.example.service.OrderService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -66,6 +69,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> findOrdersByClientId(Long id) {
         return orderRepository.findOrdersByClientId(id);
+    }
+
+    @Override
+    public List<OrderDTO> findOrdersByClient() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long id = ((User) authentication.getPrincipal()).getId();
+        List<Order> orders = orderRepository.findOrdersByClientId(id);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders){
+            orderDTOList.add(orderMapper.convert(order));
+        }
+        return orderDTOList;
     }
 
     @Override

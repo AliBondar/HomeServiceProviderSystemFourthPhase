@@ -59,9 +59,6 @@ public class User extends BaseEntity<Long> implements UserDetails{
 
     boolean isDeleted;
 
-//    @OneToMany(mappedBy = "user")
-//    List<ConfirmationToken> confirmationTokens = new ArrayList<>();
-
     @Override
     public String toString() {
         return "User{" +

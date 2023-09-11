@@ -72,6 +72,11 @@ public class ClientController {
         return orderService.findOrdersByClientId(id);
     }
 
+    @GetMapping("/show-orders-history")
+    public List<OrderDTO> findOrdersByClientId() {
+        return orderService.findOrdersByClient();
+    }
+
     @GetMapping("/show-offers-by-order/{id}")
     public List<OfferDTO> findOffersByOrderId(@PathVariable Long id) {
         return offerService.findOffersByOrderId(id);

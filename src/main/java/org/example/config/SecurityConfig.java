@@ -1,8 +1,6 @@
 package org.example.config;
 
-import lombok.RequiredArgsConstructor;
-import org.example.entity.users.enums.Role;
-import org.example.security.CustomAuthProvider;
+import org.example.security.CustomAuthenticationProvider;
 import org.example.security.CustomUserDetailsService;
 import org.example.service.impl.UserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +42,7 @@ public class SecurityConfig {
 
                 .httpBasic(basic -> {
                 })
-                .authenticationProvider(new CustomAuthProvider(customUserDetailsService, passwordEncoder()));
+                .authenticationProvider(new CustomAuthenticationProvider(customUserDetailsService, passwordEncoder()));
 
 //                .httpBasic(withDefaults())
 //                .authenticationProvider(new CustomAuthProvider((CustomUserDetailsService) userDetailsService(),passwordEncoder()));

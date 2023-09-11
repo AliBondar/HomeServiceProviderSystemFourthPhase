@@ -24,6 +24,6 @@ public class CustomUserDetailsService {
         if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException("User not found");
         }
-        return new CustomUserDetails(optionalUser.get());
+        return optionalUser.get();
     }
 }
