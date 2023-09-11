@@ -17,4 +17,6 @@ public interface WalletService {
     Optional<WalletDTO> findClientWalletByEmailAndPassword(String email, String password);
 
     Optional<WalletDTO> findExpertWalletByEmailAndPassword(String email, String password);
+
+    Optional<WalletDTO> findUserWallet();
 }

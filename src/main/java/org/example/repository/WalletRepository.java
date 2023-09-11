@@ -19,4 +19,7 @@ public interface WalletRepository extends JpaRepository<Wallet, Long> {
 
     @Query("select e.wallet from Expert e where e.email = :email and e.password = :password")
     Optional<Wallet> findExpertWalletByEmailAndPassword(String email, String password);
+
+    @Query("select u.wallet from User u where u.email = :email and u.password = :password")
+    Optional<Wallet> findUserWalletByEmailAndPassword(String email, String password);
 }

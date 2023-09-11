@@ -67,10 +67,10 @@ public class ClientController {
         return ResponseEntity.ok().body("Order status has been changed into DONE");
     }
 
-    @GetMapping("/show-orders-history/{id}")
-    public List<Order> findOrdersByClientId(@PathVariable Long id) {
-        return orderService.findOrdersByClientId(id);
-    }
+//    @GetMapping("/show-orders-history/{id}")
+//    public List<Order> findOrdersByClientId(@PathVariable Long id) {
+//        return orderService.findOrdersByClientId(id);
+//    }
 
     @GetMapping("/show-orders-history")
     public List<OrderDTO> findOrdersByClientId() {
@@ -97,9 +97,14 @@ public class ClientController {
         return subServiceService.findSubServiceDTOByServiceName(name);
     }
 
-    @GetMapping("/show-client-wallet/{email}/{password}")
-    public WalletDTO findClientWalletByEmailAndPassword(@PathVariable String email, @PathVariable String password) {
-        return walletService.findClientWalletByEmailAndPassword(email, password).get();
+//    @GetMapping("/show-client-wallet/{email}/{password}")
+//    public WalletDTO findClientWalletByEmailAndPassword(@PathVariable String email, @PathVariable String password) {
+//        return walletService.findClientWalletByEmailAndPassword(email, password).get();
+//    }
+
+    @GetMapping("/show-client-wallet")
+    public WalletDTO findClientWallet(){
+        return walletService.findUserWallet().get();
     }
 
     @PutMapping("/pay-by-wallet/{orderId}/{clientId}")

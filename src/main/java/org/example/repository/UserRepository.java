@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.entity.Wallet;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
