@@ -2,6 +2,7 @@ package org.example.service;
 
 
 import org.example.dto.*;
+import org.example.dto.request.FilterClientDTO;
 import org.example.dto.request.FilterOrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.Service;
@@ -38,7 +39,7 @@ public interface AdminService {
 
     boolean isSubServiceDuplicated(String description, Service service);
 
-    List<ClientDTO> filterClient(ClientDTO clientDTO);
+    List<ClientDTO> filterClient(FilterClientDTO filterClientDTO);
 
     List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
 

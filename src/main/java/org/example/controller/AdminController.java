@@ -4,20 +4,16 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.*;
-import org.example.dto.request.EmailDTO;
+import org.example.dto.request.FilterClientDTO;
 import org.example.dto.request.FilterOrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
-import org.example.entity.users.User;
 import org.example.entity.users.enums.UserStatus;
 import org.example.service.*;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -104,8 +100,8 @@ public class AdminController {
     }
 
     @GetMapping("/filter-clients")
-    public List<ClientDTO> filterClient(@RequestBody ClientDTO clientDTO) {
-        return clientService.filterClient(clientDTO);
+    public List<ClientDTO> filterClient(@RequestBody FilterClientDTO filterClientDTO) {
+        return clientService.filterClient(filterClientDTO);
     }
 
     @GetMapping("/filter-experts")

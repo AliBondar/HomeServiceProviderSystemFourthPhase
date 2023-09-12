@@ -10,6 +10,7 @@ import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
+import org.example.dto.request.FilterClientDTO;
 import org.example.entity.Offer;
 import org.example.entity.users.Client;
 import org.example.entity.users.enums.UserStatus;
@@ -64,9 +65,9 @@ public interface ClientService {
 
     int calculateDuration(LocalTime localTime);
 
-    List<ClientDTO> filterClient(ClientDTO clientDTO);
+    List<ClientDTO> filterClient(FilterClientDTO filterClientDTO);
 
-    void createFilters(ClientDTO clientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> customerRoot);
+    void createFilters(FilterClientDTO filterClientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> customerRoot);
 
     void payByWallet(Long orderId, Long clientId);
 

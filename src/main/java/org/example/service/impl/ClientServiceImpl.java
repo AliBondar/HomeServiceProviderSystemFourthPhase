@@ -3,15 +3,13 @@ package org.example.service.impl;
 import jakarta.mail.SendFailedException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.CardDTO;
 import org.example.dto.ClientDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
+import org.example.dto.request.FilterClientDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.entity.users.enums.Role;
@@ -29,6 +27,7 @@ import org.example.service.*;
 import org.example.token.ConfirmationToken;
 import org.example.token.ConfirmationTokenService;
 import org.example.validation.Validation;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -458,12 +457,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientDTO> filterClient(ClientDTO clientDTO) {
+    public List<ClientDTO> filterClient(FilterClientDTO filterClientDTO) {
         List<Predicate> predicateList = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Client> clientCriteriaQuery = criteriaBuilder.createQuery(Client.class);
         Root<Client> clientRoot = clientCriteriaQuery.from(Client.class);
-        createFilters(clientDTO, predicateList, criteriaBuilder, clientRoot);
+        createFilters(filterClientDTO, predicateList, criteriaBuilder, clientRoot);
         Predicate[] predicates = new Predicate[predicateList.size()];
         predicateList.toArray(predicates);
         clientCriteriaQuery.select(clientRoot).where(predicates);
@@ -476,18 +475,35 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void createFilters(ClientDTO clientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> clientRoot) {
-        if (clientDTO.getFirstName() != null) {
-            String firstName = "%" + clientDTO.getFirstName() + "%";
+    public void createFilters(FilterClientDTO filterClientDTO, List<Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Client> clientRoot) {
+        if (filterClientDTO.getFirstName() != null) {
+            String firstName = "%" + filterClientDTO.getFirstName() + "%";
             predicateList.add(criteriaBuilder.like(clientRoot.get("firstName"), firstName));
         }
-        if (clientDTO.getLastName() != null) {
-            String lastName = "%" + clientDTO.getLastName() + "%";
+        if (filterClientDTO.getLastName() != null) {
+            String lastName = "%" + filterClientDTO.getLastName() + "%";
             predicateList.add(criteriaBuilder.like(clientRoot.get("lastName"), lastName));
         }
-        if (clientDTO.getEmail() != null) {
-            String email = "%" + clientDTO.getEmail() + "%";
+        if (filterClientDTO.getEmail() != null) {
+            String email = "%" + filterClientDTO.getEmail() + "%";
             predicateList.add(criteriaBuilder.like(clientRoot.get("email"), email));
+        }
+        if (filterClientDTO.getMinSignUpDate() != null && filterClientDTO.getMaxSignUpDate() != null){
+            predicateList.add(criteriaBuilder.between(clientRoot.get("signUpDate"),
+                    filterClientDTO.getMinSignUpDate(), filterClientDTO.getMaxSignUpDate()));
+        }
+        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() == null){
+            int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
+            predicateList.add(criteriaBuilder.ge(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
+        }
+        if (filterClientDTO.getMinOrdersNumber() == null && filterClientDTO.getMaxOrdersNumber() != null){
+            int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
+            predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
+        }
+        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() != null){
+            int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
+            predicateList.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
+            predicateList.add(criteriaBuilder.lessThanOrEqualTo(criteriaBuilder.literal(countOrders), filterClientDTO.getMaxOrdersNumber()));
         }
     }
 

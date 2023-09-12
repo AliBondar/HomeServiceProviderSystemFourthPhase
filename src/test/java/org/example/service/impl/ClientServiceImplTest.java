@@ -394,4 +394,8 @@ class ClientServiceImplTest {
         javaMailSenderImpl.send(mailMessage);
     }
 
+    @Test
+    void countOrder(){
+        System.out.println(orderRepository.countOrdersByClientId(4L));
+    }
 }
