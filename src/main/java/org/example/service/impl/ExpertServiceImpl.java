@@ -293,6 +293,10 @@ public class ExpertServiceImpl implements ExpertService {
         if (expertDTO.getServiceId() != null) {
             predicateList.add(criteriaBuilder.equal(expertRoot.get("serviceId"), expertDTO.getServiceId()));
         }
+        if (expertDTO.getMinSignUpDate() != null && expertDTO.getMaxSignUpDate() != null){
+            predicateList.add(criteriaBuilder.between(expertRoot.get("signUpDate"),
+                    expertDTO.getMinSignUpDate(), expertDTO.getMaxSignUpDate()));
+        }
     }
 
     @Override

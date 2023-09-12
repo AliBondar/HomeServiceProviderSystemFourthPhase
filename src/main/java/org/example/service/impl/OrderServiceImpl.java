@@ -160,7 +160,7 @@ public class OrderServiceImpl implements OrderService {
                     filterOrderDTO.getMinClientOfferedWorkDuration(),
                     filterOrderDTO.getMaxClientOfferedWorkDuration()));
         }
-        if (filterOrderDTO.getMinWorkDate() == null && filterOrderDTO.getMaxWorkDate() != null){
+        if (filterOrderDTO.getMinWorkDate() != null && filterOrderDTO.getMaxWorkDate() != null){
             predicateList.add(criteriaBuilder.between(orderRoot.get("localDate"),
                     filterOrderDTO.getMinWorkDate(), filterOrderDTO.getMaxWorkDate()));
         }

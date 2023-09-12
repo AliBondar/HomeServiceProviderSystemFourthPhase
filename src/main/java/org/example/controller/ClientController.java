@@ -4,6 +4,7 @@ import cn.apiclub.captcha.Captcha;
 import lombok.RequiredArgsConstructor;
 import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.*;
 import org.example.entity.users.Client;
 import org.example.entity.users.User;
@@ -138,6 +139,11 @@ public class ClientController {
         card.setCaptcha("");
         card.setImage(CaptchaUtils.encodeBase64(captcha));
     }
+
+//    @GetMapping("/filter-client-orders")
+//    public FilterOrderDTO filterOrders(){
+//
+//    }
 
 
 }

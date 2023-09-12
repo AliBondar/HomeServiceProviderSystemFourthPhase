@@ -26,6 +26,10 @@ public class ExpertResponseDTO {
 
     LocalDate signUpdate;
 
+    LocalDate minSignUpDate;
+
+    LocalDate maxSignUpDate;
+
     Long serviceId;
 
     byte[] imageData;
