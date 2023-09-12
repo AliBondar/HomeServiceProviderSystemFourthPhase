@@ -12,6 +12,7 @@ import org.example.dto.OrderDTO;
 import org.example.dto.ScoreDTO;
 import org.example.dto.request.FilterClientDTO;
 import org.example.entity.Offer;
+import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 import org.example.entity.users.enums.UserStatus;
 
@@ -74,4 +75,6 @@ public interface ClientService {
     void updateClientWallet(Long clientId, double balance);
 
     void payByCard(CardDTO cardDTO);
+
+    List<OrderDTO> filterClientOrdersByOrderStatus(OrderStatus orderStatus);
 }

@@ -27,7 +27,6 @@ import org.example.service.*;
 import org.example.token.ConfirmationToken;
 import org.example.token.ConfirmationTokenService;
 import org.example.validation.Validation;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -544,5 +543,26 @@ public class ClientServiceImpl implements ClientService {
         expertService.updateExpertWallet(expert.getId(),
                 expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
         changeOrderStatusToPaid(order.getId());
+    }
+
+    @Override
+    public List<OrderDTO> filterClientOrdersByOrderStatus(OrderStatus orderStatus){
+        List<Order> orders =  orderService.findOrdersByOrderStatus(orderStatus);
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders){
+            OrderDTO orderDTO = new OrderDTO();
+            orderDTO.setId(order.getId());
+            orderDTO.setDescription(order.getDescription());
+            orderDTO.setLocalDate(order.getLocalDate());
+            orderDTO.setLocalTime(order.getTime().toLocalTime());
+            orderDTO.setOrderStatus(order.getOrderStatus());
+            orderDTO.setPaid(order.getPaid());
+            orderDTO.setClientId(order.getClient().getId());
+            orderDTO.setSubServiceId(order.getSubService().getId());
+            orderDTO.setClientOfferedPrice(order.getClientOfferedPrice());
+            orderDTO.setClientOfferedWorkDuration(order.getClientOfferedWorkDuration());
+            orderDTOList.add(orderDTO);
+        }
+        return orderDTOList;
     }
 }

@@ -103,6 +103,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<OrderDTO> findNewOrdersByClientId(Long id, OrderStatus orderStatus) {
+        Predicate<Order> newOrder = order -> order.getOrderStatus() == orderStatus;
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        List<Order> orders = findOrdersByClientId(id).stream().filter(newOrder).toList();
+        for (Order order : orders) {
+            orderDTOList.add(orderMapper.convert(order));
+        }
+        return orderDTOList;
+    }
+
+    @Override
     public List<Order> findOrdersByOrderStatus(OrderStatus orderStatus) {
         return orderRepository.findOrdersByOrderStatus(orderStatus);
     }
@@ -160,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
                     filterOrderDTO.getMinClientOfferedWorkDuration(),
                     filterOrderDTO.getMaxClientOfferedWorkDuration()));
         }
-        if (filterOrderDTO.getMinWorkDate() != null && filterOrderDTO.getMaxWorkDate() != null){
+        if (filterOrderDTO.getMinWorkDate() != null && filterOrderDTO.getMaxWorkDate() != null) {
             predicateList.add(criteriaBuilder.between(orderRoot.get("localDate"),
                     filterOrderDTO.getMinWorkDate(), filterOrderDTO.getMaxWorkDate()));
         }

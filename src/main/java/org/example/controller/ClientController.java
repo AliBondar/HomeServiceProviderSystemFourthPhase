@@ -140,10 +140,9 @@ public class ClientController {
         card.setImage(CaptchaUtils.encodeBase64(captcha));
     }
 
-//    @GetMapping("/filter-client-orders")
-//    public FilterOrderDTO filterOrders(){
-//
-//    }
-
+    @GetMapping("/filter-client-orders")
+    public List<OrderDTO> filterOrders(FilterOrderDTO filterOrderDTO){
+        return clientService.filterClientOrdersByOrderStatus(filterOrderDTO.getOrderStatus());
+    }
 
 }
