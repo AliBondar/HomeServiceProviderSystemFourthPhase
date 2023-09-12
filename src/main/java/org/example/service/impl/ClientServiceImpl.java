@@ -547,22 +547,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<OrderDTO> filterClientOrdersByOrderStatus(OrderStatus orderStatus){
-        List<Order> orders =  orderService.findOrdersByOrderStatus(orderStatus);
-        List<OrderDTO> orderDTOList = new ArrayList<>();
-        for (Order order : orders){
-            OrderDTO orderDTO = new OrderDTO();
-            orderDTO.setId(order.getId());
-            orderDTO.setDescription(order.getDescription());
-            orderDTO.setLocalDate(order.getLocalDate());
-            orderDTO.setLocalTime(order.getTime().toLocalTime());
-            orderDTO.setOrderStatus(order.getOrderStatus());
-            orderDTO.setPaid(order.getPaid());
-            orderDTO.setClientId(order.getClient().getId());
-            orderDTO.setSubServiceId(order.getSubService().getId());
-            orderDTO.setClientOfferedPrice(order.getClientOfferedPrice());
-            orderDTO.setClientOfferedWorkDuration(order.getClientOfferedWorkDuration());
-            orderDTOList.add(orderDTO);
-        }
-        return orderDTOList;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long id = ((User) authentication.getPrincipal()).getId();
+        System.out.println(id);
+        return orderService.findNewOrdersByClientId(id, orderStatus);
     }
 }
