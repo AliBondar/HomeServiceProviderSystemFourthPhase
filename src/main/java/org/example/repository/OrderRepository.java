@@ -30,4 +30,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findOrdersBySubService(SubService subService);
 
     List<Order> findOrdersByOrderStatus(OrderStatus orderStatus);
+
+    @Query("select count(o.client.id) from Order o where o.client.id= :id")
+    int countOrdersByClientId(Long id);
 }

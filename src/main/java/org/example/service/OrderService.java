@@ -28,4 +28,6 @@ public interface OrderService {
     List<Order> findOrdersByOrderStatus(OrderStatus orderStatus);
 
     List<OrderDTO> filterOrder(OrderDTO orderDTO);
+
+    int countClientOrders(Long id);
 }

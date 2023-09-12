@@ -116,4 +116,9 @@ public class AdminController {
     public List<OrderDTO> filterOrder(@RequestBody OrderDTO orderDTO) {
         return adminService.filterOrder(orderDTO);
     }
+
+    @GetMapping("/count-client-orders/{id}")
+    public int countClientOrders(@PathVariable Long id){
+        return adminService.countClientOrders(id);
+    }
 }

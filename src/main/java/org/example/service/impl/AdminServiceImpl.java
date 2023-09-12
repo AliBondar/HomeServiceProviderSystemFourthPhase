@@ -204,4 +204,9 @@ public class AdminServiceImpl implements AdminService {
     public List<OrderDTO> filterOrder(OrderDTO orderDTO) {
         return orderService.filterOrder(orderDTO);
     }
+
+    @Override
+    public int countClientOrders(Long id){
+        return orderService.countClientOrders(id);
+    }
 }

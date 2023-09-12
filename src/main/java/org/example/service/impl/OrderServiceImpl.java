@@ -145,4 +145,9 @@ public class OrderServiceImpl implements OrderService {
 //            predicateList.add(criteriaBuilder.between(orderRoot.get("durationOfWork"), orderDTO.getMinDurationOfWork(), orderDTO.getMaxDurationOfWork()));
 //        }
     }
+
+    @Override
+    public int countClientOrders(Long id){
+        return orderRepository.countOrdersByClientId(id);
+    }
 }

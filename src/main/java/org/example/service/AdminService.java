@@ -42,4 +42,6 @@ public interface AdminService {
     List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
 
     List<OrderDTO> filterOrder(OrderDTO orderDTO);
+
+    int countClientOrders(Long id);
 }
