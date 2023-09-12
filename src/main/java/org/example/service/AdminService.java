@@ -2,6 +2,7 @@ package org.example.service;
 
 
 import org.example.dto.*;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.Service;
 import org.example.entity.users.Admin;
@@ -41,7 +42,7 @@ public interface AdminService {
 
     List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
 
-    List<OrderDTO> filterOrder(OrderDTO orderDTO);
+    List<OrderDTO> filterOrder(FilterOrderDTO filterOrderDTO);
 
     int countClientOrders(Long id);
 }

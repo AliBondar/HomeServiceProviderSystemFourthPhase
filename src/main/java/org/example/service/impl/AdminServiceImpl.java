@@ -3,6 +3,7 @@ package org.example.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.*;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.SubService;
 import org.example.entity.Wallet;
@@ -201,8 +202,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<OrderDTO> filterOrder(OrderDTO orderDTO) {
-        return orderService.filterOrder(orderDTO);
+    public List<OrderDTO> filterOrder(FilterOrderDTO filterOrderDTO) {
+        return orderService.filterOrder(filterOrderDTO);
     }
 
     @Override

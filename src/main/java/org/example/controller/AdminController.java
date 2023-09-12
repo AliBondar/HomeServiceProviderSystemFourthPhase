@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.*;
 import org.example.dto.request.EmailDTO;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
 import org.example.entity.users.Expert;
 import org.example.entity.users.User;
@@ -113,8 +114,8 @@ public class AdminController {
     }
 
     @GetMapping("/filter-orders")
-    public List<OrderDTO> filterOrder(@RequestBody OrderDTO orderDTO) {
-        return adminService.filterOrder(orderDTO);
+    public List<OrderDTO> filterOrder(@RequestBody FilterOrderDTO filterOrderDTO) {
+        return adminService.filterOrder(filterOrderDTO);
     }
 
     @GetMapping("/count-client-orders/{id}")

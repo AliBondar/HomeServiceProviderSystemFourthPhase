@@ -2,6 +2,7 @@ package org.example.service;
 
 
 import org.example.dto.OrderDTO;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
 
@@ -27,7 +28,7 @@ public interface OrderService {
 
     List<Order> findOrdersByOrderStatus(OrderStatus orderStatus);
 
-    List<OrderDTO> filterOrder(OrderDTO orderDTO);
+    List<OrderDTO> filterOrder(FilterOrderDTO filterOrderDTO);
 
     int countClientOrders(Long id);
 }

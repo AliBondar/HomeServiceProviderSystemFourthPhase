@@ -8,11 +8,13 @@ import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.OrderDTO;
+import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.User;
 import org.example.mapper.OrderMapper;
 import org.example.repository.OrderRepository;
+import org.example.repository.SubServiceRepository;
 import org.example.service.OrderService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +32,7 @@ import java.util.function.Predicate;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final SubServiceRepository subServiceRepository;
     private final OrderMapper orderMapper;
     @PersistenceContext
     private EntityManager entityManager;
@@ -77,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
         Long id = ((User) authentication.getPrincipal()).getId();
         List<Order> orders = orderRepository.findOrdersByClientId(id);
         List<OrderDTO> orderDTOList = new ArrayList<>();
-        for (Order order : orders){
+        for (Order order : orders) {
             orderDTOList.add(orderMapper.convert(order));
         }
         return orderDTOList;
@@ -105,13 +108,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDTO> filterOrder(OrderDTO orderDTO) {
+    public List<OrderDTO> filterOrder(FilterOrderDTO filterOrderDTO) {
         List<jakarta.persistence.criteria.Predicate> predicateList = new ArrayList<>();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Order> orderCriteriaQuery = criteriaBuilder.createQuery(Order.class);
         Root<Order> orderRoot = orderCriteriaQuery.from(Order.class);
 
-        createFilters(orderDTO, predicateList, criteriaBuilder, orderRoot);
+        createFilters(filterOrderDTO, predicateList, criteriaBuilder, orderRoot);
         jakarta.persistence.criteria.Predicate[] predicates = new jakarta.persistence.criteria.Predicate[predicateList.size()];
         predicateList.toArray(predicates);
         orderCriteriaQuery.select(orderRoot).where(predicates);
@@ -123,31 +126,44 @@ public class OrderServiceImpl implements OrderService {
         return filterOrderResponseDTOS;
     }
 
-    private void createFilters(OrderDTO orderDTO, List<jakarta.persistence.criteria.Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Order> orderRoot) {
+    private void createFilters(FilterOrderDTO filterOrderDTO, List<jakarta.persistence.criteria.Predicate> predicateList, CriteriaBuilder criteriaBuilder, Root<Order> orderRoot) {
 
-        if (orderDTO.getDescription() != null) {
-            String description = "%" + orderDTO.getDescription() + "%";
+        if (filterOrderDTO.getDescription() != null) {
+            String description = "%" + filterOrderDTO.getDescription() + "%";
             predicateList.add(criteriaBuilder.like(orderRoot.get("description"), description));
         }
-        if (orderDTO.getOrderStatus() != null) {
-            predicateList.add(criteriaBuilder.equal(orderRoot.get("orderStatus"), orderDTO.getOrderStatus()));
+        if (filterOrderDTO.getOrderStatus() != null) {
+            predicateList.add(criteriaBuilder.equal(orderRoot.get("orderStatus"), filterOrderDTO.getOrderStatus()));
         }
-        if (orderDTO.getSubServiceId() != null) {
-            predicateList.add(criteriaBuilder.equal(orderRoot.get("subServiceId"), orderDTO.getSubServiceId()));
+        if (filterOrderDTO.getSubServiceId() != null) {
+            predicateList.add(criteriaBuilder.equal(orderRoot.get("subService"), subServiceRepository.findById(filterOrderDTO.getSubServiceId()).get()));
         }
-        if (orderDTO.getClientOfferedPrice() != 0) {
-            predicateList.add(criteriaBuilder.lt(orderRoot.get("clientOfferedPrice"), orderDTO.getClientOfferedPrice()));
+        if (filterOrderDTO.getMinClientOfferedPrice() == null && filterOrderDTO.getMaxClientOfferedPrice() != null) {
+            predicateList.add(criteriaBuilder.lt(orderRoot.get("clientOfferedPrice"), filterOrderDTO.getMaxClientOfferedPrice()));
         }
-//        if (orderDTO.getClientOfferedWorkDuration() != 0) {
-//            predicateList.add(criteriaBuilder.between(orderRoot.get("clientOfferedDurationOfWork"), orderDTO.getClientOfferedWorkDuration()));
-//        }
-//        if (orderDTO.getClientOfferedWorkDuration() != null && orderDTO.getClientOfferedWorkDuration() != null) {
-//            predicateList.add(criteriaBuilder.between(orderRoot.get("durationOfWork"), orderDTO.getMinDurationOfWork(), orderDTO.getMaxDurationOfWork()));
-//        }
+        if (filterOrderDTO.getMinClientOfferedPrice() != null && filterOrderDTO.getMaxClientOfferedPrice() == null) {
+            predicateList.add(criteriaBuilder.gt(orderRoot.get("clientOfferedPrice"), filterOrderDTO.getMinClientOfferedPrice()));
+        }
+        if (filterOrderDTO.getMinClientOfferedPrice() != null && filterOrderDTO.getMaxClientOfferedPrice() != null) {
+            predicateList.add(criteriaBuilder.between(orderRoot.get("clientOfferedPrice"),
+                    filterOrderDTO.getMinClientOfferedPrice(),
+                    filterOrderDTO.getMaxClientOfferedPrice()));
+        }
+        if (filterOrderDTO.getMinClientOfferedWorkDuration() == null && filterOrderDTO.getMaxClientOfferedWorkDuration() != null) {
+            predicateList.add(criteriaBuilder.lt(orderRoot.get("clientOfferedWorkDuration"), filterOrderDTO.getMaxClientOfferedWorkDuration()));
+        }
+        if (filterOrderDTO.getMinClientOfferedWorkDuration() != null && filterOrderDTO.getMaxClientOfferedWorkDuration() == null) {
+            predicateList.add(criteriaBuilder.gt(orderRoot.get("clientOfferedWorkDuration"), filterOrderDTO.getMinClientOfferedWorkDuration()));
+        }
+        if (filterOrderDTO.getMinClientOfferedWorkDuration() != null && filterOrderDTO.getMaxClientOfferedWorkDuration() != null) {
+            predicateList.add(criteriaBuilder.between(orderRoot.get("clientOfferedWorkDuration"),
+                    filterOrderDTO.getMinClientOfferedWorkDuration(),
+                    filterOrderDTO.getMaxClientOfferedWorkDuration()));
+        }
     }
 
     @Override
-    public int countClientOrders(Long id){
+    public int countClientOrders(Long id) {
         return orderRepository.countOrdersByClientId(id);
     }
 }
