@@ -25,9 +25,15 @@ public class ExpertController {
     private final OfferService offerService;
     private final WalletService walletService;
 
-    @PutMapping("/edit-expert-password/{expertId}/{password}")
-    public ResponseEntity<String> editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
-        expertService.editExpertPassword(expertId, password);
+//    @PutMapping("/edit-expert-password/{expertId}/{password}")
+//    public ResponseEntity<String> editExpertPassword(@PathVariable Long expertId, @PathVariable String password) {
+//        expertService.editExpertPassword(expertId, password);
+//        return ResponseEntity.ok().body("Password has been edited successfully.");
+//    }
+
+    @PutMapping("/edit-expert-password/{password}")
+    public ResponseEntity<String> editExpertPassword(@PathVariable String password){
+        expertService.editExpertPassword(password);
         return ResponseEntity.ok().body("Password has been edited successfully.");
     }
 
@@ -52,14 +58,24 @@ public class ExpertController {
         return subServiceService.findByExpert();
     }
 
-    @GetMapping("/show-accepted-offers-by-expert/{id}")
-    public List<Offer> findAcceptedOffersByExpertId(@PathVariable Long id) {
-        return offerService.findAcceptedOffersByExpertId(id);
+//    @GetMapping("/show-accepted-offers-by-expert/{id}")
+//    public List<Offer> findAcceptedOffersByExpertId(@PathVariable Long id) {
+//        return offerService.findAcceptedOffersByExpertId(id);
+//    }
+
+    @GetMapping("/show-accepted-offers-by-expert")
+    public List<OfferDTO> findAcceptedOffersByExpert(){
+        return offerService.findAcceptedOffersByExpert();
     }
 
     @GetMapping("/show-expert-score/{id}")
     public int showExpertScore(@PathVariable Long id) {
         return expertService.findById(id).getScore();
+    }
+
+    @GetMapping("/show-expert-score")
+    public int showExpertScore(){
+        return expertService.findScoreByExpert();
     }
 
     @GetMapping("/show-WAITING-FOR-OFFER-orders")

@@ -12,6 +12,7 @@ import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
+import org.example.entity.users.User;
 import org.example.mapper.ExpertMapper;
 import org.example.entity.Order;
 import org.example.entity.Wallet;
@@ -22,14 +23,14 @@ import org.example.exception.*;
 import org.example.mapper.OrderMapper;
 import org.example.repository.ExpertRepository;
 import org.example.repository.OrderRepository;
-import org.example.repository.ServiceRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
 import org.example.token.ConfirmationToken;
 import org.example.validation.Validation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -38,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -203,6 +203,26 @@ public class ExpertServiceImpl implements ExpertService {
     }
 
     @Override
+    public void editExpertPassword(String password){
+        Validation validation = new Validation();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long expertId= ((User) authentication.getPrincipal()).getId();
+
+        if (expertRepository.findById(expertId).isEmpty()) {
+            throw new NotFoundTheUserException("Couldn't find the user !");
+        }
+        else if (validation.passwordPatternMatches(password)) {
+            throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
+        }
+        else {
+            Expert expert = expertRepository.findById(expertId).get();
+            expert.setPassword(passwordEncoder.encode(password));
+            expertRepository.save(expert);
+        }
+
+    }
+
+    @Override
     public void createOffer(OfferDTO offerDTO) {
         Validation validation = new Validation();
         if (offerDTO.getExpertId() == null || offerDTO.getOfferedPrice() == 0
@@ -293,5 +313,12 @@ public class ExpertServiceImpl implements ExpertService {
             orderDTOList.add(orderMapper.convert(order));
         }
         return orderDTOList;
+    }
+
+    @Override
+    public int findScoreByExpert(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Expert expert = (Expert) authentication.getPrincipal();
+        return expert.getScore();
     }
 }

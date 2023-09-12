@@ -40,6 +40,8 @@ public interface ExpertService{
 
     void editExpertPassword(Long expertId, String password);
 
+    void editExpertPassword(String password);
+
     void createOffer(OfferDTO offerDTO);
 
     List<ExpertResponseDTO> filterExpert(ExpertResponseDTO expertDTO);
@@ -51,4 +53,6 @@ public interface ExpertService{
     void updateExpertScore(Long expertId, int score);
 
     List<OrderDTO> findOrdersByOrderStatus(OrderStatus orderStatus);
+
+    int findScoreByExpert();
 }

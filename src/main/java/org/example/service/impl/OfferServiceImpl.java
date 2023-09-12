@@ -6,10 +6,13 @@ import org.example.dto.OfferDTO;
 import org.example.entity.Offer;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
+import org.example.entity.users.User;
 import org.example.mapper.OfferMapper;
 import org.example.repository.OfferRepository;
 import org.example.repository.OrderRepository;
 import org.example.service.OfferService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -86,6 +89,18 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public List<Offer> findAcceptedOffersByExpertId(Long id) {
         return offerRepository.findAcceptedOffersByExpertId(id);
+    }
+
+    @Override
+    public List<OfferDTO> findAcceptedOffersByExpert(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long id = ((User) authentication.getPrincipal()).getId();
+        List<Offer> offers = offerRepository.findAcceptedOffersByExpertId(id);
+        List<OfferDTO> offerDTOList = new ArrayList<>();
+        for(Offer offer : offers){
+            offerDTOList.add(offerMapper.convert(offer));
+        }
+        return offerDTOList;
     }
 
     //TODO
