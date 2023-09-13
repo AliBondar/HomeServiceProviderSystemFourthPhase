@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.OrderDTO;
 import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.Order;
+import org.example.entity.SubService;
 import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Expert;
 import org.example.entity.users.User;
@@ -192,19 +193,6 @@ public class OrderServiceImpl implements OrderService {
         if (filterOrderDTO.getMinWorkDate() != null && filterOrderDTO.getMaxWorkDate() != null) {
             predicateList.add(criteriaBuilder.between(orderRoot.get("localDate"),
                     filterOrderDTO.getMinWorkDate(), filterOrderDTO.getMaxWorkDate()));
-        }
-        if (filterOrderDTO.getMinExpertDoneOrdersNumber() != null && filterOrderDTO.getMaxExpertDoneOrdersNumber() == null) {
-            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
-            predicateList.add(criteriaBuilder.ge(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMinExpertDoneOrdersNumber()));
-        }
-        if (filterOrderDTO.getMinExpertDoneOrdersNumber() == null && filterOrderDTO.getMaxExpertDoneOrdersNumber() != null) {
-            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
-            predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMaxExpertDoneOrdersNumber()));
-        }
-        if (filterOrderDTO.getMinExpertDoneOrdersNumber() != null && filterOrderDTO.getMaxExpertDoneOrdersNumber() != null) {
-            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
-            predicateList.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMinExpertDoneOrdersNumber()));
-            predicateList.add(criteriaBuilder.lessThanOrEqualTo(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMaxExpertDoneOrdersNumber()));
         }
     }
 

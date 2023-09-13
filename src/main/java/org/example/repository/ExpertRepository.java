@@ -19,11 +19,14 @@ public interface ExpertRepository extends JpaRepository<Expert, Long> {
 
     List<Expert> findExpertsByUserStatus(UserStatus userStatus);
 
+    @Query("SELECT e FROM Expert e WHERE EXISTS (SELECT o FROM e.orderList o WHERE o.orderStatus = 'DONE')")
+    List<Expert> findExpertsByDoneOrdersNumber();
+
     @Modifying
     @Query("update  Expert e set e.wallet.balance = :balance where e.id = :expertId ")
     void updateExpertWallet(Long expertId, double balance);
 
     @Modifying
-    @Query("update Expert  e set e.score = :score where e.id = :expertId")
+    @Query("update Expert e set e.score = :score where e.id = :expertId")
     void updateExpertScore(Long expertId, int score);
 }

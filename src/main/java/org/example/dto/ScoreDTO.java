@@ -31,6 +31,8 @@ public class ScoreDTO extends BaseDTO<Long> {
 
     Order order;
 
+    Long orderId;
+
 
 
 }

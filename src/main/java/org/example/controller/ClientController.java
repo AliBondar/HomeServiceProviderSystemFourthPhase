@@ -113,25 +113,26 @@ public class ClientController {
         return ResponseEntity.ok().body("Score has been submitted successfully.");
     }
 
-    @GetMapping("/payment")
-    public ModelAndView showRegister(Model model) {
+    @GetMapping("/payment/{orderId}")
+    public ModelAndView showRegister(@PathVariable Long orderId, Model model) {
         CardDTO card = new CardDTO();
+        card.setOrderId(1L);
         setupCaptcha(card);
         model.addAttribute("card", card);
         return new ModelAndView("payment.html");
     }
 
     @PostMapping("/payment/pay")
-    public String pay(@ModelAttribute("card") CardDTO card, Model model) {
-        String page = "";
+    public ModelAndView pay(@ModelAttribute("card") CardDTO card, Model model) {
+
         if (card.getCaptcha().equals(card.getHidden())) {
             clientService.payByCard(card);
-            page = "redirect:all";
+            return new ModelAndView("successmessage.html");
         } else {
             setupCaptcha(card);
-            return "payment";
+            return new ModelAndView("payment.html");
         }
-        return page;
+
     }
 
     private void setupCaptcha(CardDTO card) {

@@ -34,4 +34,14 @@ public class CardDTO extends BaseDTO<Long>{
     @Transient
     private String image;
 
+    @Override
+    public String toString() {
+        return "CardDTO{" +
+                "cardNumber='" + cardNumber + '\'' +
+                ", cvv2='" + cvv2 + '\'' +
+                ", expireYear='" + expireYear + '\'' +
+                ", expireMonth='" + expireMonth + '\'' +
+                ", password='" + password + '\'' +
+                ", orderId=" + orderId;
+    }
 }

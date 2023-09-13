@@ -33,10 +33,6 @@ public class FilterOrderDTO {
 
     Integer maxClientOfferedWorkDuration;
 
-    Integer minExpertDoneOrdersNumber;
-
-    Integer maxExpertDoneOrdersNumber;
-
     @JsonFormat(pattern = "yyyy-MM-dd")
     LocalDate minWorkDate;
 

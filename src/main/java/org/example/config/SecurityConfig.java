@@ -36,16 +36,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/expert/**").hasAuthority("EXPERT")
                         .requestMatchers("/api/client/**").hasAuthority("CLIENT")
+                        .requestMatchers("/api/client/payment/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .httpBasic(basic -> {});
 
                 .httpBasic(basic -> {
                 })
                 .authenticationProvider(new CustomAuthenticationProvider(customUserDetailsService, passwordEncoder()));
-
-//                .httpBasic(withDefaults())
-//                .authenticationProvider(new CustomAuthProvider((CustomUserDetailsService) userDetailsService(),passwordEncoder()));
 
         return http.build();
     }

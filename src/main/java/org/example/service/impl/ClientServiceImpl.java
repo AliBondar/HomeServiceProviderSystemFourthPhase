@@ -61,6 +61,7 @@ public class ClientServiceImpl implements ClientService {
     private final ScoreService scoreService;
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
+    private final ScoreRepository scoreRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private final PasswordEncoder passwordEncoder;
 
@@ -143,17 +144,13 @@ public class ClientServiceImpl implements ClientService {
         if (clientDTO.getFirstName() == null || clientDTO.getLastName() == null
                 || clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must be filled out.");
-        }
-        else if (validation.emailPatternMatches(clientDTO.getEmail())) {
+        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        }
-        else if (isClientEmailDuplicated(clientDTO.getEmail())) {
+        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        }
-        else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
+        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
-        }
-        else {
+        } else {
 
             clientDTO.setSignUpDate(LocalDate.now());
             clientDTO.setUserStatus(UserStatus.CLIENT);
@@ -186,20 +183,15 @@ public class ClientServiceImpl implements ClientService {
 
         if (clientDTO.getEmail() == null || clientDTO.getPassword() == null) {
             throw new EmptyFieldException("Field must filled out !");
-        }
-        else if (validation.emailPatternMatches(clientDTO.getEmail())) {
+        } else if (validation.emailPatternMatches(clientDTO.getEmail())) {
             throw new InvalidEmailException("Email is invalid.");
-        }
-        else if (isClientEmailDuplicated(clientDTO.getEmail())) {
+        } else if (isClientEmailDuplicated(clientDTO.getEmail())) {
             throw new DuplicatedEmailException("Email already exists.");
-        }
-        else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
+        } else if (validation.passwordPatternMatches(clientDTO.getPassword())) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        }
-        else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
+        } else if (findClientByEmailAndPassword(clientDTO.getEmail(), clientDTO.getPassword()).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        }
-        else {
+        } else {
             Client client = clientmapper.convert(clientDTO);
             System.out.println("Welcome " + client.getFirstName() + " " + client.getLastName());
         }
@@ -216,31 +208,27 @@ public class ClientServiceImpl implements ClientService {
 
         if (clientRepository.findById(clientId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        }
-        else if (validation.passwordPatternMatches(password)) {
+        } else if (validation.passwordPatternMatches(password)) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        }
-        else {
-                Client client = clientRepository.findById(clientId).get();
-                client.setPassword(passwordEncoder.encode(password));
-                clientRepository.save(client);
+        } else {
+            Client client = clientRepository.findById(clientId).get();
+            client.setPassword(passwordEncoder.encode(password));
+            clientRepository.save(client);
         }
 
     }
 
     @Override
-    public void editClientPassword(String password){
+    public void editClientPassword(String password) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long clientId = ((User) authentication.getPrincipal()).getId();
 
         if (clientRepository.findById(clientId).isEmpty()) {
             throw new NotFoundTheUserException("Couldn't find the user !");
-        }
-        else if (validation.passwordPatternMatches(password)) {
+        } else if (validation.passwordPatternMatches(password)) {
             throw new InvalidPasswordException("Password is invalid. It must contain at least one special character, Capital digit and number");
-        }
-        else {
+        } else {
             Client client = clientRepository.findById(clientId).get();
             client.setPassword(passwordEncoder.encode(password));
             clientRepository.save(client);
@@ -257,17 +245,13 @@ public class ClientServiceImpl implements ClientService {
                 || orderDTO.getLocalTime() == null || orderDTO.getLocalDate() == null
                 || orderDTO.getSubServiceId() == null || orderDTO.getClientOfferedWorkDuration() == 0) {
             throw new EmptyFieldException("Fields must filled out.");
-        }
-        else if (!validation.isDateValid(orderDTO.getLocalDate())) {
+        } else if (!validation.isDateValid(orderDTO.getLocalDate())) {
             throw new InvalidDateException("Invalid date.");
-        }
-        else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
+        } else if (!validation.isTimeValid(orderDTO.getLocalTime())) {
             throw new InvalidTimeException("Invalid Time.");
-        }
-        else if (!validation.isOfferedPriceValid(orderDTO, subServiceRepository.findById(orderDTO.getSubServiceId()).get())) {
+        } else if (!validation.isOfferedPriceValid(orderDTO, subServiceRepository.findById(orderDTO.getSubServiceId()).get())) {
             throw new InvalidPriceException("Invalid price.");
-        }
-        else {
+        } else {
             orderService.save(orderDTO);
         }
 
@@ -305,17 +289,13 @@ public class ClientServiceImpl implements ClientService {
 
         if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("Couldn't find the order.");
-        }
-        else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).isEmpty()) {
             throw new NotFoundTheOfferException("Couldn't find the offer.");
-        }
-        else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartDate().isAfter(LocalDate.now())) {
             throw new InvalidDateException("Invalid date.");
-        }
-        else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))) {
+        } else if (offerRepository.findAcceptedOfferByOrderId(orderId).get().getOfferedStartTime().after(Time.valueOf(LocalTime.now()))) {
             throw new InvalidTimeException("Invalid time.");
-        }
-        else {
+        } else {
             Order order = orderRepository.findById(orderId).get();
             order.setOrderStatus(OrderStatus.STARTED);
             orderRepository.save(order);
@@ -328,11 +308,9 @@ public class ClientServiceImpl implements ClientService {
 
         if (orderRepository.findById(orderId).isEmpty()) {
             throw new NotFoundTheOrderException("not found the order.");
-        }
-        else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
+        } else if (orderRepository.findById(orderId).get().getOrderStatus() != OrderStatus.STARTED) {
             throw new InvalidTimeException("Invalid time.");
-        }
-        else {
+        } else {
             Order order = orderRepository.findById(orderId).get();
             Offer acceptedOffer = offerRepository.findAcceptedOfferByOrderId(orderId).get();
             Expert expert = acceptedOffer.getExpert();
@@ -365,7 +343,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void createScore(ScoreDTO scoreDTO) {
-        Order order = scoreDTO.getOrder();
+        Order order = orderRepository.findById(scoreDTO.getOrderId()).get();
         if (order == null) {
             throw new EmptyFieldException("not found the order.");
         } else if (order.getOrderStatus() != OrderStatus.DONE) {
@@ -375,12 +353,14 @@ public class ClientServiceImpl implements ClientService {
         } else if (!validation.isScoreValid(scoreDTO.getScore())) {
             throw new ScoreRangeException("score is not valid. It must be between 1 and 5");
         } else {
-            expertRepository.updateExpertScore(order.getExpert().getId(),
-                    order.getExpert().getScore() + scoreDTO.getScore());
             scoreDTO.setClient(order.getClient());
             scoreDTO.setOrder(order);
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(order.getId()).get().getExpert());
             scoreService.save(scoreDTO);
+            order.setScore(scoreRepository.findScoreByOrder(order).get());
+            orderRepository.save(order);
+//            expertRepository.updateExpertScore(order.getExpert().getId(),
+//                    order.getExpert().getScore() + scoreDTO.getScore());
         }
     }
 
@@ -403,7 +383,7 @@ public class ClientServiceImpl implements ClientService {
             scoreDTO.setScore(score);
             scoreDTO.setComment(comment);
             scoreDTO.setClient(clientRepository.findById(orderDTO.getClientId()).get());
-            scoreDTO.setOrder(order);
+            scoreDTO.setOrderId(order.getId());
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
             scoreService.save(scoreDTO);
         }
@@ -427,7 +407,7 @@ public class ClientServiceImpl implements ClientService {
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
             scoreDTO.setClient(clientRepository.findById(orderDTO.getClientId()).get());
-            scoreDTO.setOrder(order);
+            scoreDTO.setOrderId(order.getId());
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
             scoreService.save(scoreDTO);
         }
@@ -487,19 +467,19 @@ public class ClientServiceImpl implements ClientService {
             String email = "%" + filterClientDTO.getEmail() + "%";
             predicateList.add(criteriaBuilder.like(clientRoot.get("email"), email));
         }
-        if (filterClientDTO.getMinSignUpDate() != null && filterClientDTO.getMaxSignUpDate() != null){
+        if (filterClientDTO.getMinSignUpDate() != null && filterClientDTO.getMaxSignUpDate() != null) {
             predicateList.add(criteriaBuilder.between(clientRoot.get("signUpDate"),
                     filterClientDTO.getMinSignUpDate(), filterClientDTO.getMaxSignUpDate()));
         }
-        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() == null){
+        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() == null) {
             int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
             predicateList.add(criteriaBuilder.ge(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
         }
-        if (filterClientDTO.getMinOrdersNumber() == null && filterClientDTO.getMaxOrdersNumber() != null){
+        if (filterClientDTO.getMinOrdersNumber() == null && filterClientDTO.getMaxOrdersNumber() != null) {
             int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
             predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(countOrders), filterClientDTO.getMaxOrdersNumber()));
         }
-        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() != null){
+        if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() != null) {
             int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
             predicateList.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
             predicateList.add(criteriaBuilder.lessThanOrEqualTo(criteriaBuilder.literal(countOrders), filterClientDTO.getMaxOrdersNumber()));
@@ -537,16 +517,16 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void payByCard(CardDTO cardDTO) {
-        Order order = orderRepository.findById(cardDTO.getOrderId()).get();
+        Order order = orderRepository.findById(1L).get();
         Offer offer = offerService.findAcceptedOfferByOrderId(order.getId()).get();
         Expert expert = offer.getExpert();
-        expertService.updateExpertWallet(expert.getId(),
-                expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
+//        expertService.updateExpertWallet(expert.getId(),
+//                expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
         changeOrderStatusToPaid(order.getId());
     }
 
     @Override
-    public List<OrderDTO> filterClientOrdersByOrderStatus(OrderStatus orderStatus){
+    public List<OrderDTO> filterClientOrdersByOrderStatus(OrderStatus orderStatus) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long id = ((User) authentication.getPrincipal()).getId();
         System.out.println(id);
