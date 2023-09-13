@@ -116,7 +116,8 @@ public class ClientController {
     @GetMapping("/payment/{orderId}")
     public ModelAndView showRegister(@PathVariable Long orderId, Model model) {
         CardDTO card = new CardDTO();
-        card.setOrderId(1L);
+        System.out.println(orderId);
+        card.setOrderId(orderId);
         setupCaptcha(card);
         model.addAttribute("card", card);
         return new ModelAndView("payment.html");
