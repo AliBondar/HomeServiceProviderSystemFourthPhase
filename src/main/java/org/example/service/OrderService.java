@@ -22,6 +22,8 @@ public interface OrderService {
 
     List<OrderDTO> findOrdersByClient();
 
+    List<OrderDTO> findOrdersByExpertIdAndOrderStatus(Long id, OrderStatus orderStatus);
+
     List<Order> findOrdersBySubServiceId(Long id);
 
     List<OrderDTO> findNewOrdersBySubServiceId(Long id);

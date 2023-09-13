@@ -6,6 +6,7 @@ import org.example.captcha.CaptchaUtils;
 import org.example.dto.*;
 import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.*;
+import org.example.entity.enums.OrderStatus;
 import org.example.entity.users.Client;
 import org.example.entity.users.User;
 import org.example.service.*;
@@ -141,8 +142,10 @@ public class ClientController {
     }
 
     @GetMapping("/filter-client-orders")
-    public List<OrderDTO> filterOrders(FilterOrderDTO filterOrderDTO){
-        return clientService.filterClientOrdersByOrderStatus(filterOrderDTO.getOrderStatus());
+    public List<OrderDTO> filterOrders(@RequestBody FilterOrderDTO filterOrderDTO){
+        System.out.println(filterOrderDTO.getOrderStatus());
+        return clientService.filterClientOrdersByOrderStatus(
+                filterOrderDTO.getOrderStatus());
     }
 
 }

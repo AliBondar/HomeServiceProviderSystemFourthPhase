@@ -11,8 +11,10 @@ import org.example.dto.OrderDTO;
 import org.example.dto.request.FilterOrderDTO;
 import org.example.entity.Order;
 import org.example.entity.enums.OrderStatus;
+import org.example.entity.users.Expert;
 import org.example.entity.users.User;
 import org.example.mapper.OrderMapper;
+import org.example.repository.ExpertRepository;
 import org.example.repository.OrderRepository;
 import org.example.repository.SubServiceRepository;
 import org.example.service.OrderService;
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final SubServiceRepository subServiceRepository;
+    private final ExpertRepository expertRepository;
     private final OrderMapper orderMapper;
     @PersistenceContext
     private EntityManager entityManager;
@@ -80,6 +83,17 @@ public class OrderServiceImpl implements OrderService {
         Long id = ((User) authentication.getPrincipal()).getId();
         List<Order> orders = orderRepository.findOrdersByClientId(id);
         List<OrderDTO> orderDTOList = new ArrayList<>();
+        for (Order order : orders) {
+            orderDTOList.add(orderMapper.convert(order));
+        }
+        return orderDTOList;
+    }
+
+    @Override
+    public List<OrderDTO> findOrdersByExpertIdAndOrderStatus(Long id, OrderStatus orderStatus) {
+        Predicate<Order> newOrder = order -> order.getOrderStatus() == orderStatus;
+        List<OrderDTO> orderDTOList = new ArrayList<>();
+        List<Order> orders = orderRepository.findOrdersByExpertId(id).stream().filter(newOrder).toList();
         for (Order order : orders) {
             orderDTOList.add(orderMapper.convert(order));
         }
@@ -149,6 +163,10 @@ public class OrderServiceImpl implements OrderService {
         if (filterOrderDTO.getSubServiceId() != null) {
             predicateList.add(criteriaBuilder.equal(orderRoot.get("subService"), subServiceRepository.findById(filterOrderDTO.getSubServiceId()).get()));
         }
+        Optional<Expert> expert = expertRepository.findById(filterOrderDTO.getExpertId());
+        if (filterOrderDTO.getExpertId() != null && expert.isPresent()) {
+            predicateList.add(criteriaBuilder.equal(orderRoot.get("expert"), expert.get()));
+        }
         if (filterOrderDTO.getMinClientOfferedPrice() == null && filterOrderDTO.getMaxClientOfferedPrice() != null) {
             predicateList.add(criteriaBuilder.lt(orderRoot.get("clientOfferedPrice"), filterOrderDTO.getMaxClientOfferedPrice()));
         }
@@ -174,6 +192,19 @@ public class OrderServiceImpl implements OrderService {
         if (filterOrderDTO.getMinWorkDate() != null && filterOrderDTO.getMaxWorkDate() != null) {
             predicateList.add(criteriaBuilder.between(orderRoot.get("localDate"),
                     filterOrderDTO.getMinWorkDate(), filterOrderDTO.getMaxWorkDate()));
+        }
+        if (filterOrderDTO.getMinExpertDoneOrdersNumber() != null && filterOrderDTO.getMaxExpertDoneOrdersNumber() == null) {
+            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
+            predicateList.add(criteriaBuilder.ge(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMinExpertDoneOrdersNumber()));
+        }
+        if (filterOrderDTO.getMinExpertDoneOrdersNumber() == null && filterOrderDTO.getMaxExpertDoneOrdersNumber() != null) {
+            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
+            predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMaxExpertDoneOrdersNumber()));
+        }
+        if (filterOrderDTO.getMinExpertDoneOrdersNumber() != null && filterOrderDTO.getMaxExpertDoneOrdersNumber() != null) {
+            int ordersNumber = findOrdersByExpertIdAndOrderStatus(expert.get().getId(), OrderStatus.DONE).size();
+            predicateList.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMinExpertDoneOrdersNumber()));
+            predicateList.add(criteriaBuilder.lessThanOrEqualTo(criteriaBuilder.literal(ordersNumber), filterOrderDTO.getMaxExpertDoneOrdersNumber()));
         }
     }
 

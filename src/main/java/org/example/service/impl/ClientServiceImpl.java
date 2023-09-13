@@ -497,7 +497,7 @@ public class ClientServiceImpl implements ClientService {
         }
         if (filterClientDTO.getMinOrdersNumber() == null && filterClientDTO.getMaxOrdersNumber() != null){
             int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
-            predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(countOrders), filterClientDTO.getMinOrdersNumber()));
+            predicateList.add(criteriaBuilder.le(criteriaBuilder.literal(countOrders), filterClientDTO.getMaxOrdersNumber()));
         }
         if (filterClientDTO.getMinOrdersNumber() != null && filterClientDTO.getMaxOrdersNumber() != null){
             int countOrders = orderRepository.countOrdersByClientEmail(String.valueOf(clientRoot.get("email")));
