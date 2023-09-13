@@ -343,7 +343,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void createScore(ScoreDTO scoreDTO) {
+
         Order order = orderRepository.findById(scoreDTO.getOrderId()).get();
+
         if (order == null) {
             throw new EmptyFieldException("not found the order.");
         } else if (order.getOrderStatus() != OrderStatus.DONE) {
@@ -353,14 +355,16 @@ public class ClientServiceImpl implements ClientService {
         } else if (!validation.isScoreValid(scoreDTO.getScore())) {
             throw new ScoreRangeException("score is not valid. It must be between 1 and 5");
         } else {
+
             scoreDTO.setClient(order.getClient());
             scoreDTO.setOrder(order);
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(order.getId()).get().getExpert());
             scoreService.save(scoreDTO);
             order.setScore(scoreRepository.findScoreByOrder(order).get());
             orderRepository.save(order);
-//            expertRepository.updateExpertScore(order.getExpert().getId(),
-//                    order.getExpert().getScore() + scoreDTO.getScore());
+            expertService.updateExpertScore(order.getExpert().getId(),
+                    order.getExpert().getScore() + scoreDTO.getScore());
+
         }
     }
 
@@ -393,6 +397,7 @@ public class ClientServiceImpl implements ClientService {
     public void createScore(int score, Long orderId) {
         OrderDTO orderDTO = orderService.findById(orderId);
         Order order = orderRepository.findById(orderId).get();
+
         if (orderDTO == null) {
             throw new NotFoundTheOrderException("not found the order.");
         } else if (orderDTO.getOrderStatus() != OrderStatus.DONE) {
@@ -402,7 +407,8 @@ public class ClientServiceImpl implements ClientService {
         } else if (!validation.isScoreValid(score)) {
             throw new ScoreRangeException("score is not valid");
         } else {
-            expertRepository.updateExpertScore(order.getExpert().getId(),
+
+            expertService.updateExpertScore(order.getExpert().getId(),
                     order.getExpert().getScore() + score);
             ScoreDTO scoreDTO = new ScoreDTO();
             scoreDTO.setScore(score);
@@ -410,6 +416,7 @@ public class ClientServiceImpl implements ClientService {
             scoreDTO.setOrderId(order.getId());
             scoreDTO.setExpert(offerService.findAcceptedOfferByOrderId(orderId).get().getExpert());
             scoreService.save(scoreDTO);
+
         }
     }
 
@@ -522,8 +529,8 @@ public class ClientServiceImpl implements ClientService {
         order.setPaid(offer.getOfferedPrice());
         orderRepository.save(order);
         Expert expert = offer.getExpert();
-//        expertService.updateExpertWallet(expert.getId(),
-//                expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
+        expertService.updateExpertWallet(expert.getId(),
+                expert.getWallet().getBalance() + offer.getOfferedPrice() * 0.7);
         changeOrderStatusToPaid(order.getId());
     }
 

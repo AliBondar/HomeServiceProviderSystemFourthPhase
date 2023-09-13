@@ -12,6 +12,7 @@ import org.example.dto.ExpertDTO;
 import org.example.dto.OfferDTO;
 import org.example.dto.OrderDTO;
 import org.example.dto.response.ExpertResponseDTO;
+import org.example.entity.Score;
 import org.example.entity.users.User;
 import org.example.mapper.ExpertMapper;
 import org.example.entity.Order;
@@ -23,6 +24,7 @@ import org.example.exception.*;
 import org.example.mapper.OrderMapper;
 import org.example.repository.ExpertRepository;
 import org.example.repository.OrderRepository;
+import org.example.repository.ScoreRepository;
 import org.example.repository.WalletRepository;
 import org.example.security.PasswordHash;
 import org.example.service.*;
@@ -58,6 +60,7 @@ public class ExpertServiceImpl implements ExpertService {
     private final OrderService orderService;
     private final TokenService tokenService;
     private final EmailSenderService emailSenderService;
+    private final ScoreRepository scoreRepository;
     @PersistenceContext
     private EntityManager entityManager;
     private final OrderMapper orderMapper;
@@ -301,12 +304,18 @@ public class ExpertServiceImpl implements ExpertService {
 
     @Override
     public void updateExpertWallet(Long expertId, double balance) {
-        expertRepository.updateExpertWallet(expertId, balance);
+        Expert expert = expertRepository.findById(expertId).get();
+        Wallet wallet = expert.getWallet();
+        wallet.setBalance(balance);
+        walletRepository.save(wallet);
     }
 
     @Override
     public void updateExpertScore(Long expertId, int score) {
-        expertRepository.updateExpertScore(expertId, score);
+        Expert expert = expertRepository.findById(expertId).get();
+        expert.setScore(score);
+        expertRepository.save(expert);
+//        expertRepository.updateExpertScore(expertId, score);
     }
 
     @Override
