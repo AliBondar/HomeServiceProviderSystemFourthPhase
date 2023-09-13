@@ -116,7 +116,6 @@ public class ClientController {
     @GetMapping("/payment/{orderId}")
     public ModelAndView showRegister(@PathVariable Long orderId, Model model) {
         CardDTO card = new CardDTO();
-        System.out.println(orderId);
         card.setOrderId(orderId);
         setupCaptcha(card);
         model.addAttribute("card", card);
@@ -124,7 +123,7 @@ public class ClientController {
     }
 
     @PostMapping("/payment/pay")
-    public ModelAndView pay(@ModelAttribute("card") CardDTO card, Model model) {
+    public ModelAndView pay(@ModelAttribute CardDTO card, Model model) {
 
         if (card.getCaptcha().equals(card.getHidden())) {
             clientService.payByCard(card);

@@ -59,6 +59,7 @@
 <div class="container">
     <p>Time remaining: <span id="countdown"></span></p>
     <form th:object="${card}" th:action="@{http://localhost:8081/api/client/payment/pay}" method="POST">
+        <input type="hidden" value="orderId" th:field="*{orderId}"/>
         <div class="form-group">
             <input type="text" th:field="*{cardNumber}" maxlength="16" placeholder="Card Number" required>
 <!--            <input type="text" maxlength="4" placeholder="Card Number" required>-->

@@ -517,7 +517,6 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void payByCard(CardDTO cardDTO) {
-        System.out.println(cardDTO.getOrderId());
         Order order = orderRepository.findById(1L).get();
         Offer offer = offerService.findAcceptedOfferByOrderId(order.getId()).get();
         order.setPaid(offer.getOfferedPrice());
