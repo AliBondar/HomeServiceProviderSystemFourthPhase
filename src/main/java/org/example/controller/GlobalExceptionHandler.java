@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.response.ProjectResponse;
 import org.example.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,124 +11,124 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicatedEmailException.class)
-    public ResponseEntity<String> handleException(DuplicatedEmailException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+    public ResponseEntity<ProjectResponse> handleException(DuplicatedEmailException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(DuplicatedScoreException.class)
-    public ResponseEntity<String> handleException(DuplicatedScoreException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Duplicated Score is not allowed");
+    public ResponseEntity<ProjectResponse> handleException(DuplicatedScoreException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(DuplicatedServiceException.class)
-    public ResponseEntity<String> handleException(DuplicatedServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Service already exists");
+    public ResponseEntity<ProjectResponse> handleException(DuplicatedServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(DuplicatedSubServiceException.class)
-    public ResponseEntity<String> handleException(DuplicatedSubServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sub service already exists");
+    public ResponseEntity<ProjectResponse> handleException(DuplicatedSubServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(EmptyFieldException.class)
-    public ResponseEntity<String> handleException(EmptyFieldException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty field.");
+    public ResponseEntity<ProjectResponse> handleException(EmptyFieldException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ImageSizeException.class)
-    public ResponseEntity<String> handleException(ImageSizeException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Image size must be less than 300kb");
+    public ResponseEntity<ProjectResponse> handleException(ImageSizeException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ImageFormatException.class)
-    public ResponseEntity<String> handleException(ImageFormatException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Image format must be jpg");
+    public ResponseEntity<ProjectResponse> handleException(ImageFormatException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidDateException.class)
-    public ResponseEntity<String> handleException(InvalidDateException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid date");
+    public ResponseEntity<ProjectResponse> handleException(InvalidDateException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidTimeException.class)
-    public ResponseEntity<String> handleAnotherException(InvalidTimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid time");
+    public ResponseEntity<ProjectResponse> handleAnotherException(InvalidTimeException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidEmailException.class)
-    public ResponseEntity<String> handleException(InvalidEmailException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid email");
+    public ResponseEntity<ProjectResponse> handleException(InvalidEmailException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<String> handleException(InvalidPasswordException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password is invalid. It must contain at least eight characters, one special character, Capital digit and number");
+    public ResponseEntity<ProjectResponse> handleException(InvalidPasswordException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
 
     @ExceptionHandler(InvalidPriceException.class)
-    public ResponseEntity<String> handleException(InvalidPriceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid price");
+    public ResponseEntity<ProjectResponse> handleException(InvalidPriceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheOfferException.class)
-    public ResponseEntity<String> handleException(NotFoundTheOfferException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the offer");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheOfferException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheOrderException.class)
-    public ResponseEntity<String> handleException(NotFoundTheOrderException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the order");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheOrderException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheScoreException.class)
-    public ResponseEntity<String> handleException(NotFoundTheScoreException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the score");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheScoreException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheServiceException.class)
-    public ResponseEntity<String> handleException(NotFoundTheServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the service");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheSubServiceException.class)
-    public ResponseEntity<String> handleException(NotFoundTheSubServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the sub service");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheSubServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotFoundTheUserException.class)
-    public ResponseEntity<String> handleException(NotFoundTheUserException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not found the user");
+    public ResponseEntity<ProjectResponse> handleException(NotFoundTheUserException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotInServiceException.class)
-    public ResponseEntity<String> handleException(NotInServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not allowed in this service");
+    public ResponseEntity<ProjectResponse> handleException(NotInServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(NotInSubServiceException.class)
-    public ResponseEntity<String> handleException(NotInSubServiceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not allowed in this sub service");
+    public ResponseEntity<ProjectResponse> handleException(NotInSubServiceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(OrderStatusException.class)
-    public ResponseEntity<String> handleException(OrderStatusException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order is not appropriate status");
+    public ResponseEntity<ProjectResponse> handleException(OrderStatusException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ScoreRangeException.class)
-    public ResponseEntity<String> handleException(ScoreRangeException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid score. It must be between 1 and 5");
+    public ResponseEntity<ProjectResponse> handleException(ScoreRangeException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserConfirmationException.class)
-    public ResponseEntity<String> handleException(UserConfirmationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User in not confirmed yet");
+    public ResponseEntity<ProjectResponse> handleException(UserConfirmationException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(WalletBalanceException.class)
-    public ResponseEntity<String> handleException(WalletBalanceException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wallet balance is not enough");
+    public ResponseEntity<ProjectResponse> handleException(WalletBalanceException ex) {
+        return ResponseEntity.badRequest().body(new ProjectResponse(ex.getMessage()));
     }
 
 }
