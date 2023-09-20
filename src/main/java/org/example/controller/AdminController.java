@@ -84,20 +84,7 @@ public class AdminController {
         return expertService.findExpertDTOByEmail(email);
     }
 
-    @GetMapping("/show-experts-by-user-status/{strUserStatus}")
-    public List<Expert> findExpertsByUserStatus(@PathVariable String strUserStatus) {
-//        if (Objects.equals(strUserStatus, "CONFIRMED") || Objects.equals(strUserStatus, "WAITING")
-//                || Objects.equals(strUserStatus, "DISABLED") || Objects.equals(strUserStatus, "NEW")){
-//            UserStatus userStatus = null;
-//            if (Objects.equals(strUserStatus, "CONFIRMED")) userStatus = UserStatus.CONFIRMED;
-//            else if (Objects.equals(strUserStatus, "WAITING")) userStatus = UserStatus.WAITING;
-//            else if (Objects.equals(strUserStatus, "DISABLED")) userStatus = UserStatus.DISABLED;
-//            else if (Objects.equals(strUserStatus, "NEW")) userStatus = UserStatus.NEW;
-//            return expertService.findExpertsByUserStatus(userStatus);
-//        } else return null;
-//        if (Objects.equals(strUserStatus, "2"))
-        return expertService.findExpertsByUserStatus(UserStatus.CONFIRMED);
-    }
+
 
     @GetMapping("/filter-clients")
     public List<ClientDTO> filterClient(@RequestBody FilterClientDTO filterClientDTO) {

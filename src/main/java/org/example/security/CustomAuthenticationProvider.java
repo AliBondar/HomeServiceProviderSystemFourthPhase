@@ -26,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                 );
             }
 
-        return authentication;
+        return null;
 
     }
 
