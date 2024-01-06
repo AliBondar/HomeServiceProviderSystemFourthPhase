@@ -25,12 +25,12 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Override
     public void sendEmail(SimpleMailMessage email) {
-        email.setFrom("ali.bondar2001@gmail.com");
+        email.setFrom("");
         email.setSubject("Complete User Signup");
         javaMailSenderImpl.setHost("smtp.gmail.com");
         javaMailSenderImpl.setPort(587);
-        javaMailSenderImpl.setUsername("ali.bondar2001@gmail.com");
-        javaMailSenderImpl.setPassword("bqcmzkqakxzqzeop");
+        javaMailSenderImpl.setUsername("");
+        javaMailSenderImpl.setPassword("");
         Properties props = javaMailSenderImpl.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", true);
@@ -43,7 +43,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public SimpleMailMessage createEmail(String toEmail, String confirmationToken, String accountType) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
-        mailMessage.setFrom("ali.bondar2001@gmail.com");
+        mailMessage.setFrom("");
         if (accountType.equals("client")) {
             mailMessage.setSubject("Verify Your Email Address");
             mailMessage.setText("To continue the registration process, please click here : "
